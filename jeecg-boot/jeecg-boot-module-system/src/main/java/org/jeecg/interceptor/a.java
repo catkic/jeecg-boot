@@ -76,7 +76,7 @@ implements HandlerInterceptor {
             if (this.c == null) {
                 this.c = (ISysBaseAPI)SpringContextUtils.getBean(ISysBaseAPI.class);
             }
-            if ((n2 = (int)(this.c.hasOnlineAuth(onlineAuthDTO = new OnlineAuthDTO((String)(object = JwtUtil.getUserNameByToken((HttpServletRequest)request)), arrayList, d)) ? 1 : 0)) == 0) {
+            if ((n2 = (int)(this.c.hasOnlineAuth(onlineAuthDTO = new OnlineAuthDTO(JwtUtil.getUserNameByToken(request), arrayList, d)) ? 1 : 0)) == 0) {
                 a.info("请求无权限(" + request.getMethod() + ")：" + string);
                 this.a(response, string2);
                 return false;

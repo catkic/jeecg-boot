@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  org.jeecg.common.util.oConvertUtils
  *  org.slf4j.Logger
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.entity.OnlCgformButton;
 import org.jeecg.modules.online.cgform.entity.OnlCgformEnhanceJs;
@@ -26,6 +27,8 @@ public class EnhanceJsUtil {
     private static final String d = ",";
 
     public static void main(String[] args) {
+        System.out.println("123123" + null + "23232");
+
         String string = "aa(row){console.log(112);}\nbb(row){console.log(row);}";
         String string2 = "bb";
         System.out.println(EnhanceJsUtil.a(string, string2));
@@ -51,7 +54,7 @@ public class EnhanceJsUtil {
     }
 
     public static String a(String string, String string2, String string3) {
-        String string4 = "(" + oConvertUtils.getString((String)string3) + string2 + "\\s*\\(\\)\\s*\\{)";
+        String string4 = "(" + oConvertUtils.getString((String) string3) + string2 + "\\s*\\(\\)\\s*\\{)";
         String string5 = string2 + ":function(that){const getAction=this._getAction,postAction=this._postAction,deleteAction=this._deleteAction;";
         String string6 = EnhanceJsUtil.b(string, c + string4, "}," + string5);
         string = string6 == null ? EnhanceJsUtil.c(string, string4, string5) : string6;
@@ -77,7 +80,7 @@ public class EnhanceJsUtil {
     }
 
     public static String a(String string, List<OnlCgformButton> list) {
-        a.info("最终的增强JS", (Object)string);
+        a.info("最终的增强JS", (Object) string);
         return "class OnlineEnhanceJs{constructor(getAction,postAction,deleteAction){this._getAction=getAction;this._postAction=postAction;this._deleteAction=deleteAction;}" + string + "}";
     }
 
@@ -91,14 +94,14 @@ public class EnhanceJsUtil {
 
     public static String a(String string) {
         String string2 = "function OnlineEnhanceJs(getAction,postAction,deleteAction){return {_getAction:getAction,_postAction:postAction,_deleteAction:deleteAction," + string + "}}";
-        a.info("最终的增强JS", (Object)string2);
+        a.info("最终的增强JS", (Object) string2);
         return string2;
     }
 
     public static String b(String string, List<OnlCgformButton> list) {
         string = EnhanceJsUtil.c(string, list);
         String string2 = "function OnlineEnhanceJs(getAction,postAction,deleteAction){return {_getAction:getAction,_postAction:postAction,_deleteAction:deleteAction," + string + "}}";
-        a.info("最终的增强JS", (Object)string2);
+        a.info("最终的增强JS", (Object) string2);
         return string2;
     }
 
@@ -110,7 +113,8 @@ public class EnhanceJsUtil {
                     string = EnhanceJsUtil.a(string, string2);
                     continue;
                 }
-                if (!"button".equals(onlCgformButton.getButtonStyle()) && !"form".equals(onlCgformButton.getButtonStyle())) continue;
+                if (!"button".equals(onlCgformButton.getButtonStyle()) && !"form".equals(onlCgformButton.getButtonStyle()))
+                    continue;
                 string = EnhanceJsUtil.a(string, string2, null);
             }
         }
@@ -121,7 +125,7 @@ public class EnhanceJsUtil {
     }
 
     public static void a(OnlCgformEnhanceJs onlCgformEnhanceJs, String string, List<OnlCgformField> list) {
-        if (onlCgformEnhanceJs == null || oConvertUtils.isEmpty((Object)onlCgformEnhanceJs.getCgJs())) {
+        if (onlCgformEnhanceJs == null || oConvertUtils.isEmpty((Object) onlCgformEnhanceJs.getCgJs())) {
             return;
         }
         String string2 = " " + onlCgformEnhanceJs.getCgJs();
@@ -140,7 +144,7 @@ public class EnhanceJsUtil {
     }
 
     public static void b(OnlCgformEnhanceJs onlCgformEnhanceJs, String string, List<OnlCgformField> list) {
-        if (onlCgformEnhanceJs == null || oConvertUtils.isEmpty((Object)onlCgformEnhanceJs.getCgJs())) {
+        if (onlCgformEnhanceJs == null || oConvertUtils.isEmpty((Object) onlCgformEnhanceJs.getCgJs())) {
             return;
         }
         a.info(" sub enhanceJs begin==> " + onlCgformEnhanceJs);

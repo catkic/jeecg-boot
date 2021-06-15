@@ -13,8 +13,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.online.auth.entity.OnlAuthPage;
 import org.jeecg.modules.online.auth.vo.AuthPageVO;
 
-public interface OnlAuthPageMapper
-extends BaseMapper<OnlAuthPage> {
+public interface OnlAuthPageMapper extends BaseMapper<OnlAuthPage> {
     public List<AuthPageVO> queryRoleAuthByFormId(@Param(value="roleId") String var1, @Param(value="cgformId") String var2, @Param(value="type") int var3);
 
     public List<AuthPageVO> queryAuthColumnByFormId(@Param(value="cgformId") String var1);

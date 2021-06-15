@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.modules.online.cgform.entity.OnlCgformButton;
-import org.jeecg.modules.online.cgform.model.HrefSlots;
-import org.jeecg.modules.online.cgform.model.OnlColumn;
-import org.jeecg.modules.online.cgform.model.b;
 
 public class OnlComplexModel
 implements Serializable {
@@ -33,7 +30,7 @@ implements Serializable {
     private List<OnlCgformButton> n;
     List<HrefSlots> a;
     private String o;
-    private List<b> p;
+    private List<TableModel> p;
     private String q;
     private String r;
     private String s;
@@ -97,7 +94,7 @@ implements Serializable {
         return this.o;
     }
 
-    public List<b> getForeignKeys() {
+    public List<TableModel> getForeignKeys() {
         return this.p;
     }
 
@@ -181,7 +178,7 @@ implements Serializable {
         this.o = enhanceJs;
     }
 
-    public void setForeignKeys(List<b> foreignKeys) {
+    public void setForeignKeys(List<TableModel> foreignKeys) {
         this.p = foreignKeys;
     }
 
@@ -295,8 +292,8 @@ implements Serializable {
         if (string13 == null ? string14 != null : !string13.equals(string14)) {
             return false;
         }
-        List<b> list9 = this.getForeignKeys();
-        List<b> list10 = onlComplexModel.getForeignKeys();
+        List<TableModel> list9 = this.getForeignKeys();
+        List<TableModel> list10 = onlComplexModel.getForeignKeys();
         if (list9 == null ? list10 != null : !((Object)list9).equals(list10)) {
             return false;
         }
@@ -362,7 +359,7 @@ implements Serializable {
         n3 = n3 * 59 + (list4 == null ? 43 : ((Object)list4).hashCode());
         String string7 = this.getEnhanceJs();
         n3 = n3 * 59 + (string7 == null ? 43 : string7.hashCode());
-        List<b> list5 = this.getForeignKeys();
+        List<TableModel> list5 = this.getForeignKeys();
         n3 = n3 * 59 + (list5 == null ? 43 : ((Object)list5).hashCode());
         String string8 = this.getPidField();
         n3 = n3 * 59 + (string8 == null ? 43 : string8.hashCode());

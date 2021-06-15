@@ -144,6 +144,7 @@
 				<groupId>org.jeecgframework.boot</groupId>
 				<artifactId>jeecg-boot-base-core</artifactId>
 				<version>${jeecgboot.version}</version>
+
 			</dependency>
 			<!-- system 单体 api -->
 			<dependency>

@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
-import org.jeecg.modules.online.cgform.a.LinkDown;
+import org.jeecg.modules.online.cgform.link.LinkDown;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 import org.jeecg.modules.online.cgform.entity.OnlCgformHead;
 import org.jeecg.modules.online.cgform.model.TreeModel;

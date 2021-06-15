@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  com.baomidou.mybatisplus.core.mapper.BaseMapper
  */
@@ -10,6 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.online.cgform.entity.OnlCgformEnhanceSql;
 
 public interface OnlCgformEnhanceSqlMapper
-extends BaseMapper<OnlCgformEnhanceSql> {
+        extends BaseMapper<OnlCgformEnhanceSql> {
 }
 

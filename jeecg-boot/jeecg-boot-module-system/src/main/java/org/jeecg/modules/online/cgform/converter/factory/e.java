@@ -9,7 +9,7 @@ package org.jeecg.modules.online.cgform.converter.factory;
 import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
-import org.jeecg.modules.online.cgform.a.LinkDown;
+import org.jeecg.modules.online.cgform.link.LinkDown;
 import org.jeecg.modules.online.cgform.converter.field.StringModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 

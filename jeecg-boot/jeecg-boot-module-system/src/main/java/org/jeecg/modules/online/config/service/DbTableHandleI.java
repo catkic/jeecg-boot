@@ -3,15 +3,15 @@
  */
 package org.jeecg.modules.online.config.service;
 
-import org.jeecg.modules.online.config.b.a;
+import org.jeecg.modules.online.config.util.ColumnProperty;
 import org.jeecg.modules.online.config.exception.DBException;
 
 public interface DbTableHandleI {
-    public String getAddColumnSql(a var1);
+    public String getAddColumnSql(ColumnProperty var1);
 
-    public String getReNameFieldName(a var1);
+    public String getReNameFieldName(ColumnProperty var1);
 
-    public String getUpdateColumnSql(a var1, a var2) throws DBException;
+    public String getUpdateColumnSql(ColumnProperty var1, ColumnProperty var2) throws DBException;
 
     public String getMatchClassTypeByDataType(String var1, int var2);
 
@@ -19,9 +19,9 @@ public interface DbTableHandleI {
 
     public String getDropColumnSql(String var1);
 
-    public String getCommentSql(a var1);
+    public String getCommentSql(ColumnProperty var1);
 
-    public String getSpecialHandle(a var1, a var2);
+    public String getSpecialHandle(ColumnProperty var1, ColumnProperty var2);
 
     public String dropIndexs(String var1, String var2);
 

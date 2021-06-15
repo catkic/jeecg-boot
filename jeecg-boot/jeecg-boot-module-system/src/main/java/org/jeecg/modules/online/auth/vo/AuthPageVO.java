@@ -5,8 +5,7 @@ package org.jeecg.modules.online.auth.vo;
 
 import java.io.Serializable;
 
-public class AuthPageVO
-implements Serializable {
+public class AuthPageVO implements Serializable {
     private static final long serialVersionUID = 724713901683956568L;
     private String id;
     private String code;
@@ -83,23 +82,23 @@ implements Serializable {
         if (!(o instanceof AuthPageVO)) {
             return false;
         }
-        AuthPageVO authPageVO = (AuthPageVO)o;
+        AuthPageVO authPageVO = (AuthPageVO) o;
         if (!authPageVO.canEqual(this)) {
             return false;
         }
         Integer n2 = this.getPage();
         Integer n3 = authPageVO.getPage();
-        if (n2 == null ? n3 != null : !((Object)n2).equals(n3)) {
+        if (n2 == null ? n3 != null : !((Object) n2).equals(n3)) {
             return false;
         }
         Integer n4 = this.getControl();
         Integer n5 = authPageVO.getControl();
-        if (n4 == null ? n5 != null : !((Object)n4).equals(n5)) {
+        if (n4 == null ? n5 != null : !((Object) n4).equals(n5)) {
             return false;
         }
         Boolean bl = this.getChecked();
         Boolean bl2 = authPageVO.getChecked();
-        if (bl == null ? bl2 != null : !((Object)bl).equals(bl2)) {
+        if (bl == null ? bl2 != null : !((Object) bl).equals(bl2)) {
             return false;
         }
         String string = this.getId();
@@ -130,11 +129,11 @@ implements Serializable {
         int n2 = 59;
         int n3 = 1;
         Integer n4 = this.getPage();
-        n3 = n3 * 59 + (n4 == null ? 43 : ((Object)n4).hashCode());
+        n3 = n3 * 59 + (n4 == null ? 43 : ((Object) n4).hashCode());
         Integer n5 = this.getControl();
-        n3 = n3 * 59 + (n5 == null ? 43 : ((Object)n5).hashCode());
+        n3 = n3 * 59 + (n5 == null ? 43 : ((Object) n5).hashCode());
         Boolean bl = this.getChecked();
-        n3 = n3 * 59 + (bl == null ? 43 : ((Object)bl).hashCode());
+        n3 = n3 * 59 + (bl == null ? 43 : ((Object) bl).hashCode());
         String string = this.getId();
         n3 = n3 * 59 + (string == null ? 43 : string.hashCode());
         String string2 = this.getCode();

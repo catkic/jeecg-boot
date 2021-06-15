@@ -15,7 +15,6 @@ import java.util.Map;
 import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
-import org.jeecg.modules.online.cgform.util.b;
 import org.jeecgframework.poi.handler.impl.ExcelDataHandlerDefaultImpl;
 import org.jeecgframework.poi.util.PoiPublicUtil;
 
@@ -49,7 +48,7 @@ extends ExcelDataHandlerDefaultImpl {
             map.put(string, PoiPublicUtil.doubleToString((Double)((Double)value)));
         } else if (value instanceof byte[]) {
             byte[] arrby = (byte[])value;
-            String string2 = org.jeecg.modules.online.cgform.util.b.a(arrby, this.c, this.d, this.e);
+            String string2 = DbConstant.a(arrby, this.c, this.d, this.e);
             if (string2 != null) {
                 map.put(string, string2);
             }

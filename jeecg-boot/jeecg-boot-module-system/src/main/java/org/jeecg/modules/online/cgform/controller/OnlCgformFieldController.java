@@ -64,7 +64,7 @@ public class OnlCgformFieldController {
 
     @GetMapping(value={"/listByHeadCode"})
     public Result<?> a(@RequestParam(value="headCode") String string) {
-        LambdaQueryWrapper lambdaQueryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<OnlCgformHead> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgformHead>();
         lambdaQueryWrapper.eq(OnlCgformHead::getTableName, (Object)string);
         OnlCgformHead onlCgformHead = (OnlCgformHead)this.onlCgformHeadService.getOne((Wrapper)lambdaQueryWrapper);
         if (onlCgformHead == null) {
@@ -160,16 +160,6 @@ public class OnlCgformFieldController {
             result.setSuccess(true);
         }
         return result;
-    }
-
-    private static /* synthetic */ Object a(SerializedLambda serializedLambda) {
-        switch (serializedLambda.getImplMethodName()) {
-            case "getTableName": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/baomidou/mybatisplus/core/toolkit/support/SFunction") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("org/jeecg/modules/online/cgform/entity/OnlCgformHead") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return OnlCgformHead::getTableName;
-            }
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
     }
 }
 

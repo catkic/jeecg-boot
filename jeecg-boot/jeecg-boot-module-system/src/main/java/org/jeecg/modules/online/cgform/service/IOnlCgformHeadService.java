@@ -26,15 +26,15 @@ import org.jeecg.modules.online.cgform.entity.OnlCgformEnhanceJs;
 import org.jeecg.modules.online.cgform.entity.OnlCgformEnhanceSql;
 import org.jeecg.modules.online.cgform.entity.OnlCgformHead;
 import org.jeecg.modules.online.cgform.model.OnlGenerateModel;
-import org.jeecg.modules.online.cgform.model.a;
+import org.jeecg.modules.online.cgform.model.OnlCgformModel;
 import org.jeecg.modules.online.config.exception.BusinessException;
 import org.jeecg.modules.online.config.exception.DBException;
 
 public interface IOnlCgformHeadService
 extends IService<OnlCgformHead> {
-    public Result<?> addAll(a var1);
+    public Result<?> addAll(OnlCgformModel var1);
 
-    public Result<?> editAll(a var1);
+    public Result<?> editAll(OnlCgformModel var1);
 
     public void doDbSynch(String var1, String var2) throws HibernateException, IOException, TemplateException, SQLException, DBException;
 

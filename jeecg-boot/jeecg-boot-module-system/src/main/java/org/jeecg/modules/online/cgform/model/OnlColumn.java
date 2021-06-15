@@ -3,14 +3,12 @@
  */
 package org.jeecg.modules.online.cgform.model;
 
-import org.jeecg.modules.online.cgform.model.c;
-
 public class OnlColumn {
     private String title;
     private String dataIndex;
     private String align;
     private String customRender;
-    private c scopedSlots;
+    private ScopedSlots scopedSlots;
     private String hrefSlotName;
     private int showLength;
     private boolean sorter = false;
@@ -40,7 +38,7 @@ public class OnlColumn {
         return this.customRender;
     }
 
-    public c getScopedSlots() {
+    public ScopedSlots getScopedSlots() {
         return this.scopedSlots;
     }
 
@@ -72,7 +70,7 @@ public class OnlColumn {
         this.customRender = customRender;
     }
 
-    public void setScopedSlots(c scopedSlots) {
+    public void setScopedSlots(ScopedSlots scopedSlots) {
         this.scopedSlots = scopedSlots;
     }
 
@@ -125,8 +123,8 @@ public class OnlColumn {
         if (string7 == null ? string8 != null : !string7.equals(string8)) {
             return false;
         }
-        c c2 = this.getScopedSlots();
-        c c3 = onlColumn.getScopedSlots();
+        ScopedSlots c2 = this.getScopedSlots();
+        ScopedSlots c3 = onlColumn.getScopedSlots();
         if (c2 == null ? c3 != null : !((Object)c2).equals(c3)) {
             return false;
         }
@@ -152,7 +150,7 @@ public class OnlColumn {
         n3 = n3 * 59 + (string3 == null ? 43 : string3.hashCode());
         String string4 = this.getCustomRender();
         n3 = n3 * 59 + (string4 == null ? 43 : string4.hashCode());
-        c c2 = this.getScopedSlots();
+        ScopedSlots c2 = this.getScopedSlots();
         n3 = n3 * 59 + (c2 == null ? 43 : ((Object)c2).hashCode());
         String string5 = this.getHrefSlotName();
         n3 = n3 * 59 + (string5 == null ? 43 : string5.hashCode());

@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  com.baomidou.mybatisplus.annotation.IdType
  *  com.baomidou.mybatisplus.annotation.TableId
@@ -14,18 +14,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableName(value="onl_cgform_head")
+@TableName(value = "onl_cgform_head")
 @Data
-public class OnlCgformHead
-implements Serializable {
+public class OnlCgformHead implements Serializable {
     private static final long serialVersionUID = 1L;
-    @TableId(type=IdType.UUID)
+    @TableId(type = IdType.UUID)
     private String id;
     private String tableName;
     private Integer tableType;
@@ -49,12 +49,12 @@ implements Serializable {
     private String themeTemplate;
     private String formTemplateMobile;
     private String updateBy;
-    @JsonFormat(timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
     private String createBy;
-    @JsonFormat(timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     private Integer copyType;
     private Integer copyVersion;
@@ -72,43 +72,43 @@ implements Serializable {
         if (!(o instanceof OnlCgformHead)) {
             return false;
         }
-        OnlCgformHead onlCgformHead = (OnlCgformHead)o;
+        OnlCgformHead onlCgformHead = (OnlCgformHead) o;
         if (!onlCgformHead.canEqual(this)) {
             return false;
         }
         Integer n2 = this.getTableType();
         Integer n3 = onlCgformHead.getTableType();
-        if (n2 == null ? n3 != null : !((Object)n2).equals(n3)) {
+        if (n2 == null ? n3 != null : !((Object) n2).equals(n3)) {
             return false;
         }
         Integer n4 = this.getTableVersion();
         Integer n5 = onlCgformHead.getTableVersion();
-        if (n4 == null ? n5 != null : !((Object)n4).equals(n5)) {
+        if (n4 == null ? n5 != null : !((Object) n4).equals(n5)) {
             return false;
         }
         Integer n6 = this.getRelationType();
         Integer n7 = onlCgformHead.getRelationType();
-        if (n6 == null ? n7 != null : !((Object)n6).equals(n7)) {
+        if (n6 == null ? n7 != null : !((Object) n6).equals(n7)) {
             return false;
         }
         Integer n8 = this.getTabOrderNum();
         Integer n9 = onlCgformHead.getTabOrderNum();
-        if (n8 == null ? n9 != null : !((Object)n8).equals(n9)) {
+        if (n8 == null ? n9 != null : !((Object) n8).equals(n9)) {
             return false;
         }
         Integer n10 = this.getCopyType();
         Integer n11 = onlCgformHead.getCopyType();
-        if (n10 == null ? n11 != null : !((Object)n10).equals(n11)) {
+        if (n10 == null ? n11 != null : !((Object) n10).equals(n11)) {
             return false;
         }
         Integer n12 = this.getCopyVersion();
         Integer n13 = onlCgformHead.getCopyVersion();
-        if (n12 == null ? n13 != null : !((Object)n12).equals(n13)) {
+        if (n12 == null ? n13 != null : !((Object) n12).equals(n13)) {
             return false;
         }
         Integer n14 = this.getScroll();
         Integer n15 = onlCgformHead.getScroll();
-        if (n14 == null ? n15 != null : !((Object)n14).equals(n15)) {
+        if (n14 == null ? n15 != null : !((Object) n14).equals(n15)) {
             return false;
         }
         String string = this.getId();
@@ -208,7 +208,7 @@ implements Serializable {
         }
         Date date = this.getUpdateTime();
         Date date2 = onlCgformHead.getUpdateTime();
-        if (date == null ? date2 != null : !((Object)date).equals(date2)) {
+        if (date == null ? date2 != null : !((Object) date).equals(date2)) {
             return false;
         }
         String string39 = this.getCreateBy();
@@ -218,7 +218,7 @@ implements Serializable {
         }
         Date date3 = this.getCreateTime();
         Date date4 = onlCgformHead.getCreateTime();
-        if (date3 == null ? date4 != null : !((Object)date3).equals(date4)) {
+        if (date3 == null ? date4 != null : !((Object) date3).equals(date4)) {
             return false;
         }
         String string41 = this.getPhysicId();
@@ -244,19 +244,19 @@ implements Serializable {
         int n2 = 59;
         int n3 = 1;
         Integer n4 = this.getTableType();
-        n3 = n3 * 59 + (n4 == null ? 43 : ((Object)n4).hashCode());
+        n3 = n3 * 59 + (n4 == null ? 43 : ((Object) n4).hashCode());
         Integer n5 = this.getTableVersion();
-        n3 = n3 * 59 + (n5 == null ? 43 : ((Object)n5).hashCode());
+        n3 = n3 * 59 + (n5 == null ? 43 : ((Object) n5).hashCode());
         Integer n6 = this.getRelationType();
-        n3 = n3 * 59 + (n6 == null ? 43 : ((Object)n6).hashCode());
+        n3 = n3 * 59 + (n6 == null ? 43 : ((Object) n6).hashCode());
         Integer n7 = this.getTabOrderNum();
-        n3 = n3 * 59 + (n7 == null ? 43 : ((Object)n7).hashCode());
+        n3 = n3 * 59 + (n7 == null ? 43 : ((Object) n7).hashCode());
         Integer n8 = this.getCopyType();
-        n3 = n3 * 59 + (n8 == null ? 43 : ((Object)n8).hashCode());
+        n3 = n3 * 59 + (n8 == null ? 43 : ((Object) n8).hashCode());
         Integer n9 = this.getCopyVersion();
-        n3 = n3 * 59 + (n9 == null ? 43 : ((Object)n9).hashCode());
+        n3 = n3 * 59 + (n9 == null ? 43 : ((Object) n9).hashCode());
         Integer n10 = this.getScroll();
-        n3 = n3 * 59 + (n10 == null ? 43 : ((Object)n10).hashCode());
+        n3 = n3 * 59 + (n10 == null ? 43 : ((Object) n10).hashCode());
         String string = this.getId();
         n3 = n3 * 59 + (string == null ? 43 : string.hashCode());
         String string2 = this.getTableName();
@@ -296,11 +296,11 @@ implements Serializable {
         String string19 = this.getUpdateBy();
         n3 = n3 * 59 + (string19 == null ? 43 : string19.hashCode());
         Date date = this.getUpdateTime();
-        n3 = n3 * 59 + (date == null ? 43 : ((Object)date).hashCode());
+        n3 = n3 * 59 + (date == null ? 43 : ((Object) date).hashCode());
         String string20 = this.getCreateBy();
         n3 = n3 * 59 + (string20 == null ? 43 : string20.hashCode());
         Date date2 = this.getCreateTime();
-        n3 = n3 * 59 + (date2 == null ? 43 : ((Object)date2).hashCode());
+        n3 = n3 * 59 + (date2 == null ? 43 : ((Object) date2).hashCode());
         String string21 = this.getPhysicId();
         n3 = n3 * 59 + (string21 == null ? 43 : string21.hashCode());
         String string22 = this.getIsDesForm();

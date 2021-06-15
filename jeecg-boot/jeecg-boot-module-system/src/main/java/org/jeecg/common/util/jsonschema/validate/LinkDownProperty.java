@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jeecg.common.util.jsonschema.CommonProperty;
-import org.jeecg.common.util.jsonschema.a;
+import org.jeecg.common.util.jsonschema.BaseColumn;
 
 public class LinkDownProperty
 extends CommonProperty {
     String l;
-    List<a> m;
+    List<BaseColumn> m;
 
     public String getDictTable() {
         return this.l;
@@ -26,11 +26,11 @@ extends CommonProperty {
         this.l = dictTable;
     }
 
-    public List<a> getOtherColumns() {
+    public List<BaseColumn> getOtherColumns() {
         return this.m;
     }
 
-    public void setOtherColumns(List<a> otherColumns) {
+    public void setOtherColumns(List<BaseColumn> otherColumns) {
         this.m = otherColumns;
     }
 
