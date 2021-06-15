@@ -89,7 +89,7 @@ public class PostgreTableHandler implements DbTableHandleI {
 
     private String b(ColumnProperty columnProperty2, ColumnProperty columnProperty3) {
         String string = "";
-        if (!columnProperty2.a(columnProperty3)) {
+        if (!columnProperty2.strEqual(columnProperty3)) {
             if (columnProperty2.getColumnType().equalsIgnoreCase("string")) {
                 string = columnProperty2.getColumnName();
                 string = string + (StringUtils.isNotEmpty((String) columnProperty2.getFieldDefault()) ? " SET DEFAULT " + columnProperty2.getFieldDefault() : " DROP DEFAULT");

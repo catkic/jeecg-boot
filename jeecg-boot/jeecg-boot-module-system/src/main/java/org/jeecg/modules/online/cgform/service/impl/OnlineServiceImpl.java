@@ -47,7 +47,7 @@ import org.jeecg.modules.online.cgform.model.TablePidModel;
 import org.jeecg.modules.online.cgform.service.IOnlCgformFieldService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
 import org.jeecg.modules.online.cgform.service.IOnlineService;
-import org.jeecg.modules.online.cgform.util.DbConstant;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.jeecg.modules.online.cgform.util.EnhanceJsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -99,7 +99,7 @@ public class OnlineServiceImpl implements IOnlineService {
                 onlColumn.setCustomRender(dbFieldName);
             }
             if ("switch".equals(fieldShowType)) {
-                hashMap.put(dbFieldName, DbConstant.a(onlCgformField));
+                hashMap.put(dbFieldName, DataBaseUtils.a(onlCgformField));
                 onlColumn.setCustomRender(dbFieldName);
             }
             if ("link_down".equals(fieldShowType)) {
@@ -120,7 +120,7 @@ public class OnlineServiceImpl implements IOnlineService {
             if ("cat_tree".equals(fieldShowType)) {
                 String dictText = onlCgformField.getDictText();
                 if (oConvertUtils.isEmpty(dictText)) {
-                    object4 = DbConstant.e(onlCgformField.getDictField());
+                    object4 = DataBaseUtils.e(onlCgformField.getDictField());
                     List<DictModel> dictModels = this.sysBaseAPI.queryFilterTableDictInfo("SYS_CATEGORY", "NAME", "ID", (String) object4);
                     hashMap.put(dbFieldName, dictModels);
                     onlColumn.setCustomRender(dbFieldName);
@@ -244,10 +244,10 @@ public class OnlineServiceImpl implements IOnlineService {
             tablePidModel.setPidField(head.getTreeParentIdField());
             tablePidModel.setPidValue("0");
             tablePidModel.setHsaChildField(head.getTreeIdField());
-            tablePidModel.setTableName(DbConstant.f(head.getTableName()));
+            tablePidModel.setTableName(DataBaseUtils.f(head.getTableName()));
             tablePidModel.setTextField(head.getTreeFieldname());
         }
-        JSONObject jSONObject2 = DbConstant.a(list2, arrayList, tablePidModel);
+        JSONObject jSONObject2 = DataBaseUtils.a(list2, arrayList, tablePidModel);
         jSONObject2.put("table", (Object) head.getTableName());
         jSONObject2.put("describe", (Object) head.getTableTxt());
         jSONObject.put("schema", (Object) jSONObject2);
@@ -357,9 +357,9 @@ public class OnlineServiceImpl implements IOnlineService {
                             string = this.onlAuthPageService.queryFormDisabledCode(onlCgformHead2.getId());
                         }
                         if (1 == onlCgformHead2.getRelationType()) {
-                            jsonObjectString2 = DbConstant.a(list, string, null);
+                            jsonObjectString2 = DataBaseUtils.a(list, string, null);
                         } else {
-                            jsonObjectString2.put("columns", DbConstant.a(list, string));
+                            jsonObjectString2.put("columns", DataBaseUtils.a(list, string));
                             jsonObjectString2.put("hideButtons", this.onlAuthPageService.queryListHideButton(null, onlCgformHead2.getId()));
                         }
                         String object2 = this.onlCgformFieldService.queryForeignKey(onlCgformHead2.getId(), onlCgformHead.getTableName());

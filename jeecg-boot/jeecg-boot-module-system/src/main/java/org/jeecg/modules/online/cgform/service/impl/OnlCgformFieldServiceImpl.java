@@ -53,7 +53,7 @@ import org.jeecg.modules.online.cgform.mapper.OnlCgformFieldMapper;
 import org.jeecg.modules.online.cgform.mapper.OnlCgformHeadMapper;
 import org.jeecg.modules.online.cgform.model.TreeModel;
 import org.jeecg.modules.online.cgform.service.IOnlCgformFieldService;
-import org.jeecg.modules.online.cgform.util.DbConstant;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,15 +82,15 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         List<OnlCgformField> list = this.list(lambdaQueryWrapper);
         List<OnlCgformField> list2 = this.queryAvailableFields(headId, tbname, true, list, needList);
         StringBuffer stringBuffer = new StringBuffer();
-        DbConstant.a(tbname, list2, stringBuffer);
+        DataBaseUtils.a(tbname, list2, stringBuffer);
         LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String string = loginUser.getId();
         List<SysPermissionDataRuleModel> list3 = this.onlAuthDataService.queryUserOnlineAuthData(string, headId);
         if (list3 != null && list3.size() > 0) {
             JeecgDataAutorUtils.installUserInfo(this.sysBaseAPI.getCacheUser(loginUser.getUsername()));
         }
-        String string2 = DbConstant.a(list, params, needList, list3);
-        String string3 = DbConstant.a(params);
+        String string2 = DataBaseUtils.a(list, params, needList, list3);
+        String string3 = DataBaseUtils.a(params);
         stringBuffer.append(" where 1=1  " + string2 + string3);
         Object object3 = params.get("column");
         if (object3 != null) {
@@ -115,7 +115,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             } else {
                 hashMap.put("total", object.size());
                 hashMap.put("fieldList", list2);
-                hashMap.put("records", DbConstant.d(object));
+                hashMap.put("records", DataBaseUtils.d(object));
             }
         } else {
             int object = params.get("pageNo") == null ? 1 : Integer.parseInt(params.get("pageNo").toString());
@@ -123,7 +123,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             log.debug("---Online查询sql:>>" + stringBuffer.toString());
             IPage<Map<String, Object>> iPage = this.onlCgformFieldMapper.selectPageBySql((Page<Map<String, Object>>) page, stringBuffer.toString());
             hashMap.put("total", iPage.getTotal());
-            hashMap.put("records", DbConstant.d(iPage.getRecords()));
+            hashMap.put("records", DataBaseUtils.d(iPage.getRecords()));
         }
         return hashMap;
     }
@@ -138,15 +138,15 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         List list = this.list((Wrapper) lambdaQueryWrapper);
         List<OnlCgformField> list2 = this.queryAvailableFields(headId, tbname, true, list, needList);
         StringBuffer stringBuffer = new StringBuffer();
-        DbConstant.a(tbname, list2, stringBuffer);
+        DataBaseUtils.a(tbname, list2, stringBuffer);
         LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String string = loginUser.getId();
         List<SysPermissionDataRuleModel> list3 = this.onlAuthDataService.queryUserOnlineAuthData(string, headId);
         if (list3 != null && list3.size() > 0) {
             JeecgDataAutorUtils.installUserInfo(this.sysBaseAPI.getCacheUser(loginUser.getUsername()));
         }
-        String string2 = DbConstant.a(list, params, needList, list3);
-        String string3 = DbConstant.a(params);
+        String string2 = DataBaseUtils.a(list, params, needList, list3);
+        String string3 = DataBaseUtils.a(params);
         stringBuffer.append(" where 1=1  " + string2 + string3);
         Object object2 = params.get("column");
         if (object2 != null) {
@@ -185,7 +185,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             } else {
                 hashMap.put("total", arrayList.size());
                 hashMap.put("fieldList", list2);
-                hashMap.put("records", DbConstant.d(arrayList));
+                hashMap.put("records", DataBaseUtils.d(arrayList));
             }
         } else {
             int arrayList = params.get("pageNo") == null ? 1 : Integer.parseInt(params.get("pageNo").toString());
@@ -193,7 +193,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             log.debug("---Online查询sql:>>" + stringBuffer.toString());
             IPage<Map<String, Object>> iPage = this.onlCgformFieldMapper.selectPageBySql((Page<Map<String, Object>>) page, stringBuffer.toString());
             hashMap.put("total", iPage.getTotal());
-            hashMap.put("records", DbConstant.d(iPage.getRecords()));
+            hashMap.put("records", DataBaseUtils.d(iPage.getRecords()));
         }
         return hashMap;
     }
@@ -207,14 +207,14 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         List list2 = this.list((Wrapper) lambdaQueryWrapper);
         List<OnlCgformField> list3 = this.queryAvailableFields(string3, string2, true, list2, list);
         StringBuffer stringBuffer = new StringBuffer();
-        DbConstant.a(string2, list3, stringBuffer);
+        DataBaseUtils.a(string2, list3, stringBuffer);
         LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String string5 = loginUser.getId();
         List<SysPermissionDataRuleModel> list4 = this.onlAuthDataService.queryUserOnlineAuthData(string5, string3);
         if (list4 != null && list4.size() > 0) {
             JeecgDataAutorUtils.installUserInfo((SysUserCacheInfo) this.sysBaseAPI.getCacheUser(loginUser.getUsername()));
         }
-        String string6 = DbConstant.a(list2, hashMap, list, list4);
+        String string6 = DataBaseUtils.a(list2, hashMap, list, list4);
         stringBuffer.append(" where 1=1  " + string6 + "and id='" + string + "'");
         List<Map<String, Object>> list5 = this.onlCgformFieldMapper.queryListBySql(stringBuffer.toString());
         if (list5 != null && list5.size() > 0) {
@@ -233,9 +233,9 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         lambdaQueryWrapper.eq(OnlCgformField::getCgformHeadId, (Object) code);
         List list = this.list((Wrapper) lambdaQueryWrapper);
         if (isCrazy) {
-            ((OnlCgformFieldMapper) this.baseMapper).executeInsertSQL(DbConstant.c(tbname, list, json));
+            ((OnlCgformFieldMapper) this.baseMapper).executeInsertSQL(DataBaseUtils.c(tbname, list, json));
         } else {
-            ((OnlCgformFieldMapper) this.baseMapper).executeInsertSQL(DbConstant.a(tbname, (List<OnlCgformField>) list, json));
+            ((OnlCgformFieldMapper) this.baseMapper).executeInsertSQL(DataBaseUtils.a(tbname, (List<OnlCgformField>) list, json));
         }
     }
 
@@ -255,7 +255,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             onlCgformField.setIsShowForm(1);
             json.put(pidField, (Object) b);
         }
-        Map<String, Object> map = DbConstant.a(tbname, (List<OnlCgformField>) list, json);
+        Map<String, Object> map = DataBaseUtils.a(tbname, (List<OnlCgformField>) list, json);
         ((OnlCgformFieldMapper) this.baseMapper).executeInsertSQL(map);
         if (!b.equals(json.getString(pidField))) {
             ((OnlCgformFieldMapper) this.baseMapper).editFormData("update " + tbname + " set " + hasChildField + " = '1' where id = '" + json.getString(pidField) + "'");
@@ -264,7 +264,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
 
     @Override
     public void saveFormData(List<OnlCgformField> fieldList, String tbname, JSONObject json) {
-        Map<String, Object> map = DbConstant.a(tbname, fieldList, json);
+        Map<String, Object> map = DataBaseUtils.a(tbname, fieldList, json);
         ((OnlCgformFieldMapper) this.baseMapper).executeInsertSQL(map);
     }
 
@@ -274,18 +274,18 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         lambdaQueryWrapper.eq(OnlCgformField::getCgformHeadId, (Object) code);
         List list = this.list((Wrapper) lambdaQueryWrapper);
         if (isCrazy) {
-            ((OnlCgformFieldMapper) this.baseMapper).executeUpdatetSQL(DbConstant.d(tbname, list, json));
+            ((OnlCgformFieldMapper) this.baseMapper).executeUpdatetSQL(DataBaseUtils.d(tbname, list, json));
         } else {
-            ((OnlCgformFieldMapper) this.baseMapper).executeUpdatetSQL(DbConstant.b(tbname, list, json));
+            ((OnlCgformFieldMapper) this.baseMapper).executeUpdatetSQL(DataBaseUtils.b(tbname, list, json));
         }
     }
 
     @Override
     public void editTreeFormData(String code, String tbname, JSONObject json, String hasChildField, String pidField) {
-        String string = DbConstant.f(tbname);
+        String string = DataBaseUtils.f(tbname);
         String string2 = "select * from " + string + " where id = '" + json.getString("id") + "'";
         Map<String, Object> map = ((OnlCgformFieldMapper) this.baseMapper).queryFormData(string2);
-        Map<String, Object> map2 = DbConstant.b(map);
+        Map<String, Object> map2 = DataBaseUtils.b(map);
         String string3 = map2.get(pidField).toString();
         LambdaQueryWrapper<OnlCgformField> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgformField>();
         lambdaQueryWrapper.eq(OnlCgformField::getCgformHeadId, (Object) code);
@@ -296,7 +296,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             ((OnlCgformField) object).setIsShowForm(1);
             json.put(pidField, (Object) b);
         }
-        Map<String, Object> map3 = DbConstant.b(tbname, list, json);
+        Map<String, Object> map3 = DataBaseUtils.b(tbname, list, json);
         ((OnlCgformFieldMapper) this.baseMapper).executeUpdatetSQL(map3);
         if (!string3.equals(json.getString(pidField))) {
             Integer n2;
@@ -316,7 +316,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         lambdaQueryWrapper.eq(OnlCgformField::getCgformHeadId, (Object) code);
         lambdaQueryWrapper.eq(OnlCgformField::getIsShowForm, (Object) 1);
         List list = this.list((Wrapper) lambdaQueryWrapper);
-        String string = DbConstant.a(tbname, (List<OnlCgformField>) list, id);
+        String string = DataBaseUtils.a(tbname, (List<OnlCgformField>) list, id);
         return this.onlCgformFieldMapper.queryFormData(string);
     }
 
@@ -355,7 +355,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
                 List list = this.list((Wrapper) lambdaQueryWrapper);
                 String[] arrstring = ids.split(",");
                 for (String string7 : arrstring) {
-                    object = DbConstant.a(string2, (List<OnlCgformField>) list, string7);
+                    object = DataBaseUtils.a(string2, (List<OnlCgformField>) list, string7);
                     map = this.onlCgformFieldMapper.queryFormData((String) object);
                     ArrayList arrayList2 = new ArrayList();
                     for (Map map2 : arrayList) {
@@ -391,7 +391,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
                 stringBuffer.append("'" + string + "',");
             }
             String string = stringBuffer.toString();
-            String string2 = "DELETE FROM " + DbConstant.f(tbname) + " where " + linkField + " in(" + string.substring(0, string.length() - 1) + ")";
+            String string2 = "DELETE FROM " + DataBaseUtils.f(tbname) + " where " + linkField + " in(" + string.substring(0, string.length() - 1) + ")";
             log.debug("--删除sql-->" + string2);
             this.onlCgformFieldMapper.deleteAutoList(string2);
         }
@@ -498,13 +498,13 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
 
     @Override
     public Map<String, Object> queryFormData(List<OnlCgformField> fieldList, String tbname, String id) {
-        String string = DbConstant.a(tbname, fieldList, id);
+        String string = DataBaseUtils.a(tbname, fieldList, id);
         return this.onlCgformFieldMapper.queryFormData(string);
     }
 
     @Override
     public List<Map<String, Object>> querySubFormData(List<OnlCgformField> fieldList, String tbname, String linkField, String value) {
-        String string = DbConstant.a(tbname, fieldList, linkField, value);
+        String string = DataBaseUtils.a(tbname, fieldList, linkField, value);
         return this.onlCgformFieldMapper.queryListData(string);
     }
 
@@ -679,7 +679,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
 
     @Override
     public void updateTreeNodeNoChild(String tableName, String filed, String id) {
-        Map<String, Object> map = DbConstant.a(tableName, filed, id);
+        Map<String, Object> map = DataBaseUtils.a(tableName, filed, id);
         ((OnlCgformFieldMapper) this.baseMapper).executeUpdatetSQL(map);
     }
 
@@ -708,12 +708,12 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         StringBuffer stringBuffer = new StringBuffer();
         for (String string3 : arrstring = ids.split(",")) {
             if (string3 == null) continue;
-            String string4 = DbConstant.f(string2);
+            String string4 = DataBaseUtils.f(string2);
             String string5 = "select * from " + string4 + " where id = '" + string3 + "'";
             Map<String, Object> map = ((OnlCgformFieldMapper) this.baseMapper).queryFormData(string5);
-            Map<String, Object> map2 = DbConstant.b(map);
+            Map<String, Object> map2 = DataBaseUtils.b(map);
             String string6 = map2.get(string).toString();
-            String string7 = "select * from " + DbConstant.f(string2) + " where " + string + "= '" + string6 + "' and id not in(" + ids + ")";
+            String string7 = "select * from " + DataBaseUtils.f(string2) + " where " + string + "= '" + string6 + "' and id not in(" + ids + ")";
             List<Map<String, Object>> list = this.onlCgformFieldMapper.queryListBySql(string7);
             if (list != null && list.size() != 0 || Arrays.asList(arrstring).contains(string6) || stringBuffer.toString().contains(string6))
                 continue;
@@ -735,11 +735,11 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
     }
 
     private StringBuffer a(String string, String string2, String string3, StringBuffer stringBuffer) {
-        String string4 = "select * from " + DbConstant.f(string3) + " where " + string2 + "= '" + string + "'";
+        String string4 = "select * from " + DataBaseUtils.f(string3) + " where " + string2 + "= '" + string + "'";
         List<Map<String, Object>> list = this.onlCgformFieldMapper.queryListBySql(string4);
         if (list != null && list.size() > 0) {
             for (Map<String, Object> map : list) {
-                Map<String, Object> map2 = DbConstant.b(map);
+                Map<String, Object> map2 = DataBaseUtils.b(map);
                 if (!stringBuffer.toString().contains(map2.get("id").toString())) {
                     stringBuffer.append(",").append(map2.get("id"));
                 }

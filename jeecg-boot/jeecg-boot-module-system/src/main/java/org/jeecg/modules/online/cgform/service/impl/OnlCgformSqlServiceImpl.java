@@ -32,7 +32,7 @@ import org.jeecg.modules.online.cgform.entity.OnlCgformHead;
 import org.jeecg.modules.online.cgform.mapper.OnlCgformFieldMapper;
 import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformSqlService;
-import org.jeecg.modules.online.cgform.util.DbConstant;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.jeecg.modules.online.cgform.util.j;
 import org.jeecg.modules.online.config.exception.BusinessException;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -116,10 +116,10 @@ public class OnlCgformSqlServiceImpl implements IOnlCgformSqlService {
         int n2 = this.onlCgformHeadService.executeEnhanceJava("import", "start", onlCgformHead, jSONObject);
         String string2 = onlCgformHead.getTableName();
         if (1 == n2) {
-            Map<String, Object> map = DbConstant.a(string2, list, jSONObject);
+            Map<String, Object> map = DataBaseUtils.a(string2, list, jSONObject);
             onlCgformFieldMapper.executeInsertSQL(map);
         } else if (2 == n2) {
-            Map<String, Object> map = DbConstant.b(string2, list, jSONObject);
+            Map<String, Object> map = DataBaseUtils.b(string2, list, jSONObject);
             onlCgformFieldMapper.executeUpdatetSQL(map);
         } else if (0 == n2) {
             // empty if block

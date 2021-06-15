@@ -93,8 +93,8 @@ import org.jeecg.modules.online.cgform.model.OnlGenerateModel;
 import org.jeecg.modules.online.cgform.service.IOnlCgformFieldService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformIndexService;
-import org.jeecg.modules.online.cgform.util.DbConstant;
-import org.jeecg.modules.online.config.db.DbConfig;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
+import org.jeecg.modules.online.config.db.TableConfig;
 import org.jeecg.modules.online.config.db.DataBaseConfig;
 import org.jeecg.modules.online.config.util.TableUtil;
 import org.jeecg.modules.online.config.util.DataBaseUtil;
@@ -163,7 +163,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
             onlCgformIndex.setCgformHeadId(uuid);
         }
         onlCgformHead.setIsDbSynch("N");
-        onlCgformHead.setQueryMode(DbConstant.QUERY_MODE_SINGLE);
+        onlCgformHead.setQueryMode(DataBaseUtils.QUERY_MODE_SINGLE);
         onlCgformHead.setTableVersion(1);
         onlCgformHead.setCopyType(0);
         if (onlCgformHead.getTableType() == 3 && onlCgformHead.getTabOrderNum() == null) {
@@ -178,53 +178,52 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public Result<?> editAll(OnlCgformModel model) {
-        Object object;
-        Integer n2;
-        OnlCgformHead onlCgformHead = model.getHead();
-        OnlCgformHead onlCgformHead2 = (OnlCgformHead) super.getById((Serializable) ((Object) onlCgformHead.getId()));
-        if (onlCgformHead2 == null) {
-            return Result.error((String) "未找到对应实体");
+    public Result<?> editAll(OnlCgformModel newFormModel) {
+        OnlCgformHead newFormHead = newFormModel.getHead();
+        OnlCgformHead oldFormHead = super.getById(newFormHead.getId());
+        if (oldFormHead == null) {
+            return Result.error("未找到对应实体");
         }
-        String string = onlCgformHead2.getIsDbSynch();
-        if (DbConstant.a(onlCgformHead2, onlCgformHead)) {
-            string = "N";
+        String needDbSync = oldFormHead.getIsDbSynch();
+        if (DataBaseUtils.compareHead(oldFormHead, newFormHead)) {
+            needDbSync = "N";
         }
-        if ((n2 = onlCgformHead2.getTableVersion()) == null) {
-            n2 = 1;
+        if (oldFormHead.getTableVersion() == null) {
+            oldFormHead.setTableVersion(1);
         }
-        n2 = n2 + 1;
-        onlCgformHead.setTableVersion(n2);
-        List<OnlCgformField> list = model.getFields();
-        List<OnlCgformIndex> list2 = model.getIndexs();
-        ArrayList<OnlCgformField> arrayList = new ArrayList<OnlCgformField>();
-        ArrayList<OnlCgformField> arrayList2 = new ArrayList<OnlCgformField>();
-        for (OnlCgformField object32 : list) {
-            String string2 = String.valueOf(object32.getId());
-            this.setTextAndBlobLengthZero(object32);
-            if (string2.length() == 32) {
-                arrayList2.add(object32);
+        oldFormHead.setTableVersion(oldFormHead.getTableVersion() + 1);
+
+        List<OnlCgformField> newFormModelFields = newFormModel.getFields();
+        List<OnlCgformIndex> newFormModelIndexs = newFormModel.getIndexs();
+        List<OnlCgformField> arrayList = new ArrayList<>();
+        List<OnlCgformField> arrayList2 = new ArrayList<>();
+        for (OnlCgformField field : newFormModelFields) {
+            String id = String.valueOf(field.getId());
+            this.setTextAndBlobLengthZero(field);
+            if (id.length() == 32) {
+                arrayList2.add(field);
                 continue;
             }
-            object = "_pk";
-            if (((String) object).equals(string2)) continue;
-            object32.setId(null);
-            object32.setCgformHeadId(onlCgformHead.getId());
-            arrayList.add(object32);
+            String primaryKey = "_pk";
+            if (!primaryKey.equals(id)) {
+                field.setId(null);
+                field.setCgformHeadId(newFormHead.getId());
+                arrayList.add(field);
+            }
         }
         if (arrayList.size() > 0) {
-            string = "N";
+            needDbSync = "N";
         }
         int n3 = 0;
         for (OnlCgformField onlCgformField : arrayList2) {
-            object = (OnlCgformField) this.fieldService.getById((Serializable) ((Object) onlCgformField.getId()));
-            this.a(((OnlCgformField) object).getMainTable(), onlCgformHead.getTableName());
-            boolean bl = DbConstant.a((OnlCgformField) object, onlCgformField);
+            OnlCgformField field = this.fieldService.getById(onlCgformField.getId());
+            this.a(field.getMainTable(), newFormHead.getTableName());
+            boolean bl = DataBaseUtils.a(field, onlCgformField);
             if (bl) {
-                string = "N";
+                needDbSync = "N";
             }
-            if ((((OnlCgformField) object).getOrderNum() == null ? 0 : ((OnlCgformField) object).getOrderNum()) > n3) {
-                n3 = ((OnlCgformField) object).getOrderNum();
+            if ((field.getOrderNum() == null ? 0 : field.getOrderNum()) > n3) {
+                n3 = field.getOrderNum();
             }
             this.fieldService.updateById(onlCgformField);
         }
@@ -234,10 +233,10 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
             }
             this.fieldService.save(onlCgformField);
         }
-        List<OnlCgformIndex> list3 = this.indexService.getCgformIndexsByCgformId(onlCgformHead.getId());
+        List<OnlCgformIndex> list3 = this.indexService.getCgformIndexsByCgformId(newFormHead.getId());
         ArrayList<OnlCgformIndex> arrayList3 = new ArrayList<OnlCgformIndex>();
         List<OnlCgformIndex> object11 = new ArrayList<OnlCgformIndex>();
-        for (OnlCgformIndex onlCgformIndex : list2) {
+        for (OnlCgformIndex onlCgformIndex : newFormModelIndexs) {
             String string3 = String.valueOf(onlCgformIndex.getId());
             if (string3.length() == 32) {
                 object11.add(onlCgformIndex);
@@ -246,61 +245,66 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
             onlCgformIndex.setId(null);
             onlCgformIndex.setIsDbSynch("N");
             onlCgformIndex.setDelFlag(CommonConstant.DEL_FLAG_0);
-            onlCgformIndex.setCgformHeadId(onlCgformHead.getId());
+            onlCgformIndex.setCgformHeadId(newFormHead.getId());
             arrayList3.add(onlCgformIndex);
         }
         for (OnlCgformIndex onlCgformIndex : list3) {
-            boolean bl = list2.stream().anyMatch(onlCgformIndex2 -> onlCgformIndex.getId().equals(onlCgformIndex2.getId()));
+            boolean bl = newFormModelIndexs.stream().anyMatch(onlCgformIndex2 -> onlCgformIndex.getId().equals(onlCgformIndex2.getId()));
             if (bl) continue;
             onlCgformIndex.setDelFlag(CommonConstant.DEL_FLAG_1);
             object11.add(onlCgformIndex);
-            string = "N";
+            needDbSync = "N";
         }
         if (arrayList3.size() > 0) {
-            string = "N";
+            needDbSync = "N";
             this.indexService.saveBatch(arrayList3);
         }
         for (OnlCgformIndex onlCgformIndex : object11) {
             OnlCgformIndex onlCgformIndex3 = this.indexService.getById(onlCgformIndex.getId());
-            boolean bl = DbConstant.a(onlCgformIndex3, onlCgformIndex);
+            boolean bl = DataBaseUtils.a(onlCgformIndex3, onlCgformIndex);
             if (bl) {
-                string = "N";
+                needDbSync = "N";
                 onlCgformIndex.setIsDbSynch("N");
             }
             this.indexService.updateById(onlCgformIndex);
         }
-        if (model.getDeleteFieldIds().size() > 0) {
-            string = "N";
-            List<String> object2 = model.getDeleteFieldIds();
+        if (newFormModel.getDeleteFieldIds().size() > 0) {
+            needDbSync = "N";
+            List<String> object2 = newFormModel.getDeleteFieldIds();
             Iterator iterator = object2.iterator();
             while (iterator.hasNext()) {
                 String string4 = (String) iterator.next();
-                OnlCgformField onlCgformField = (OnlCgformField) this.fieldService.getById((Serializable) ((Object) string4));
+                OnlCgformField onlCgformField = this.fieldService.getById(string4);
                 if (onlCgformField == null) continue;
-                this.a(onlCgformField.getMainTable(), onlCgformHead.getTableName());
+                this.a(onlCgformField.getMainTable(), newFormHead.getTableName());
                 this.fieldService.removeById((Serializable) ((Object) string4));
             }
         }
-        onlCgformHead.setIsDbSynch(string);
-        super.updateById(onlCgformHead);
-        this.a(onlCgformHead, list);
-        this.b(onlCgformHead, list);
+        newFormHead.setIsDbSynch(needDbSync);
+        super.updateById(newFormHead);
+        this.a(newFormHead, newFormModelFields);
+        this.b(newFormHead, newFormModelFields);
         return Result.ok("全部修改成功");
     }
 
-    private void a(String string, String string2) {
-        LambdaQueryWrapper lambdaQueryWrapper;
-        OnlCgformHead onlCgformHead;
-        if (oConvertUtils.isNotEmpty(string) && (onlCgformHead = this.baseMapper.selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, (Object) string))) != null) {
-            String string3 = onlCgformHead.getSubTableStr();
-            String[] arrstring = string3.split(",");
-            ArrayList<String> arrayList = new ArrayList<String>();
-            for (String string4 : arrstring) {
-                if (string4.equals(string2)) continue;
-                arrayList.add(string4);
+    private void a(String tableName, String string2) {
+        if (oConvertUtils.isNotEmpty(tableName)) {
+            OnlCgformHead onlCgformHead = this.baseMapper.selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, tableName));
+            if (onlCgformHead != null) {
+                String subTableStr = onlCgformHead.getSubTableStr();
+                String[] subTables = subTableStr.split(",");
+                List<String> arrayList = new ArrayList<>();
+                List<String> res = Arrays.stream(subTables).filter(o -> !o.equals(string2)).collect(Collectors.toList());
+
+                for (String subTable : subTables) {
+                    if (!subTable.equals(string2)) {
+                        arrayList.add(subTable);
+                    }
+                }
+                onlCgformHead.setSubTableStr(String.join(",", arrayList));
+                this.baseMapper.updateById(onlCgformHead);
             }
-            onlCgformHead.setSubTableStr(String.join((CharSequence) ",", arrayList));
-            ((OnlCgformHeadMapper) this.baseMapper).updateById(onlCgformHead);
+
         }
     }
 
@@ -314,24 +318,24 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         LambdaQueryWrapper<OnlCgformField> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgformField>()
                 .eq(OnlCgformField::getCgformHeadId, tableCode)
                 .orderByAsc(OnlCgformField::getOrderNum);
-        List<OnlCgformField> list = this.fieldService.list(lambdaQueryWrapper);
-        DbConfig dbConfig = new DbConfig();
-        dbConfig.setTableName(tableName);
-        dbConfig.setJformPkType(onlCgformHead.getIdType());
-        dbConfig.setJformPkSequence(onlCgformHead.getIdSequence());
-        dbConfig.setContent(onlCgformHead.getTableTxt());
-        dbConfig.setColumns(list);
-        dbConfig.setDbConfig(this.dataBaseConfig);
+        List<OnlCgformField> columns = this.fieldService.list(lambdaQueryWrapper);
+        TableConfig tableConfig = new TableConfig();
+        tableConfig.setTableName(tableName);
+        tableConfig.setJformPkType(onlCgformHead.getIdType());
+        tableConfig.setJformPkSequence(onlCgformHead.getIdSequence());
+        tableConfig.setContent(onlCgformHead.getTableTxt());
+        tableConfig.setColumns(columns);
+        tableConfig.setDbConfig(this.dataBaseConfig);
 
         // 正常同步模式
-        if (DbConstant.SYNC_METHOD_NORMAL.equals(synMethod)) {
+        if (DataBaseUtils.SYNC_METHOD_NORMAL.equals(synMethod)) {
             long startTime = System.currentTimeMillis();
             boolean exist = DataBaseUtil.checkTableExist(tableName);
             log.info("==判断表是否存在消耗时间" + (System.currentTimeMillis() - startTime) + "毫秒");
             if (exist) {
                 // 如果表存在了那就要删了索引
                 TableUtil tableUtil = new TableUtil();
-                List<String> list2 = tableUtil.b(dbConfig);
+                List<String> list2 = tableUtil.getDbUpdateSql(tableConfig);
                 for (String object2 : list2) {
                     if (!oConvertUtils.isEmpty(object2) && !oConvertUtils.isEmpty(object2.trim())) {
                         this.baseMapper.executeDDL(object2);
@@ -343,7 +347,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                     // 已经同步并且索引被删除
                     // 如果已经同步了并且索引删除了就行
                     // 如果没同步或者没删除索引就要进去
-                    if (DbConstant.NEGATIVE.equals(onlCgformIndex.getIsDbSynch()) || CommonConstant.DEL_FLAG_1.equals(onlCgformIndex.getDelFlag())) {
+                    if (DataBaseUtils.NEGATIVE.equals(onlCgformIndex.getIsDbSynch()) || CommonConstant.DEL_FLAG_1.equals(onlCgformIndex.getDelFlag())) {
                         String countIndexSql = tableUtil.countIndexSql(onlCgformIndex.getIndexName(), tableName);
                         if (this.indexService.isExistIndex(countIndexSql)) {
                             String dropIndicesSql = tableUtil.dropIndicesSql(onlCgformIndex.getIndexName(), tableName);
@@ -363,14 +367,17 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                 }
 
             } else {
-                TableUtil.a(dbConfig);
+                // 不存在则建表
+                TableUtil.createTable(tableConfig);
             }
-        } else if (DbConstant.SYNC_METHOD_FORCE.equals(synMethod)) {
+        } else if (DataBaseUtils.SYNC_METHOD_FORCE.equals(synMethod)) {
+            // 强行同步就是删表重建
             DbTableHandleI dbTableHandleI = DataBaseUtil.getDbTableHandle();
-            String string4 = dbTableHandleI.dropTableSQL(tableName);
-            this.baseMapper.executeDDL(string4);
-            TableUtil.a(dbConfig);
+            String dropTableSQL = dbTableHandleI.dropTableSQL(tableName);
+            this.baseMapper.executeDDL(dropTableSQL);
+            TableUtil.createTable(tableConfig);
         }
+        // 如果有索引就建索引，前面就把索引给删了
         this.indexService.createIndex(tableCode, DataBaseUtil.getDatabaseType(), tableName);
         onlCgformHead.setIsDbSynch("Y");
         if (onlCgformHead.getTableVersion() == 1) {
@@ -393,17 +400,17 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
             log.info(" 删除表  executeDDL： " + string);
             this.baseMapper.executeDDL(string);
         }
-        this.baseMapper.deleteById((Serializable) ((Object) id));
+        this.baseMapper.deleteById(id);
         this.a(onlCgformHead);
     }
 
     @Override
     public void deleteRecord(String id) throws DBException, SQLException {
-        OnlCgformHead onlCgformHead = (OnlCgformHead) this.getById((Serializable) ((Object) id));
+        OnlCgformHead onlCgformHead = this.getById(id);
         if (onlCgformHead == null) {
             throw new DBException("实体配置不存在");
         }
-        ((OnlCgformHeadMapper) this.baseMapper).deleteById((Serializable) ((Object) id));
+        this.baseMapper.deleteById(id);
         this.a(onlCgformHead);
     }
 
@@ -524,7 +531,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                 onlCgformField.setCgformHeadId(string);
                 onlCgformField.setDbFieldNameOld(columnVo.getFieldDbName().toLowerCase());
                 onlCgformField.setDbFieldName(columnVo.getFieldDbName().toLowerCase());
-                if (oConvertUtils.isNotEmpty((Object) columnVo.getFiledComment())) {
+                if (oConvertUtils.isNotEmpty(columnVo.getFiledComment())) {
                     onlCgformField.setDbFieldTxt(columnVo.getFiledComment());
                 } else {
                     onlCgformField.setDbFieldTxt(columnVo.getFieldName());
@@ -689,7 +696,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         }
         String string2 = "add";
         this.executeEnhanceJava(string2, "start", onlCgformHead, json);
-        String string3 = DbConstant.f(onlCgformHead.getTableName());
+        String string3 = DataBaseUtils.f(onlCgformHead.getTableName());
         if (onlCgformHead.getTableType() == 2 && oConvertUtils.isNotEmpty((Object) (string = onlCgformHead.getSubTableStr()))) {
             for (String string4 : string.split(",")) {
                 OnlCgformHead onlCgformHead2;
@@ -804,7 +811,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         }
         ArrayList<Map<String, Object>> arrayList2 = new ArrayList<Map<String, Object>>(list2.size());
         for (Map<String, Object> map2 : list2) {
-            arrayList2.add(DbConstant.b(map2));
+            arrayList2.add(DataBaseUtils.b(map2));
         }
         return arrayList2;
     }
@@ -844,7 +851,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                     map.put(string2, new String[0]);
                     continue;
                 }
-                map.put(string2, DbConstant.d(list3));
+                map.put(string2, DataBaseUtils.d(list3));
             }
         }
         return map;
@@ -969,7 +976,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         OnlCgformEnhanceSql onlCgformEnhanceSql = (OnlCgformEnhanceSql) this.onlCgformEnhanceSqlMapper.selectOne((Wrapper) lambdaQueryWrapper);
         if (onlCgformEnhanceSql != null && oConvertUtils.isNotEmpty((Object) onlCgformEnhanceSql.getCgbSql())) {
             String[] arrstring;
-            String string = DbConstant.a(onlCgformEnhanceSql.getCgbSql(), json);
+            String string = DataBaseUtils.a(onlCgformEnhanceSql.getCgbSql(), json);
             for (String string2 : arrstring = string.split(";")) {
                 if (string2 == null || string2.toLowerCase().trim().equals("")) continue;
                 log.info(" online sql 增强： " + string2);
@@ -984,7 +991,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         if (onlCgformHead == null) {
             throw new BusinessException("未找到表配置信息");
         }
-        Map<String, Object> map = ((OnlCgformHeadMapper) this.baseMapper).queryOneByTableNameAndId(DbConstant.f(onlCgformHead.getTableName()), dataId);
+        Map<String, Object> map = ((OnlCgformHeadMapper) this.baseMapper).queryOneByTableNameAndId(DataBaseUtils.f(onlCgformHead.getTableName()), dataId);
         JSONObject jSONObject = JSONObject.parseObject((String) JSON.toJSONString(map));
         this.executeEnhanceJava(buttonCode, "start", onlCgformHead, jSONObject);
         this.executeEnhanceSql(buttonCode, formId, jSONObject);
@@ -1015,12 +1022,12 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         if (onlCgformHead == null) {
             throw new BusinessException("未找到表配置信息");
         }
-        String string = DbConstant.f(onlCgformHead.getTableName());
+        String string = DataBaseUtils.f(onlCgformHead.getTableName());
         Map<String, Object> map = ((OnlCgformHeadMapper) this.baseMapper).queryOneByTableNameAndId(string, dataId);
         if (map == null) {
             throw new BusinessException("未找到数据信息");
         }
-        Map<String, Object> map2 = DbConstant.b(map);
+        Map<String, Object> map2 = DataBaseUtils.b(map);
         String string2 = "delete";
         JSONObject jSONObject = JSONObject.parseObject((String) JSON.toJSONString(map2));
         this.executeEnhanceJava(string2, "start", onlCgformHead, jSONObject);
@@ -1052,7 +1059,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                 arrayList.addAll((Collection<String>) object);
             }
         }
-        JSONObject object = DbConstant.a(list, arrayList, null);
+        JSONObject object = DataBaseUtils.a(list, arrayList, null);
         if (head.getTableType() == 2 && oConvertUtils.isNotEmpty((Object) (string = head.getSubTableStr()))) {
             for (String string2 : string.split(",")) {
                 OnlCgformHead onlCgformHead = (OnlCgformHead) ((OnlCgformHeadMapper) this.baseMapper).selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, (Object) string2));
@@ -1064,9 +1071,9 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                         this.onlAuthPageService.queryFormDisabledCode(onlCgformHead.getId());
                 JSONObject jSONObject = new JSONObject();
                 if (1 == onlCgformHead.getRelationType()) {
-                    jSONObject = DbConstant.a(list2, list3, null);
+                    jSONObject = DataBaseUtils.a(list2, list3, null);
                 } else {
-                    jSONObject.put("columns", (Object) DbConstant.a(list2, list3));
+                    jSONObject.put("columns", (Object) DataBaseUtils.a(list2, list3));
                 }
                 jSONObject.put("relationType", (Object) onlCgformHead.getRelationType());
                 jSONObject.put("view", (Object) "tab");
@@ -1293,7 +1300,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                     if (string5 != null) {
                         onlCgformField.put(string4, string5);
                     }
-                    this.fieldService.executeInsertSQL(DbConstant.c(string2, list, (JSONObject) onlCgformField));
+                    this.fieldService.executeInsertSQL(DataBaseUtils.c(string2, list, (JSONObject) onlCgformField));
                 }
             }
         }
@@ -1332,7 +1339,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                     if (string4 != null) {
                         jSONObject.put(string3, (Object) string4);
                     }
-                    this.fieldService.executeInsertSQL(DbConstant.c(string2, list, jSONObject));
+                    this.fieldService.executeInsertSQL(DataBaseUtils.c(string2, list, jSONObject));
                 }
             }
         }
@@ -1422,7 +1429,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
     public void updateParentNode(OnlCgformHead head, String dataId) {
         if ("Y".equals(head.getIsTree())) {
             Integer n2;
-            String string = DbConstant.f(head.getTableName());
+            String string = DataBaseUtils.f(head.getTableName());
             String string2 = head.getTreeParentIdField();
             Map<String, Object> map = ((OnlCgformHeadMapper) this.baseMapper).queryOneByTableNameAndId(string, dataId);
             String string3 = null;

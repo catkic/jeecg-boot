@@ -33,6 +33,12 @@ public class OnlCgformField implements Serializable {
     private String cgformHeadId;
     private String dbFieldName;
     private String dbFieldTxt;
+    /**
+     * 这个可能是原来的名字
+     * catkic
+     * 就原来表单是可以编辑的，但是编辑了之后就是新的名字
+     * 这个用来存老的名字
+     */
     private String dbFieldNameOld;
     private Integer dbIsKey;
     private Integer dbIsNull;

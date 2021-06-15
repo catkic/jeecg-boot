@@ -58,7 +58,7 @@ import org.jeecg.modules.online.cgform.service.IOnlCgformFieldService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformSqlService;
 import org.jeecg.modules.online.cgform.service.IOnlineService;
-import org.jeecg.modules.online.cgform.util.DbConstant;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.jeecg.modules.online.config.util.DataBaseUtil;
 import org.jeecg.modules.online.config.exception.BusinessException;
 import org.jeecg.modules.online.config.exception.DBException;
@@ -126,13 +126,13 @@ public class OnlCgformApiController {
             allEntries = true,
             beforeInvocation = true
     )
-    public Result<?> b(@RequestBody OnlCgformModel var1) {
+    public Result<?> editAll(@RequestBody OnlCgformModel onlCgformModel) {
         try {
-            return this.onlCgformHeadService.editAll(var1);
-        } catch (Exception var3) {
-            log.error("OnlCgformApiController.editAll()发生异常：" + var3.getMessage(), var3);
-            return Result.error("操作失败");
+            return this.onlCgformHeadService.editAll(onlCgformModel);
+        } catch (Exception e) {
+            log.error("OnlCgformApiController.editAll()发生异常：" + e.getMessage(), e);
         }
+        return Result.error("操作失败");
     }
 
     @AutoLog(
@@ -144,7 +144,7 @@ public class OnlCgformApiController {
     @GetMapping({"/getColumns/{code}"})
     public Result<OnlComplexModel> a(@PathVariable("code") String var1) {
         Result var2 = new Result();
-        OnlCgformHead var3 = (OnlCgformHead) this.onlCgformHeadService.getById(var1);
+        OnlCgformHead var3 = this.onlCgformHeadService.getById(var1);
         if (var3 == null) {
             var2.error500("实体不存在");
             return var2;
@@ -176,7 +176,7 @@ public class OnlCgformApiController {
         } else {
             try {
                 String var5 = var4.getTableName();
-                Map var6 = DbConstant.a(var2);
+                Map var6 = DataBaseUtils.a(var2);
                 Map var7 = this.onlCgformFieldService.queryAutolistPage(var5, var1, var6, (List) null);
                 this.a(var4, var7);
                 var3.setResult(var7);
@@ -206,7 +206,7 @@ public class OnlCgformApiController {
         Result var4 = new Result();
         LoginUser var5 = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         JSONObject var6 = this.onlineService.queryOnlineFormItem(var3, var5.getUsername());
-        var4.setResult(DbConstant.b(var6));
+        var4.setResult(DataBaseUtils.b(var6));
         var4.setOnlTable(var3.getTableName());
         return var4;
     }
@@ -228,7 +228,7 @@ public class OnlCgformApiController {
 
         LoginUser var6 = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         JSONObject var7 = this.onlineService.queryFlowOnlineFormItem(var5, var6.getUsername(), var2);
-        var3.setResult(DbConstant.b(var7));
+        var3.setResult(DataBaseUtils.b(var7));
         var3.setOnlTable(var1);
         return var3;
     }
@@ -248,7 +248,7 @@ public class OnlCgformApiController {
     public Result<?> b(@PathVariable("code") String var1, @PathVariable("id") String var2) {
         try {
             Map var3 = this.onlCgformHeadService.queryManyFormData(var1, var2);
-            return Result.ok(DbConstant.b(var3));
+            return Result.ok(DataBaseUtils.b(var3));
         } catch (Exception var4) {
             log.error("Online表单查询异常：" + var4.getMessage(), var4);
             return Result.error("查询失败，" + var4.getMessage());
@@ -259,7 +259,7 @@ public class OnlCgformApiController {
     public Result<?> c(@PathVariable("table") String var1, @PathVariable("mainId") String var2) {
         try {
             Map var3 = this.onlCgformHeadService.querySubFormData(var1, var2);
-            return Result.ok(DbConstant.b(var3));
+            return Result.ok(DataBaseUtils.b(var3));
         } catch (Exception var4) {
             log.error("Online表单查询异常：" + var4.getMessage(), var4);
             return Result.error("查询失败，" + var4.getMessage());
@@ -311,7 +311,7 @@ public class OnlCgformApiController {
         Result var4 = new Result();
 
         try {
-            String var5 = DbConstant.a();
+            String var5 = DataBaseUtils.a();
             var2.put("id", var5);
             String var6 = TokenUtils.getTokenByRequest(var3);
             String var7 = this.onlCgformHeadService.saveManyFormData(var1, var2, var6);
@@ -321,7 +321,7 @@ public class OnlCgformApiController {
         } catch (Exception var8) {
             log.error("OnlCgformApiController.formAdd()发生异常：", var8);
             var4.setSuccess(false);
-            var4.setMessage("保存失败，" + DbConstant.a(var8));
+            var4.setMessage("保存失败，" + DataBaseUtils.a(var8));
         }
 
         return var4;
@@ -342,7 +342,7 @@ public class OnlCgformApiController {
             return var4;
         } catch (Exception var5) {
             log.error("OnlCgformApiController.formEdit()发生异常：" + var5.getMessage(), var5);
-            return Result.error("修改失败，" + DbConstant.a(var5));
+            return Result.error("修改失败，" + DataBaseUtils.a(var5));
         }
     }
 
@@ -435,7 +435,7 @@ public class OnlCgformApiController {
 
     @OnlineAuth("getQueryInfo")
     @GetMapping({"/getQueryInfo/{code}"})
-    public Result<?> b(@PathVariable("code") String code) {
+    public Result<?> getQueryInfo(@PathVariable("code") String code) {
         try {
             List var2 = this.onlCgformFieldService.getAutoListQueryInfo(code);
             return Result.ok(var2);
@@ -453,7 +453,7 @@ public class OnlCgformApiController {
             log.info("==同步数据库消耗时间" + (System.currentTimeMillis() - startTime) + "毫秒");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return Result.error("同步数据库失败，" + DbConstant.a(e));
+            return Result.error("同步数据库失败，" + DataBaseUtils.a(e));
         }
 
         return Result.ok("同步数据库成功!");
@@ -565,7 +565,7 @@ public class OnlCgformApiController {
             var11.eq(OnlCgformField::getCgformHeadId, var1);
             List var12 = this.onlCgformFieldService.list(var11);
             String var13 = var2.getParameter("isSingleTableImport");
-            List var14 = DbConstant.e(var12);
+            List var14 = DataBaseUtils.e(var12);
             if (oConvertUtils.isEmpty(var13) && var10.getTableType() == 2 && oConvertUtils.isNotEmpty(var10.getSubTableStr())) {
                 String[] var15 = var10.getSubTableStr().split(",");
                 int var16 = var15.length;
@@ -575,7 +575,7 @@ public class OnlCgformApiController {
                     OnlCgformHead var19 = this.onlCgformHeadService.getOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, var18));
                     if (var19 != null) {
                         List var20 = this.onlCgformFieldService.list(new LambdaQueryWrapper<OnlCgformField>().eq(OnlCgformField::getCgformHeadId, var19.getId()));
-                        List var21 = DbConstant.b(var20, var19.getTableTxt());
+                        List var21 = DataBaseUtils.b(var20, var19.getTableTxt());
                         if (var21.size() > 0) {
                             var14.addAll(var21);
                         }
@@ -729,7 +729,7 @@ public class OnlCgformApiController {
 
                 var6.setSuccess(true);
                 if ("1".equals(var8) && var9.length() > 0) {
-                    String var56 = DbConstant.a(this.upLoadPath, var10.getTableTxt(), var9);
+                    String var56 = DataBaseUtils.a(this.upLoadPath, var10.getTableTxt(), var9);
                     var6.setResult(var56);
                     var6.setMessage(var7);
                     var6.setCode(201);
@@ -770,7 +770,7 @@ public class OnlCgformApiController {
         String var5 = var1.getIdType();
         String var6 = var1.getIdSequence();
         if (oConvertUtils.isNotEmpty(var5) && "UUID".equalsIgnoreCase(var5)) {
-            var4 = DbConstant.a();
+            var4 = DataBaseUtils.a();
         } else {
             PostgreSQLSequenceMaxValueIncrementer var7;
             OracleSequenceMaxValueIncrementer var13;
@@ -815,7 +815,7 @@ public class OnlCgformApiController {
                     var4 = null;
                 }
             } else {
-                var4 = DbConstant.a();
+                var4 = DataBaseUtils.a();
             }
         }
 
@@ -922,11 +922,11 @@ public class OnlCgformApiController {
 
         for (int var15 = 0; var15 < var3.size(); ++var15) {
             var2.put(var9, ((Map) var3.get(var15)).get(var8));
-            String var12 = DbConstant.a(var5.getTableName(), var7, var2);
+            String var12 = DataBaseUtils.a(var5.getTableName(), var7, var2);
             log.info("-----------动态列表查询子表sql》》" + var12);
             List var13 = this.onlCgformHeadService.queryListData(var12);
             MapDictConverter.a(1, var13, var7);
-            ((Map) var3.get(var15)).put(var1, DbConstant.d(var13));
+            ((Map) var3.get(var15)).put(var1, DataBaseUtils.d(var13));
         }
 
     }
@@ -1058,7 +1058,7 @@ public class OnlCgformApiController {
                 String var6 = var4.getTreeIdField();
                 String var7 = var4.getTreeParentIdField();
                 ArrayList var8 = Lists.newArrayList(new String[]{var6, var7});
-                Map var9 = DbConstant.a(var2);
+                Map var9 = DataBaseUtils.a(var2);
                 String var10 = null;
                 if (var9.get(var6) != null) {
                     var10 = var9.get(var6).toString();
@@ -1095,7 +1095,7 @@ public class OnlCgformApiController {
         Result var3 = new Result();
 
         try {
-            String var4 = DbConstant.a();
+            String var4 = DataBaseUtils.a();
             var2.put("id", var4);
             this.onlCgformHeadService.addCrazyFormData(var1, var2);
             var3.setResult(var4);
@@ -1183,7 +1183,7 @@ public class OnlCgformApiController {
         Result var4 = new Result();
         LoginUser var5 = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         JSONObject var6 = this.onlineService.queryOnlineFormObj(var3, var5.getUsername());
-        var4.setResult(DbConstant.b(var6));
+        var4.setResult(DataBaseUtils.b(var6));
         var4.setOnlTable(var3.getTableName());
         return var4;
     }

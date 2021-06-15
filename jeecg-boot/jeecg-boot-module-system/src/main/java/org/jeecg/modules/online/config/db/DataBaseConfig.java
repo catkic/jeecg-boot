@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  org.jeecg.common.util.oConvertUtils
  *  org.springframework.beans.factory.annotation.Autowired
@@ -14,9 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component(value="dataBaseConfig")
-@ConfigurationProperties(prefix="spring.datasource.dynamic.datasource.master")
+@Component
+@ConfigurationProperties(prefix = "spring.datasource.dynamic.datasource.master")
 public class DataBaseConfig {
+    
     @Autowired
     private DmDataBaseConfig dmDataBaseConfig;
     private String url;

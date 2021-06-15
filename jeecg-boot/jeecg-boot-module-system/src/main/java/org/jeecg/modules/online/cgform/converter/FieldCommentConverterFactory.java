@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  org.jeecg.common.util.MyClassLoader
  *  org.jeecg.common.util.SpringContextUtils
@@ -49,12 +49,12 @@ public class FieldCommentConverterFactory {
         String string = onlCgformField.getFieldShowType();
         FieldCommentConverter fieldCommentConverter = null;
         switch (string) {
-            case "list": 
+            case "list":
             case "radio": {
                 fieldCommentConverter = new c(onlCgformField);
                 break;
             }
-            case "list_multi": 
+            case "list_multi":
             case "checkbox": {
                 fieldCommentConverter = new f(onlCgformField);
                 break;
@@ -102,7 +102,7 @@ public class FieldCommentConverterFactory {
         HashMap<String, FieldCommentConverter> hashMap = new HashMap<String, FieldCommentConverter>();
         for (OnlCgformField onlCgformField : list) {
             FieldCommentConverter fieldCommentConverter = null;
-            fieldCommentConverter = oConvertUtils.isNotEmpty((Object)onlCgformField.getConverter()) ? FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField.getConverter().trim()) : FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField);
+            fieldCommentConverter = oConvertUtils.isNotEmpty(onlCgformField.getConverter()) ? FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField.getConverter().trim()) : FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField);
             if (fieldCommentConverter == null) continue;
             hashMap.put(onlCgformField.getDbFieldName().toLowerCase(), fieldCommentConverter);
         }
@@ -113,20 +113,15 @@ public class FieldCommentConverterFactory {
         Object object = null;
         if (string.indexOf(".") > 0) {
             try {
-                object = MyClassLoader.getClassByScn((String)string).newInstance();
-            }
-            catch (InstantiationException instantiationException) {
-                log.error(instantiationException.getMessage(), (Throwable)instantiationException);
-            }
-            catch (IllegalAccessException illegalAccessException) {
-                log.error(illegalAccessException.getMessage(), (Throwable)illegalAccessException);
+                object = MyClassLoader.getClassByScn(string).newInstance();
+            } catch (InstantiationException | IllegalAccessException instantiationException) {
+                log.error(instantiationException.getMessage(), instantiationException);
             }
         } else {
-            object = SpringContextUtils.getBean((String)string);
+            object = SpringContextUtils.getBean(string);
         }
         if (object != null && object instanceof FieldCommentConverter) {
-            FieldCommentConverter fieldCommentConverter = (FieldCommentConverter)object;
-            return fieldCommentConverter;
+            return (FieldCommentConverter) object;
         }
         return null;
     }

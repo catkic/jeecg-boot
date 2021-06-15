@@ -100,7 +100,7 @@ import org.jeecg.modules.online.config.util.DataBaseUtil;
 import org.jeecgframework.poi.excel.entity.params.ExcelExportEntity;
 
 @Slf4j
-public class DbConstant {
+public class DataBaseUtils {
     public static final String SELECT = "SELECT ";
     public static final String FROM = " FROM ";
     public static final String AND = " AND ";
@@ -207,7 +207,7 @@ public class DbConstant {
                 stringBuffer.append(",id");
             }
         }
-        stringBuffer.append(FROM + DbConstant.f(string));
+        stringBuffer.append(FROM + DataBaseUtils.f(string));
     }
 
     public static String a(String string) {
@@ -232,7 +232,7 @@ public class DbConstant {
     }
 
     public static String a(List<OnlCgformField> list, Map<String, Object> map, List<String> list2) {
-        return DbConstant.a(list, map, list2, null);
+        return DataBaseUtils.a(list, map, list2, null);
     }
 
     public static String a(List<OnlCgformField> list, Map<String, Object> map, List<String> list2, List<SysPermissionDataRuleModel> list3) {
@@ -255,9 +255,9 @@ public class DbConstant {
             String string2 = onlCgformField.getDbFieldName();
             String string3 = onlCgformField.getDbType();
             if (ruleMap.containsKey(string2)) {
-                DbConstant.a(string, ruleMap.get(string2), string2, string3, stringBuffer);
+                DataBaseUtils.a(string, ruleMap.get(string2), string2, string3, stringBuffer);
             } else if (ruleMap.containsKey(oConvertUtils.camelNames(string2))) {
-                DbConstant.a(string, ruleMap.get(string2), string2, string3, stringBuffer);
+                DataBaseUtils.a(string, ruleMap.get(string2), string2, string3, stringBuffer);
             }
             if (list2 != null && list2.contains(string2)) {
                 onlCgformField.setIsQuery(1);
@@ -281,11 +281,11 @@ public class DbConstant {
                     stringBuffer.append(" AND (" + string4 + ")");
                 }
                 if (POPUP.equals(onlCgformField.getFieldShowType())) {
-                    stringBuffer.append(" AND (" + DbConstant.b(string2, object2.toString()) + ")");
+                    stringBuffer.append(" AND (" + DataBaseUtils.b(string2, object2.toString()) + ")");
                     continue;
                 }
                 if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
-                    stringBuffer.append(AND + string2 + EQUAL + DbConstant.a(object2.toString()));
+                    stringBuffer.append(AND + string2 + EQUAL + DataBaseUtils.a(object2.toString()));
                     continue;
                 }
                 boolean bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
@@ -299,7 +299,7 @@ public class DbConstant {
                 if (org.jeecg.modules.online.cgform.util.i.a(string3)) {
                     stringBuffer.append(object2.toString());
                 } else if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
-                    stringBuffer.append(DbConstant.a(object2.toString()));
+                    stringBuffer.append(DataBaseUtils.a(object2.toString()));
                 } else {
                     stringBuffer.append(z + object2.toString() + z);
                 }
@@ -312,7 +312,7 @@ public class DbConstant {
                 continue;
             }
             if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
-                stringBuffer.append(DbConstant.a(object.toString()));
+                stringBuffer.append(DataBaseUtils.a(object.toString()));
                 continue;
             }
             stringBuffer.append(z + object.toString() + z);
@@ -346,7 +346,7 @@ public class DbConstant {
             String string2 = jSONObject.getString("field");
             String[] arrstring = string2.split(COMMA);
             if (arrstring.length == 1) {
-                DbConstant.a(stringBuilder, string2, jSONObject, matchTypeEnum, null, i2 == 0);
+                DataBaseUtils.a(stringBuilder, string2, jSONObject, matchTypeEnum, null, i2 == 0);
                 continue;
             }
             if (arrstring.length != 2) continue;
@@ -365,7 +365,7 @@ public class DbConstant {
                 }
                 hashMap.put(string3, jSONObject2);
             }
-            DbConstant.a(stringBuilder, string4, jSONObject, matchTypeEnum, jSONObject2, i2 == 0);
+            DataBaseUtils.a(stringBuilder, string4, jSONObject, matchTypeEnum, jSONObject2, i2 == 0);
         }
         return stringBuilder.append(")").toString();
     }
@@ -376,7 +376,7 @@ public class DbConstant {
         }
         String string2 = jSONObject.getString("type");
         String string3 = jSONObject.getString("val");
-        String string4 = DbConstant.a(string2, string3);
+        String string4 = DataBaseUtils.a(string2, string3);
         QueryRuleEnum queryRuleEnum = QueryRuleEnum.getByValue((String) jSONObject.getString("rule"));
         if (queryRuleEnum == null) {
             queryRuleEnum = QueryRuleEnum.EQ;
@@ -388,23 +388,23 @@ public class DbConstant {
             String string8 = jSONObject2.getString("mainField");
             stringBuilder.append("(").append(string8).append(" IN (SELECT ").append(string6).append(FROM).append(string5).append(" WHERE ");
             if (POPUP.equals(string2)) {
-                stringBuilder.append(DbConstant.b(string, string3));
+                stringBuilder.append(DataBaseUtils.b(string, string3));
             } else {
                 stringBuilder.append(string);
-                DbConstant.a(stringBuilder, queryRuleEnum, string3, string4, string2);
+                DataBaseUtils.a(stringBuilder, queryRuleEnum, string3, string4, string2);
             }
             stringBuilder.append("))");
         } else if (POPUP.equals(string2)) {
-            stringBuilder.append(DbConstant.b(string, string3));
+            stringBuilder.append(DataBaseUtils.b(string, string3));
         } else {
             stringBuilder.append(string);
-            DbConstant.a(stringBuilder, queryRuleEnum, string3, string4, string2);
+            DataBaseUtils.a(stringBuilder, queryRuleEnum, string3, string4, string2);
         }
     }
 
     private static void a(StringBuilder stringBuilder, QueryRuleEnum queryRuleEnum, String string, String string2, String string3) {
-        if ("date".equals(string3) && "ORACLE".equalsIgnoreCase(DbConstant.getDatabseType())) {
-            string2 = (string2 = string2.replace(z, "")).length() == 10 ? DbConstant.b(string2) : DbConstant.a(string2);
+        if ("date".equals(string3) && "ORACLE".equalsIgnoreCase(DataBaseUtils.getDatabseType())) {
+            string2 = (string2 = string2.replace(z, "")).length() == 10 ? DataBaseUtils.b(string2) : DataBaseUtils.a(string2);
         }
         switch (queryRuleEnum) {
             case GT: {
@@ -433,7 +433,7 @@ public class DbConstant {
                 for (int i2 = 0; i2 < arrstring.length; ++i2) {
                     String string4 = arrstring[i2];
                     if (!StringUtils.isNotBlank((String) string4)) continue;
-                    String string5 = DbConstant.a(string3, string4);
+                    String string5 = DataBaseUtils.a(string3, string4);
                     stringBuilder.append(string5);
                     if (i2 >= arrstring.length - 1) continue;
                     stringBuilder.append(COMMA);
@@ -466,7 +466,7 @@ public class DbConstant {
         if ("date".equals(string)) {
             return z + string2 + z;
         }
-        if ("SQLSERVER".equals(DbConstant.getDatabseType())) {
+        if ("SQLSERVER".equals(DataBaseUtils.getDatabseType())) {
             return "N'" + string2 + z;
         }
         return z + string2 + z;
@@ -529,7 +529,7 @@ public class DbConstant {
             }
             if (SWITCH.equals(fieldShowType)) {
                 property = new SwitchProperty(dbFieldName, dbFieldTxt, onlCgformField.getFieldExtendJson());
-            } else if (DbConstant.c(fieldShowType)) {
+            } else if (DataBaseUtils.c(fieldShowType)) {
                 property = new DictProperty(dbFieldName, fieldShowType, dbFieldTxt, onlCgformField.getDictTable(), onlCgformField.getDictField(), onlCgformField.getDictText());
                 if (org.jeecg.modules.online.cgform.util.i.a(onlCgformField.getDbType())) {
                     property.setType("number");
@@ -549,7 +549,7 @@ public class DbConstant {
                     int n2 = object2.length;
                     for (int i2 = 0; i2 < n2; ++i2) {
                         String text = object2[i2];
-                        if (DbConstant.a(text, list)) continue;
+                        if (DataBaseUtils.a(text, list)) continue;
                         HiddenProperty hiddenProperty = new HiddenProperty(text, text);
                         hiddenProperty.setOrder(onlCgformField.getOrderNum());
                         arrayList2.add(hiddenProperty);
@@ -565,7 +565,7 @@ public class DbConstant {
                 property = popupProperty;
             } else if (LINK_DOWN.equals(fieldShowType)) {
                 LinkDownProperty object5 = new LinkDownProperty(dbFieldName, dbFieldTxt, onlCgformField.getDictTable());
-                DbConstant.a(object5, list, arrayList3);
+                DataBaseUtils.a(object5, list, arrayList3);
                 property = object5;
             } else if (SEL_TREE.equals(fieldShowType)) {
                 String[] dictTexts = dictText.split(COMMA);
@@ -648,7 +648,7 @@ public class DbConstant {
             CommonProperty commonProperty = null;
             if (org.jeecg.modules.online.cgform.util.i.a(onlCgformField.getDbType())) {
                 commonProperty = new NumberProperty(string2, string3, "number");
-            } else if (DbConstant.c(string4)) {
+            } else if (DataBaseUtils.c(string4)) {
                 List list2 = iSysBaseAPI.queryDictItemsByCode(string5);
                 commonProperty = new StringProperty(string2, string3, string4, onlCgformField.getDbLength(), list2);
             } else {
@@ -698,7 +698,7 @@ public class DbConstant {
         if (loginUser == null) {
             throw new JeecgBootException("online保存表单数据异常:系统未找到当前登陆用户信息");
         }
-        Set<String> set = DbConstant.a(list);
+        Set<String> set = DataBaseUtils.a(list);
         for (OnlCgformField onlCgformField : list) {
             String string4;
             String string5 = onlCgformField.getDbFieldName();
@@ -711,7 +711,7 @@ public class DbConstant {
                 string3 = jSONObject.getString(string5);
                 continue;
             }
-            DbConstant.a(onlCgformField, loginUser, jSONObject, u, t, x);
+            DataBaseUtils.a(onlCgformField, loginUser, jSONObject, u, t, x);
             if (E.equals(string5.toLowerCase())) {
                 stringBuffer.append(COMMA + string5);
                 stringBuffer2.append(",'1'");
@@ -737,12 +737,12 @@ public class DbConstant {
         }
         if (bl) {
             if (oConvertUtils.isEmpty(string3)) {
-                string3 = DbConstant.a();
+                string3 = DataBaseUtils.a();
             }
         } else {
-            string3 = DbConstant.a();
+            string3 = DataBaseUtils.a();
         }
-        String string6 = "insert into " + DbConstant.f(string) + "(" + "id" + stringBuffer.toString() + ") values(#{id,jdbcType=VARCHAR}" + stringBuffer2.toString() + ")";
+        String string6 = "insert into " + DataBaseUtils.f(string) + "(" + "id" + stringBuffer.toString() + ") values(#{id,jdbcType=VARCHAR}" + stringBuffer2.toString() + ")";
         hashMap.put("execute_sql_string", string6);
         hashMap.put("id", string3);
         log.info("--动态表单保存sql-->" + (String) string6);
@@ -764,7 +764,7 @@ public class DbConstant {
         if (loginUser == null) {
             throw new JeecgBootException("online修改表单数据异常:系统未找到当前登陆用户信息");
         }
-        Set<String> set = DbConstant.a(list);
+        Set<String> set = DataBaseUtils.a(list);
         for (OnlCgformField object2 : list) {
             String string3;
             String string4 = object2.getDbFieldName();
@@ -772,7 +772,7 @@ public class DbConstant {
                 log.info("--------online修改表单数据遇见空名称的字段------->>" + object2.getId());
                 continue;
             }
-            DbConstant.a(object2, loginUser, jSONObject, w, v);
+            DataBaseUtils.a(object2, loginUser, jSONObject, w, v);
             if (set.contains(string4) && jSONObject.get((Object) string4) != null && !"".equals(jSONObject.getString(string4))) {
                 string3 = org.jeecg.modules.online.cgform.util.i.a(string2, object2, jSONObject, hashMap);
                 stringBuffer.append(string4 + EQUAL + string3 + COMMA);
@@ -787,14 +787,14 @@ public class DbConstant {
         if (((String) object3).endsWith(COMMA)) {
             object3 = ((String) object3).substring(0, ((String) object3).length() - 1);
         }
-        String string5 = "update " + DbConstant.f(string) + " set " + (String) object3 + WHERE + "id" + EQUAL + z + jSONObject.getString("id") + z;
+        String string5 = "update " + DataBaseUtils.f(string) + " set " + (String) object3 + WHERE + "id" + EQUAL + z + jSONObject.getString("id") + z;
         log.info("--动态表单编辑sql-->" + string5);
         hashMap.put("execute_sql_string", string5);
         return hashMap;
     }
 
     public static String a(String string, List<OnlCgformField> list, String string2) {
-        return DbConstant.a(string, list, "id", string2);
+        return DataBaseUtils.a(string, list, "id", string2);
     }
 
     public static String a(String string, List<OnlCgformField> list, String string2, String string3) {
@@ -814,7 +814,7 @@ public class DbConstant {
         if (!bl) {
             stringBuffer.append(",id");
         }
-        stringBuffer.append(FROM + DbConstant.f(string) + WHERE_1 + AND + string2 + EQUAL + z + string3 + z);
+        stringBuffer.append(FROM + DataBaseUtils.f(string) + WHERE_1 + AND + string2 + EQUAL + z + string3 + z);
         return stringBuffer.toString();
     }
 
@@ -861,22 +861,22 @@ public class DbConstant {
     }
 
     public static boolean a(Object object, Object object2) {
-        if (oConvertUtils.isEmpty((Object) object) && oConvertUtils.isEmpty((Object) object2)) {
+        if (oConvertUtils.isEmpty(object) && oConvertUtils.isEmpty(object2)) {
             return true;
         }
-        return oConvertUtils.isNotEmpty((Object) object) && object.equals(object2);
+        return oConvertUtils.isNotEmpty(object) && object.equals(object2);
     }
 
     public static boolean a(OnlCgformField onlCgformField, OnlCgformField onlCgformField2) {
-        return !DbConstant.a((Object) onlCgformField.getDbFieldName(), (Object) onlCgformField2.getDbFieldName()) || !DbConstant.a((Object) onlCgformField.getDbFieldTxt(), (Object) onlCgformField2.getDbFieldTxt()) || !DbConstant.a(onlCgformField.getDbLength(), onlCgformField2.getDbLength()) || !DbConstant.a(onlCgformField.getDbPointLength(), onlCgformField2.getDbPointLength()) || !DbConstant.a((Object) onlCgformField.getDbType(), (Object) onlCgformField2.getDbType()) || !DbConstant.a(onlCgformField.getDbIsNull(), onlCgformField2.getDbIsNull()) || !DbConstant.a(onlCgformField.getDbIsKey(), onlCgformField2.getDbIsKey()) || !DbConstant.a((Object) onlCgformField.getDbDefaultVal(), (Object) onlCgformField2.getDbDefaultVal());
+        return !DataBaseUtils.a((Object) onlCgformField.getDbFieldName(), (Object) onlCgformField2.getDbFieldName()) || !DataBaseUtils.a((Object) onlCgformField.getDbFieldTxt(), (Object) onlCgformField2.getDbFieldTxt()) || !DataBaseUtils.a(onlCgformField.getDbLength(), onlCgformField2.getDbLength()) || !DataBaseUtils.a(onlCgformField.getDbPointLength(), onlCgformField2.getDbPointLength()) || !DataBaseUtils.a((Object) onlCgformField.getDbType(), (Object) onlCgformField2.getDbType()) || !DataBaseUtils.a(onlCgformField.getDbIsNull(), onlCgformField2.getDbIsNull()) || !DataBaseUtils.a(onlCgformField.getDbIsKey(), onlCgformField2.getDbIsKey()) || !DataBaseUtils.a((Object) onlCgformField.getDbDefaultVal(), (Object) onlCgformField2.getDbDefaultVal());
     }
 
     public static boolean a(OnlCgformIndex onlCgformIndex, OnlCgformIndex onlCgformIndex2) {
-        return !DbConstant.a((Object) onlCgformIndex.getIndexName(), (Object) onlCgformIndex2.getIndexName()) || !DbConstant.a((Object) onlCgformIndex.getIndexField(), (Object) onlCgformIndex2.getIndexField()) || !DbConstant.a((Object) onlCgformIndex.getIndexType(), (Object) onlCgformIndex2.getIndexType());
+        return !DataBaseUtils.a((Object) onlCgformIndex.getIndexName(), (Object) onlCgformIndex2.getIndexName()) || !DataBaseUtils.a((Object) onlCgformIndex.getIndexField(), (Object) onlCgformIndex2.getIndexField()) || !DataBaseUtils.a((Object) onlCgformIndex.getIndexType(), (Object) onlCgformIndex2.getIndexType());
     }
 
-    public static boolean a(OnlCgformHead onlCgformHead, OnlCgformHead onlCgformHead2) {
-        return !DbConstant.a((Object) onlCgformHead.getTableName(), (Object) onlCgformHead2.getTableName()) || !DbConstant.a((Object) onlCgformHead.getTableTxt(), (Object) onlCgformHead2.getTableTxt());
+    public static boolean compareHead(OnlCgformHead onlCgformHead, OnlCgformHead onlCgformHead2) {
+        return !DataBaseUtils.a(onlCgformHead.getTableName(), (Object) onlCgformHead2.getTableName()) || !DataBaseUtils.a(onlCgformHead.getTableTxt(), (Object) onlCgformHead2.getTableTxt());
     }
 
     public static String a(String string, List<OnlCgformField> list, Map<String, Object> map) {
@@ -923,7 +923,7 @@ public class DbConstant {
             }
             stringBuffer.append(z + object.toString() + z);
         }
-        return "SELECT id" + stringBuffer2.toString() + FROM + DbConstant.f(string) + WHERE_1 + stringBuffer.toString();
+        return "SELECT id" + stringBuffer2.toString() + FROM + DataBaseUtils.f(string) + WHERE_1 + stringBuffer.toString();
     }
 
     public static List<ExcelExportEntity> a(List<OnlCgformField> list, String string) {
@@ -1016,7 +1016,7 @@ public class DbConstant {
 
     private static String a(String string, boolean bl, QueryRuleEnum queryRuleEnum) {
         if (queryRuleEnum == QueryRuleEnum.IN) {
-            return DbConstant.a(string, bl);
+            return DataBaseUtils.a(string, bl);
         }
         if (bl) {
             return z + QueryGenerator.converRuleValue((String) string) + z;
@@ -1045,12 +1045,12 @@ public class DbConstant {
     private static void a(String string, SysPermissionDataRuleModel sysPermissionDataRuleModel, String string2, String string3, StringBuffer stringBuffer) {
         QueryRuleEnum queryRuleEnum = QueryRuleEnum.getByValue((String) sysPermissionDataRuleModel.getRuleConditions());
         boolean bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
-        String string4 = DbConstant.a(sysPermissionDataRuleModel.getRuleValue(), bl, queryRuleEnum);
+        String string4 = DataBaseUtils.a(sysPermissionDataRuleModel.getRuleValue(), bl, queryRuleEnum);
         if (string4 == null || queryRuleEnum == null) {
             return;
         }
         if ("ORACLE".equalsIgnoreCase(string) && "Date".equals(string3)) {
-            string4 = (string4 = string4.replace(z, "")).length() == 10 ? DbConstant.b(string4) : DbConstant.a(string4);
+            string4 = (string4 = string4.replace(z, "")).length() == 10 ? DataBaseUtils.b(string4) : DataBaseUtils.a(string4);
         }
         switch (queryRuleEnum) {
             case GT: {
@@ -1123,7 +1123,7 @@ public class DbConstant {
     }
 
     public static String c(String string, List<OnlCgformButton> list) {
-        string = DbConstant.d(string, list);
+        string = DataBaseUtils.d(string, list);
         for (String string2 : aB.split(COMMA)) {
             Matcher matcher;
             Pattern pattern;
@@ -1145,7 +1145,7 @@ public class DbConstant {
             if (!matcher2.find()) continue;
             string = string.replace(matcher2.group(0), string2 + "(that){const getAction=this._getAction,postAction=this._postAction,deleteAction=this._deleteAction;");
         }
-        return DbConstant.d(string);
+        return DataBaseUtils.d(string);
     }
 
     public static void a(OnlCgformEnhanceJs onlCgformEnhanceJs, String string, List<OnlCgformField> list) {
@@ -1186,8 +1186,8 @@ public class DbConstant {
             }
         }
         onlCgformEnhanceJs.setCgJs(string2);
-        DbConstant.a(onlCgformEnhanceJs);
-        DbConstant.a(onlCgformEnhanceJs, string, list);
+        DataBaseUtils.a(onlCgformEnhanceJs);
+        DataBaseUtils.a(onlCgformEnhanceJs, string, list);
     }
 
     public static void a(OnlCgformEnhanceJs onlCgformEnhanceJs) {
@@ -1249,7 +1249,7 @@ public class DbConstant {
             }
             jSONObject.put("title", (Object) onlCgformField.getDbFieldTxt());
             jSONObject.put("key", (Object) string);
-            String string2 = DbConstant.c(onlCgformField);
+            String string2 = DataBaseUtils.c(onlCgformField);
             jSONObject.put("type", (Object) string2);
             if (onlCgformField.getFieldLength() == null) {
                 jSONObject.put("width", (Object) "186px");
@@ -1282,7 +1282,7 @@ public class DbConstant {
                     String[] arrstring;
                     ArrayList<String> arrayList = new ArrayList<String>();
                     for (String string3 : arrstring = ((String) object).split(COMMA)) {
-                        if (DbConstant.a(string3, list)) continue;
+                        if (DataBaseUtils.a(string3, list)) continue;
                         arrayList.add(string3);
                         JSONObject jSONObject2 = new JSONObject();
                         jSONObject2.put("title", (Object) string3);
@@ -1295,7 +1295,7 @@ public class DbConstant {
             jSONObject.put("defaultValue", (Object) onlCgformField.getDbDefaultVal());
             jSONObject.put("fieldDefaultValue", (Object) onlCgformField.getFieldDefaultValue());
             jSONObject.put("placeholder", (Object) ("请输入" + onlCgformField.getDbFieldTxt()));
-            jSONObject.put("validateRules", (Object) DbConstant.b(onlCgformField));
+            jSONObject.put("validateRules", (Object) DataBaseUtils.b(onlCgformField));
             if (aj.equals(onlCgformField.getFieldShowType()) || "radio".equals(onlCgformField.getFieldShowType()) || "checkbox_meta".equals(onlCgformField.getFieldShowType()) || "list_multi".equals(onlCgformField.getFieldShowType()) || "sel_search".equals(onlCgformField.getFieldShowType())) {
                 jSONObject.put("view", (Object) onlCgformField.getFieldShowType());
                 jSONObject.put("dictTable", (Object) onlCgformField.getDictTable());
@@ -1344,7 +1344,7 @@ public class DbConstant {
             String string2;
             Object object2 = map.get(string);
             if (object2 instanceof Clob) {
-                object2 = DbConstant.a((Clob) object2);
+                object2 = DataBaseUtils.a((Clob) object2);
             } else if (object2 instanceof byte[]) {
                 object2 = new String((byte[]) object2);
             } else if (object2 instanceof Blob) {
@@ -1389,7 +1389,7 @@ public class DbConstant {
             for (String string : set) {
                 Object object2 = map.get(string);
                 if (object2 instanceof Clob) {
-                    object2 = DbConstant.a((Clob) object2);
+                    object2 = DataBaseUtils.a((Clob) object2);
                 } else if (object2 instanceof byte[]) {
                     object2 = new String((byte[]) object2);
                 } else if (object2 instanceof Blob) {
@@ -1453,7 +1453,7 @@ public class DbConstant {
             }
             if (jSONObject.get((Object) string5) == null && !u.equalsIgnoreCase(string5) && !t.equalsIgnoreCase(string5) && !x.equalsIgnoreCase(string5))
                 continue;
-            DbConstant.a(onlCgformField, loginUser, jSONObject, u, t, x);
+            DataBaseUtils.a(onlCgformField, loginUser, jSONObject, u, t, x);
             if ("".equals(jSONObject.get((Object) string5)) && (org.jeecg.modules.online.cgform.util.i.a(string4 = onlCgformField.getDbType()) || org.jeecg.modules.online.cgform.util.i.b(string4)))
                 continue;
             if ("id".equals(string5.toLowerCase())) {
@@ -1466,9 +1466,9 @@ public class DbConstant {
             stringBuffer2.append(COMMA + string4);
         }
         if (!bl || oConvertUtils.isEmpty(string3)) {
-            string3 = DbConstant.a();
+            string3 = DataBaseUtils.a();
         }
-        String string6 = "insert into " + DbConstant.f(string) + "(" + "id" + stringBuffer.toString() + ") values(" + z + string3 + z + stringBuffer2.toString() + ")";
+        String string6 = "insert into " + DataBaseUtils.f(string) + "(" + "id" + stringBuffer.toString() + ") values(" + z + string3 + z + stringBuffer2.toString() + ")";
         hashMap.put("execute_sql_string", string6);
         log.info("--表单设计器表单保存sql-->" + (String) string6);
         return hashMap;
@@ -1498,7 +1498,7 @@ public class DbConstant {
             }
             if ("id".equals(string4) || jSONObject.get((Object) string4) == null && !w.equalsIgnoreCase(string4) && !v.equalsIgnoreCase(string4) && !x.equalsIgnoreCase(string4))
                 continue;
-            DbConstant.a(object2, loginUser, jSONObject, w, v, x);
+            DataBaseUtils.a(object2, loginUser, jSONObject, w, v, x);
             if ("".equals(jSONObject.get((Object) string4)) && (org.jeecg.modules.online.cgform.util.i.a(string3 = object2.getDbType()) || org.jeecg.modules.online.cgform.util.i.b(string3)))
                 continue;
             string3 = org.jeecg.modules.online.cgform.util.i.a(string2, object2, jSONObject, hashMap);
@@ -1508,7 +1508,7 @@ public class DbConstant {
         if (((String) object3).endsWith(COMMA)) {
             object3 = ((String) object3).substring(0, ((String) object3).length() - 1);
         }
-        String string5 = "update " + DbConstant.f(string) + " set " + (String) object3 + WHERE + "id" + EQUAL + z + jSONObject.getString("id") + z;
+        String string5 = "update " + DataBaseUtils.f(string) + " set " + (String) object3 + WHERE + "id" + EQUAL + z + jSONObject.getString("id") + z;
         log.info("--表单设计器表单编辑sql-->" + string5);
         hashMap.put("execute_sql_string", string5);
         return hashMap;
@@ -1516,7 +1516,7 @@ public class DbConstant {
 
     public static Map<String, Object> a(String string, String string2, String string3) {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        String string4 = "update " + DbConstant.f(string) + " set " + string2 + EQUAL + z + 0 + z + WHERE + "id" + EQUAL + z + string3 + z;
+        String string4 = "update " + DataBaseUtils.f(string) + " set " + string2 + EQUAL + z + 0 + z + WHERE + "id" + EQUAL + z + string3 + z;
         log.info("--修改树节点状态：为无子节点sql-->" + string4);
         hashMap.put("execute_sql_string", string4);
         return hashMap;
@@ -1678,7 +1678,7 @@ public class DbConstant {
                 string3 = string3 + AND;
             }
             string3 = string3 + string + LIKE;
-            if ("SQLSERVER".equals(DbConstant.getDatabseType())) {
+            if ("SQLSERVER".equals(DataBaseUtils.getDatabseType())) {
                 string3 = string3 + NEGATIVE;
             }
             string3 = string3 + "'%" + arrstring[i2] + "%" + z;

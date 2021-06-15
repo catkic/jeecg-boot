@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  org.apache.commons.lang.StringUtils
  */
@@ -29,66 +29,65 @@ public class ColumnProperty {
         if (!(obj instanceof ColumnProperty)) {
             return false;
         }
-        ColumnProperty columnProperty2 = (ColumnProperty)obj;
+        ColumnProperty columnProperty2 = (ColumnProperty) obj;
         if (this.columnType.contains("date") || this.columnType.contains("blob") || this.columnType.contains("text")) {
-            return this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable) && this.a(this.comment, columnProperty2.getComment()) && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+            return this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable) && this.strEqual(this.comment, columnProperty2.getComment()) && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
         }
-        return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.a(this.comment, columnProperty2.getComment()) && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+        return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.strEqual(this.comment, columnProperty2.getComment()) && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
     }
 
-    public boolean a(Object object, String string) {
+    public boolean strEqual(Object object, String dataBaseType) {
         if (object == this) {
             return true;
         }
         if (!(object instanceof ColumnProperty)) {
             return false;
         }
-        ColumnProperty columnProperty2 = (ColumnProperty)object;
-        if ("SQLSERVER".equals(string)) {
+        ColumnProperty columnProperty2 = (ColumnProperty) object;
+        if ("SQLSERVER".equals(dataBaseType)) {
             if (this.columnType.contains("date") || this.columnType.contains("blob") || this.columnType.contains("text")) {
                 return this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable);
             }
-            return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+            return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
         }
-        if ("POSTGRESQL".equals(string)) {
+        if ("POSTGRESQL".equals(dataBaseType)) {
             if (this.columnType.contains("date") || this.columnType.contains("blob") || this.columnType.contains("text")) {
                 return this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable);
             }
-            return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+            return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
         }
-        if ("ORACLE".equals(string) || "DM".equals(string)) {
+        if ("ORACLE".equals(dataBaseType) || "DM".equals(dataBaseType)) {
             if (this.columnType.contains("date") || this.columnType.contains("blob") || this.columnType.contains("text")) {
                 return this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable);
             }
-            return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+            return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
         }
         if (this.columnType.contains("date") || this.columnType.contains("blob") || this.columnType.contains("text")) {
-            return this.columnType.equals(columnProperty2.getColumnType()) && this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable) && this.a(this.comment, columnProperty2.getComment()) && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+            return this.columnType.equals(columnProperty2.getColumnType()) && this.columnName.equals(columnProperty2.getColumnName()) && this.isNullable.equals(columnProperty2.isNullable) && this.strEqual(this.comment, columnProperty2.getComment()) && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
         }
-        return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.a(this.comment, columnProperty2.getComment()) && this.a(this.fieldDefault, columnProperty2.getFieldDefault());
+        return this.columnType.equals(columnProperty2.getColumnType()) && this.isNullable.equals(columnProperty2.isNullable) && this.columnSize == columnProperty2.getColumnSize() && this.strEqual(this.comment, columnProperty2.getComment()) && this.strEqual(this.fieldDefault, columnProperty2.getFieldDefault());
     }
 
-    public boolean a(ColumnProperty columnProperty2) {
+    public boolean strEqual(ColumnProperty columnProperty2) {
         if (columnProperty2 == this) {
             return true;
         }
-        return this.a(this.comment, columnProperty2.getComment());
+        return this.strEqual(this.comment, columnProperty2.getComment());
     }
 
-    public boolean b(ColumnProperty columnProperty2) {
+    public boolean columnCommentEqual(ColumnProperty columnProperty2) {
         if (columnProperty2 == this) {
             return true;
         }
-        return this.a(this.comment, columnProperty2.getComment());
+        return this.strEqual(this.comment, columnProperty2.getComment());
     }
 
-    private boolean a(String string, String string2) {
-        boolean bl;
-        boolean bl2 = StringUtils.isNotEmpty((String)string);
-        if (bl2 != (bl = StringUtils.isNotEmpty((String)string2))) {
+    private boolean strEqual(String string, String string2) {
+        // 一个空另外一个不空时，两个不等
+        if (StringUtils.isNotEmpty(string) != StringUtils.isNotEmpty(string2)) {
             return false;
         }
-        if (bl2) {
+        if (StringUtils.isNotEmpty(string)) {
             return string.equals(string2);
         }
         return true;

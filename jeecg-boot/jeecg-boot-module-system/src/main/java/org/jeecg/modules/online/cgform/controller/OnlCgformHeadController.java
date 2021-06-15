@@ -71,7 +71,7 @@ import org.jeecg.modules.online.cgform.entity.OnlCgformHead;
 import org.jeecg.modules.online.cgform.service.IOnlCgformEnhanceService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformFieldService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
-import org.jeecg.modules.online.cgform.util.DbConstant;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.jeecg.modules.online.config.exception.DBException;
 import org.jeecgframework.codegenerate.database.DbReadTableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -335,7 +335,7 @@ public class OnlCgformHeadController {
     @CacheEvict(value = {"sys:cache:online:list", "sys:cache:online:form"}, allEntries = true, beforeInvocation = true)
     public Result<?> b(@PathVariable(value = "formId") String string, @RequestBody OnlCgformEnhanceJava onlCgformEnhanceJava) {
         try {
-            if (!DbConstant.a(onlCgformEnhanceJava)) {
+            if (!DataBaseUtils.a(onlCgformEnhanceJava)) {
                 return Result.error((String) "类实例化失败，请检查!");
             }
             onlCgformEnhanceJava.setCgformHeadId(string);
@@ -354,7 +354,7 @@ public class OnlCgformHeadController {
     @CacheEvict(value = {"sys:cache:online:list", "sys:cache:online:form"}, allEntries = true, beforeInvocation = true)
     public Result<?> c(@PathVariable(value = "formId") String string, @RequestBody OnlCgformEnhanceJava onlCgformEnhanceJava) {
         try {
-            if (!DbConstant.a(onlCgformEnhanceJava)) {
+            if (!DataBaseUtils.a(onlCgformEnhanceJava)) {
                 return Result.error((String) "类实例化失败，请检查!");
             }
             onlCgformEnhanceJava.setCgformHeadId(string);
@@ -407,8 +407,8 @@ public class OnlCgformHeadController {
             log.error(sQLException.getMessage(), (Throwable) sQLException);
             return Result.error((String) "同步失败，未获取数据库表信息");
         }
-        DbConstant.b(list);
-        list = DbConstant.f(list);
+        DataBaseUtils.b(list);
+        list = DataBaseUtils.f(list);
         List<String> list2 = this.onlCgformHeadService.queryOnlinetables();
         this.b();
         list.removeAll(list2);

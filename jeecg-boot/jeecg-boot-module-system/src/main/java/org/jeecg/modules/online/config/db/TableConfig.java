@@ -4,10 +4,19 @@
 package org.jeecg.modules.online.config.db;
 
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 import org.jeecg.modules.online.cgform.entity.OnlCgformIndex;
 
-public class DbConfig {
+@Data
+@AllArgsConstructor
+@EqualsAndHashCode
+@NoArgsConstructor
+public class TableConfig {
     private String tableName;
     private String isDbSynch;
     private String content;

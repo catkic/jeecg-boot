@@ -48,7 +48,7 @@ extends ExcelDataHandlerDefaultImpl {
             map.put(string, PoiPublicUtil.doubleToString((Double)((Double)value)));
         } else if (value instanceof byte[]) {
             byte[] arrby = (byte[])value;
-            String string2 = DbConstant.a(arrby, this.c, this.d, this.e);
+            String string2 = DataBaseUtils.a(arrby, this.c, this.d, this.e);
             if (string2 != null) {
                 map.put(string, string2);
             }
