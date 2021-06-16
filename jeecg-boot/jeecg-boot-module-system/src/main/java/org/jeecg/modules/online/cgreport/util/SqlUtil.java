@@ -51,7 +51,7 @@ public class SqlUtil {
             while (iterator.hasNext()) {
                 String string2 = String.valueOf(iterator.next());
                 String string3 = String.valueOf(map.get(string2));
-                if (!oConvertUtils.isNotEmpty((Object)string3)) continue;
+                if (!oConvertUtils.isNotEmpty(string3)) continue;
                 stringBuilder.append(" AND ");
                 stringBuilder.append(" " + string2 + string3);
             }
@@ -119,7 +119,7 @@ public class SqlUtil {
     }
 
     public static String a(String string, String ... arrstring) {
-        if (oConvertUtils.isNotEmpty((Object)string)) {
+        if (oConvertUtils.isNotEmpty(string)) {
             if ("MYSQL".equals(string) || "MARIADB".equals(string)) {
                 return MessageFormat.format(h, arrstring);
             }
@@ -137,7 +137,7 @@ public class SqlUtil {
     }
 
     public static String b(String string, String ... arrstring) {
-        if (oConvertUtils.isNotEmpty((Object)string)) {
+        if (oConvertUtils.isNotEmpty(string)) {
             if ("MYSQL".equals(string) || "MARIADB".equals(string)) {
                 return MessageFormat.format(l, arrstring);
             }
@@ -163,7 +163,7 @@ public class SqlUtil {
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             String string3 = matcher.group();
-            p.debug("${}\u5339\u914d\u5e26\u53c2SQL\u7247\u6bb5 ==>" + string3);
+            p.debug("${}匹配带参SQL片段 ==>" + string3);
             if (string3.indexOf(a) != -1) {
                 String string4 = string3.substring(0, string3.indexOf(a));
                 string = string.replace(string3, string4 + " where 1=1");
@@ -184,7 +184,7 @@ public class SqlUtil {
             } else {
                 string = string3.startsWith(",") ? string.replace(string3, " ,1 ") : string.replace(string3, " 1=1 ");
             }
-            p.debug("${}\u66ff\u6362\u540e\u7ed3\u679c ==>" + string);
+            p.debug("${}替换后结果 ==>" + string);
         }
         string = string.replaceAll("(?i)\\(\\s*1=1\\s*(AND|OR)", "(");
         string = string.replaceAll("(?i)(AND|OR)\\s*1=1", "");
@@ -196,35 +196,27 @@ public class SqlUtil {
         System.out.println(SqlUtil.a(string));
     }
 
-    public static Map<String, Object> a(HttpServletRequest httpServletRequest) {
-        Map map = httpServletRequest.getParameterMap();
-        HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        Iterator iterator = map.entrySet().iterator();
-        String string = "";
-        String string2 = "";
-        Object object = null;
-        while (iterator.hasNext()) {
-            Map.Entry entry = iterator.next();
-            string = (String)entry.getKey();
-            object = entry.getValue();
-            if ("_t".equals(string) || null == object) {
-                string2 = "";
-            } else if (object instanceof String[]) {
-                String[] arrstring = (String[])object;
-                for (int i2 = 0; i2 < arrstring.length; ++i2) {
-                    string2 = arrstring[i2] + ",";
-                }
-                string2 = string2.substring(0, string2.length() - 1);
+    public static Map<String, Object> formatParasMap(HttpServletRequest httpServletRequest) {
+        Map<String, String[]> map = httpServletRequest.getParameterMap();
+        HashMap<String, Object > hashMap = new HashMap<>();
+        for (Map.Entry<String, String[]> entry : map.entrySet()) {
+            String key = entry.getKey();
+            String[] val = entry.getValue();
+            if ("_t".equals(key) || null == val) {
+                hashMap.put(key, "");
             } else {
-                string2 = object.toString();
+                String string2 = "";
+                for (int i2 = 0; i2 < val.length; ++i2) {
+                    string2 = val[i2] + ",";
+                }
+                hashMap.put(key, string2.substring(0, string2.length() - 1));
             }
-            hashMap.put(string, string2);
         }
         return hashMap;
     }
 
     public static String b(String string) {
-        String string2 = QueryGenerator.convertSystemVariables((String)string);
+        String string2 = QueryGenerator.convertSystemVariables(string);
         String string3 = QueryGenerator.getAllConfigAuth();
         if (string.toLowerCase().indexOf("where") > 0) {
             return string2 + string3;
@@ -237,4 +229,3 @@ public class SqlUtil {
         return string2.indexOf("select") == 0;
     }
 }
-

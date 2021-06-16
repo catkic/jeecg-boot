@@ -28,12 +28,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.online.cgreport.entity.OnlCgreportParam;
@@ -52,64 +51,63 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = {"/online/cgreport/param"})
+@Slf4j
 public class OnlCgreportParamController {
-    private static final Logger a = LoggerFactory.getLogger(OnlCgreportParamController.class);
     @Autowired
     private IOnlCgreportParamService onlCgreportParamService;
 
     @GetMapping(value = {"/listByHeadId"})
     public Result<?> a(@RequestParam(value = "headId") String string) {
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq((Object) "cgrhead_id", (Object) string);
-        queryWrapper.orderByAsc((Object) "order_num");
-        List list = this.onlCgreportParamService.list((Wrapper) queryWrapper);
+        queryWrapper.eq("cgrhead_id", string);
+        queryWrapper.orderByAsc("order_num");
+        List list = this.onlCgreportParamService.list(queryWrapper);
         Result result = new Result();
         result.setSuccess(true);
-        result.setResult((Object) list);
+        result.setResult(list);
         return result;
     }
 
     @GetMapping(value = {"/list"})
     public Result<IPage<OnlCgreportParam>> a(OnlCgreportParam onlCgreportParam, @RequestParam(name = "pageNo", defaultValue = "1") Integer n2, @RequestParam(name = "pageSize", defaultValue = "10") Integer n3, HttpServletRequest httpServletRequest) {
         Result result = new Result();
-        QueryWrapper queryWrapper = QueryGenerator.initQueryWrapper((Object) onlCgreportParam, (Map) httpServletRequest.getParameterMap());
-        Page page = new Page((long) n2.intValue(), (long) n3.intValue());
-        IPage iPage = this.onlCgreportParamService.page((IPage) page, (Wrapper) queryWrapper);
+        QueryWrapper<OnlCgreportParam> queryWrapper = QueryGenerator.initQueryWrapper(onlCgreportParam, httpServletRequest.getParameterMap());
+        Page<OnlCgreportParam> page = new Page(n2, n3);
+        IPage<OnlCgreportParam> iPage = this.onlCgreportParamService.page( page, queryWrapper);
         result.setSuccess(true);
-        result.setResult((Object) iPage);
+        result.setResult(iPage);
         return result;
     }
 
     @PostMapping(value = {"/add"})
     public Result<?> a(@RequestBody OnlCgreportParam onlCgreportParam) {
         this.onlCgreportParamService.save(onlCgreportParam);
-        return Result.ok((String) "\u6dfb\u52a0\u6210\u529f!");
+        return Result.ok("添加成功!");
     }
 
     @PutMapping(value = {"/edit"})
     public Result<?> b(@RequestBody OnlCgreportParam onlCgreportParam) {
         this.onlCgreportParamService.updateById(onlCgreportParam);
-        return Result.ok((String) "\u7f16\u8f91\u6210\u529f!");
+        return Result.ok("编辑成功!");
     }
 
     @DeleteMapping(value = {"/delete"})
     public Result<?> b(@RequestParam(name = "id", required = true) String string) {
-        this.onlCgreportParamService.removeById((Serializable) ((Object) string));
-        return Result.ok((String) "\u5220\u9664\u6210\u529f!");
+        this.onlCgreportParamService.removeById(string);
+        return Result.ok("删除成功!");
     }
 
     @DeleteMapping(value = {"/deleteBatch"})
     public Result<?> c(@RequestParam(name = "ids", required = true) String string) {
         this.onlCgreportParamService.removeByIds(Arrays.asList(string.split(",")));
-        return Result.ok((String) "\u6279\u91cf\u5220\u9664\u6210\u529f!");
+        return Result.ok("批量删除成功!");
     }
 
     @GetMapping(value = {"/queryById"})
     public Result<OnlCgreportParam> d(@RequestParam(name = "id", required = true) String string) {
         Result result = new Result();
-        OnlCgreportParam onlCgreportParam = (OnlCgreportParam) this.onlCgreportParamService.getById((Serializable) ((Object) string));
-        result.setResult((Object) onlCgreportParam);
+        OnlCgreportParam onlCgreportParam = this.onlCgreportParamService.getById(string);
+        result.setResult(onlCgreportParam);
         return result;
     }
 }
-

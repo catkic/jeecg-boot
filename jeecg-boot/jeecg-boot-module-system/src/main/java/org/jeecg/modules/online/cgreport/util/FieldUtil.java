@@ -15,7 +15,8 @@ package org.jeecg.modules.online.cgreport.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import java.io.UnsupportedEncodingException;
+
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,15 +29,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.online.cgform.util.b;
+import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.jeecg.modules.online.cgreport.entity.OnlCgreportItem;
-import org.jeecg.modules.online.config.b.d;
 import org.jeecg.modules.online.config.exception.DBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jeecg.modules.online.config.util.DataBaseUtil;
 
 @Slf4j
-public class a {
+public class FieldUtil {
 
     public static void a(HttpServletRequest httpServletRequest, Map<String, Object> map, Map<String, Object> map2, Map<String, Object> map3) {
         String string = (String)map.get("field_name");
@@ -44,21 +43,15 @@ public class a {
         String string3 = (String)map.get("field_type");
         if ("single".equals(string2)) {
             String string4 = httpServletRequest.getParameter(string.toLowerCase());
-            try {
-                if (oConvertUtils.isEmpty((Object)string4)) {
-                    return;
-                }
-                String string5 = httpServletRequest.getQueryString();
-                if (string5.contains(string + "=")) {
-                    String string6;
-                    string4 = string6 = new String(string4.getBytes("ISO-8859-1"), "UTF-8");
-                }
-            }
-            catch (UnsupportedEncodingException unsupportedEncodingException) {
-                log.error(unsupportedEncodingException.getMessage(), (Throwable)unsupportedEncodingException);
+            if (oConvertUtils.isEmpty((Object)string4)) {
                 return;
             }
-            if (oConvertUtils.isNotEmpty((Object)string4)) {
+            String string5 = httpServletRequest.getQueryString();
+            if (string5.contains(string + "=")) {
+                String string6;
+                string4 = string6 = new String(string4.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            }
+            if (oConvertUtils.isNotEmpty(string4)) {
                 if (string4.contains("*")) {
                     string4 = string4.replaceAll("\\*", "%");
                     map2.put(string, " LIKE :" + string);
@@ -66,27 +59,27 @@ public class a {
                     map2.put(string, " = :" + string);
                 }
             }
-            map3.put(string, org.jeecg.modules.online.cgreport.util.a.a(string3, string4, true));
+            map3.put(string, FieldUtil.a(string3, string4, true));
         } else if ("group".equals(string2)) {
             String string7;
             String string8 = httpServletRequest.getParameter(string.toLowerCase() + "_begin");
             String string9 = httpServletRequest.getParameter(string.toLowerCase() + "_end");
-            if (oConvertUtils.isNotEmpty((Object)string8)) {
+            if (oConvertUtils.isNotEmpty(string8)) {
                 string7 = " >= :" + string + "_begin";
                 map2.put(string, string7);
-                map3.put(string + "_begin", org.jeecg.modules.online.cgreport.util.a.a(string3, string8, true));
+                map3.put(string + "_begin", FieldUtil.a(string3, string8, true));
             }
-            if (oConvertUtils.isNotEmpty((Object)string9)) {
+            if (oConvertUtils.isNotEmpty(string9)) {
                 string7 = " <= :" + string + "_end";
-                map2.put(new String(string), string7);
-                map3.put(string + "_end", org.jeecg.modules.online.cgreport.util.a.a(string3, string9, false));
+                map2.put(string, string7);
+                map3.put(string + "_end", FieldUtil.a(string3, string9, false));
             }
         }
     }
 
     private static Object a(String string, String string2, boolean bl) {
         Object object = null;
-        if (oConvertUtils.isNotEmpty((Object)string2)) {
+        if (oConvertUtils.isNotEmpty(string2)) {
             if ("String".equalsIgnoreCase(string)) {
                 object = string2;
             } else if ("Date".equalsIgnoreCase(string)) {
@@ -94,7 +87,7 @@ public class a {
                     string2 = bl ? string2 + " 00:00:00" : string2 + " 23:59:59";
                 }
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                object = DateUtils.str2Date((String)string2, (SimpleDateFormat)simpleDateFormat);
+                object = DateUtils.str2Date(string2, simpleDateFormat);
             } else {
                 object = "Double".equalsIgnoreCase(string) ? string2 : ("Integer".equalsIgnoreCase(string) ? string2 : string2);
             }
@@ -105,21 +98,21 @@ public class a {
     public static String a(List<Map<String, Object>> list, Long l2) {
         JSONObject jSONObject = new JSONObject();
         JSONArray jSONArray = new JSONArray();
-        jSONObject.put("total", (Object)l2);
+        jSONObject.put("total", l2);
         if (list != null) {
             for (Map<String, Object> map : list) {
                 JSONObject jSONObject2 = new JSONObject();
                 for (String string : map.keySet()) {
                     String string2 = String.valueOf(map.get(string));
                     if ((string = string.toLowerCase()).contains("time") || string.contains("date")) {
-                        string2 = org.jeecg.modules.online.cgreport.util.a.a(string2);
+                        string2 = FieldUtil.a(string2);
                     }
-                    jSONObject2.put(string, (Object)string2);
+                    jSONObject2.put(string, string2);
                 }
-                jSONArray.add((Object)jSONObject2);
+                jSONArray.add(jSONObject2);
             }
         }
-        jSONObject.put("rows", (Object)jSONArray);
+        jSONObject.put("rows", jSONArray);
         return jSONObject.toString();
     }
 
@@ -130,11 +123,11 @@ public class a {
             for (String string : map.keySet()) {
                 String string2 = String.valueOf(map.get(string));
                 if ((string = string.toLowerCase()).contains("time") || string.contains("date")) {
-                    string2 = org.jeecg.modules.online.cgreport.util.a.a(string2);
+                    string2 = FieldUtil.a(string2);
                 }
-                jSONObject.put(string, (Object)string2);
+                jSONObject.put(string, string2);
             }
-            jSONArray.add((Object)jSONObject);
+            jSONArray.add(jSONObject);
         }
         return jSONArray.toString();
     }
@@ -152,29 +145,26 @@ public class a {
         }
     }
 
-    public static String a(List<OnlCgreportItem> list, Map<String, Object> map, String string, String string2) {
+    public static String a(List<OnlCgreportItem> list, Map<String, Object> map, String string, String dbType) {
         Object object;
         String string3;
         String string4;
         StringBuffer stringBuffer = new StringBuffer();
-        String string5 = string2;
-        if (string5 == null) {
+        if (dbType == null) {
             try {
-                string5 = d.getDatabaseType();
+                dbType = DataBaseUtil.getDatabaseType();
             }
-            catch (SQLException sQLException) {
+            catch (SQLException | DBException sQLException) {
                 sQLException.printStackTrace();
             }
-            catch (DBException dBException) {
-                dBException.printStackTrace();
-            }
+
         }
         HashSet<String> hashSet = new HashSet<String>();
         for (OnlCgreportItem object2 : list) {
             boolean bl;
             string4 = object2.getFieldName();
             string3 = object2.getFieldType();
-            if (1 != object2.getIsSearch()) continue;
+            if (object2.getIsSearch()) continue;
             if ("group".equals(object2.getSearchMode())) {
                 Object object3;
                 object = map.get(string4 + "_begin");
@@ -182,11 +172,11 @@ public class a {
                     stringBuffer.append(" and " + string + string4 + " >= ");
                     if ("Long".equals(string3) || "Integer".equals(string3)) {
                         stringBuffer.append(object.toString());
-                    } else if ("ORACLE".equals(string5)) {
+                    } else if ("ORACLE".equals(dbType)) {
                         if (string3.toLowerCase().equals("datetime")) {
-                            stringBuffer.append(b.a(object.toString()));
+                            stringBuffer.append(DataBaseUtils.dateTimeFormat(object.toString()));
                         } else if (string3.toLowerCase().equals("date")) {
-                            stringBuffer.append(b.b(object.toString()));
+                            stringBuffer.append(DataBaseUtils.dateFormat(object.toString()));
                         }
                     } else {
                         stringBuffer.append("'" + object.toString() + "'");
@@ -198,13 +188,13 @@ public class a {
                     stringBuffer.append(object3.toString());
                     continue;
                 }
-                if ("ORACLE".equals(string5)) {
+                if ("ORACLE".equals(dbType)) {
                     if (string3.toLowerCase().equals("datetime")) {
-                        stringBuffer.append(b.a(object3.toString()));
+                        stringBuffer.append(DataBaseUtils.dateTimeFormat(object3.toString()));
                         continue;
                     }
                     if (!string3.toLowerCase().equals("date")) continue;
-                    stringBuffer.append(b.b(object3.toString()));
+                    stringBuffer.append(DataBaseUtils.dateFormat(object3.toString()));
                     continue;
                 }
                 stringBuffer.append("'" + object3.toString() + "'");
@@ -213,16 +203,16 @@ public class a {
             object = map.get(string4);
             if (object == null) continue;
             boolean bl2 = bl = !"Long".equals(string3) && !"Integer".equals(string3);
-            if ("ORACLE".equals(string5)) {
+            if ("ORACLE".equals(dbType)) {
                 if (string3.toLowerCase().equals("datetime")) {
-                    object = b.a(object.toString());
+                    object = DataBaseUtils.dateTimeFormat(object.toString());
                     bl = false;
                 } else if (string3.toLowerCase().equals("date")) {
-                    object = b.b(object.toString());
+                    object = DataBaseUtils.dateFormat(object.toString());
                     bl = false;
                 }
             }
-            String string6 = QueryGenerator.getSingleQueryConditionSql((String)string4, (String)string, (Object)object, (boolean)bl, (String)string5);
+            String string6 = QueryGenerator.getSingleQueryConditionSql(string4, string, object, bl, dbType);
             stringBuffer.append(" and " + string6);
             hashSet.add(string4);
         }
@@ -231,8 +221,8 @@ public class a {
             string4 = map.get(string7).toString();
             string3 = string7.substring("popup_param_pre__".length());
             if (hashSet.contains(string3)) continue;
-            object = QueryGenerator.getSingleQueryConditionSql((String)string3, (String)string, (Object)string4, (boolean)false);
-            stringBuffer.append(" and " + (String)object);
+            object = QueryGenerator.getSingleQueryConditionSql(string3, string, string4, false);
+            stringBuffer.append(" and " + object);
         }
         return stringBuffer.toString();
     }

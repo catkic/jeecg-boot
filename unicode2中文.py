@@ -1,5 +1,5 @@
 import os
-
+import re
 # with open(
 #         "E:\\Project\\Hwagain\\java\\jeecg-boot\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\online\\cgform\\util\\b.java") as f:
 #     java = f.read()
@@ -13,8 +13,7 @@ def findAllFile(base):
 
 
 for file in findAllFile(
-        "E:\\Project\\Hwagain\\java\\jeecg-boot\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg"):
-
+        "/home/catkic/Documents/projects/java/jeecg-boot/jeecg-boot/jeecg-boot-module-system/src/main/java/org/jeecg/modules/online/cgreport"):
     with open(file, 'r+', encoding='utf-8') as f:
 
         java = f.read()

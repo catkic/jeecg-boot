@@ -162,7 +162,7 @@ public class DataBaseUtils {
     public static final String ag = "export";
     public static final String ah = "query";
     public static final String FORM = "form";
-    public static final String aj = "list";
+    public static final String SHOW_TYPE_LIST = "list";
     public static final String ak = "1";
     public static final String al = "start";
     public static final String am = "erp";
@@ -210,16 +210,16 @@ public class DataBaseUtils {
         stringBuffer.append(FROM + DataBaseUtils.f(string));
     }
 
-    public static String a(String string) {
+    public static String dateTimeFormat(String string) {
         return " to_date('" + string + "','yyyy-MM-dd HH24:mi:ss')";
     }
 
-    public static String b(String string) {
+    public static String dateFormat(String string) {
         return " to_date('" + string + "','yyyy-MM-dd')";
     }
 
     public static boolean c(String string) {
-        if (aj.equals(string)) {
+        if (SHOW_TYPE_LIST.equals(string)) {
             return true;
         }
         if ("radio".equals(string)) {
@@ -285,11 +285,11 @@ public class DataBaseUtils {
                     continue;
                 }
                 if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
-                    stringBuffer.append(AND + string2 + EQUAL + DataBaseUtils.a(object2.toString()));
+                    stringBuffer.append(AND + string2 + EQUAL + DataBaseUtils.dateTimeFormat(object2.toString()));
                     continue;
                 }
                 boolean bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
-                string4 = QueryGenerator.getSingleQueryConditionSql((String) string2, (String) "", (Object) object2, (boolean) bl);
+                string4 = QueryGenerator.getSingleQueryConditionSql(string2, "", object2, bl);
                 stringBuffer.append(AND + string4);
                 continue;
             }
@@ -299,7 +299,7 @@ public class DataBaseUtils {
                 if (org.jeecg.modules.online.cgform.util.i.a(string3)) {
                     stringBuffer.append(object2.toString());
                 } else if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
-                    stringBuffer.append(DataBaseUtils.a(object2.toString()));
+                    stringBuffer.append(DataBaseUtils.dateTimeFormat(object2.toString()));
                 } else {
                     stringBuffer.append(z + object2.toString() + z);
                 }
@@ -312,7 +312,7 @@ public class DataBaseUtils {
                 continue;
             }
             if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
-                stringBuffer.append(DataBaseUtils.a(object.toString()));
+                stringBuffer.append(DataBaseUtils.dateTimeFormat(object.toString()));
                 continue;
             }
             stringBuffer.append(z + object.toString() + z);
@@ -404,7 +404,7 @@ public class DataBaseUtils {
 
     private static void a(StringBuilder stringBuilder, QueryRuleEnum queryRuleEnum, String string, String string2, String string3) {
         if ("date".equals(string3) && "ORACLE".equalsIgnoreCase(DataBaseUtils.getDatabseType())) {
-            string2 = (string2 = string2.replace(z, "")).length() == 10 ? DataBaseUtils.b(string2) : DataBaseUtils.a(string2);
+            string2 = (string2 = string2.replace(z, "")).length() == 10 ? DataBaseUtils.dateFormat(string2) : DataBaseUtils.dateTimeFormat(string2);
         }
         switch (queryRuleEnum) {
             case GT: {
@@ -501,17 +501,18 @@ public class DataBaseUtils {
 
     public static boolean a(String string, List<OnlCgformField> list) {
         for (OnlCgformField onlCgformField : list) {
-            if (!string.equals(onlCgformField.getDbFieldName())) continue;
-            return true;
+            if (string.equals(onlCgformField.getDbFieldName())) {
+                return true;
+            }
         }
         return false;
     }
 
     public static JSONObject a(List<OnlCgformField> list, List<String> list2, TablePidModel tablePidModel2) {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        ArrayList<CommonProperty> arrayList2 = new ArrayList<CommonProperty>();
-        ISysBaseAPI iSysBaseAPI = (ISysBaseAPI) SpringContextUtils.getBean(ISysBaseAPI.class);
-        OnlCgformHeadMapper onlCgformHeadMapper = (OnlCgformHeadMapper) SpringContextUtils.getBean(OnlCgformHeadMapper.class);
+        List<String> arrayList = new ArrayList<>();
+        List<CommonProperty> arrayList2 = new ArrayList<>();
+        ISysBaseAPI iSysBaseAPI = SpringContextUtils.getBean(ISysBaseAPI.class);
+        OnlCgformHeadMapper onlCgformHeadMapper = SpringContextUtils.getBean(OnlCgformHeadMapper.class);
         ArrayList<String> arrayList3 = new ArrayList<String>();
 
         for (OnlCgformField onlCgformField : list) {
@@ -595,7 +596,7 @@ public class DataBaseUtils {
                 property = treeSelectProperty;
             } else {
                 StringProperty stringProperty = new StringProperty(dbFieldName, dbFieldTxt, fieldShowType, onlCgformField.getDbLength());
-                if (oConvertUtils.isNotEmpty((Object) onlCgformField.getFieldValidType())) {
+                if (oConvertUtils.isNotEmpty(onlCgformField.getFieldValidType())) {
                     CgformValidPatternEnum patternInfoByType = CgformValidPatternEnum.getPatternInfoByType(onlCgformField.getFieldValidType());
                     if (patternInfoByType != null) {
                         if (CgformValidPatternEnum.NOTNULL == patternInfoByType) {
@@ -1050,7 +1051,7 @@ public class DataBaseUtils {
             return;
         }
         if ("ORACLE".equalsIgnoreCase(string) && "Date".equals(string3)) {
-            string4 = (string4 = string4.replace(z, "")).length() == 10 ? DataBaseUtils.b(string4) : DataBaseUtils.a(string4);
+            string4 = (string4 = string4.replace(z, "")).length() == 10 ? DataBaseUtils.dateFormat(string4) : DataBaseUtils.dateTimeFormat(string4);
         }
         switch (queryRuleEnum) {
             case GT: {
@@ -1234,107 +1235,107 @@ public class DataBaseUtils {
         return string;
     }
 
-    public static JSONArray a(List<OnlCgformField> list, List<String> list2) {
-        JSONArray jSONArray = new JSONArray();
+    public static JSONArray getJsFieldDisplayProperty(List<OnlCgformField> onlCgformFields, List<String> disableField) {
+        JSONArray fieldJsProperty = new JSONArray();
         ISysBaseAPI iSysBaseAPI = (ISysBaseAPI) SpringContextUtils.getBean(ISysBaseAPI.class);
-        for (OnlCgformField onlCgformField : list) {
-            String string = onlCgformField.getDbFieldName();
-            if ("id".equals(string)) continue;
-            JSONObject jSONObject = new JSONObject();
-            if (list2.indexOf(string) >= 0) {
-                jSONObject.put("disabled", (Object) true);
+        for (OnlCgformField onlCgformField : onlCgformFields) {
+            String dbFieldName = onlCgformField.getDbFieldName();
+            if ("id".equals(dbFieldName)) continue;
+            JSONObject fieldProperty = new JSONObject();
+            if (disableField.contains(dbFieldName)) {
+                fieldProperty.put("disabled", true);
             }
             if (onlCgformField.getIsReadOnly() != null && 1 == onlCgformField.getIsReadOnly()) {
-                jSONObject.put("disabled", (Object) true);
+                fieldProperty.put("disabled", true);
             }
-            jSONObject.put("title", (Object) onlCgformField.getDbFieldTxt());
-            jSONObject.put("key", (Object) string);
-            String string2 = DataBaseUtils.c(onlCgformField);
-            jSONObject.put("type", (Object) string2);
+            fieldProperty.put("title", onlCgformField.getDbFieldTxt());
+            fieldProperty.put("key", dbFieldName);
+            String showType = DataBaseUtils.getFieldShowType(onlCgformField);
+            fieldProperty.put("type", showType);
+            // 下面设置宽度
             if (onlCgformField.getFieldLength() == null) {
-                jSONObject.put("width", (Object) "186px");
-            } else if ("sel_depart".equals(string2) || "sel_user".equals(string2)) {
-                jSONObject.put("width", (Object) "");
+                fieldProperty.put("width", "186px");
+            } else if ("sel_depart".equals(showType) || "sel_user".equals(showType)) {
+                fieldProperty.put("width", "");
             } else {
-                jSONObject.put("width", (Object) (onlCgformField.getFieldLength() + "px"));
+                fieldProperty.put("width", (onlCgformField.getFieldLength() + "px"));
             }
-            if (string2.equals(FILE) || string2.equals(IMAGE)) {
-                jSONObject.put("responseName", (Object) "message");
-                jSONObject.put("token", (Object) true);
+            if (showType.equals(FILE) || showType.equals(IMAGE)) {
+                fieldProperty.put("responseName", "message");
+                fieldProperty.put("token", true);
             }
-            if (string2.equals(SWITCH)) {
-                jSONObject.put("type", (Object) "checkbox");
+            if (showType.equals(SWITCH)) {
+                fieldProperty.put("type", "checkbox");
                 JSONArray object = new JSONArray();
-                if (oConvertUtils.isEmpty((Object) onlCgformField.getFieldExtendJson())) {
+                if (oConvertUtils.isEmpty(onlCgformField.getFieldExtendJson())) {
                     object.add(POSITIVE);
                     object.add(NEGATIVE);
                 } else {
                     object = JSONArray.parseArray(onlCgformField.getFieldExtendJson());
                 }
-                jSONObject.put("customValue", object);
+                fieldProperty.put("customValue", object);
             }
-            if (string2.equals(POPUP)) {
-                jSONObject.put("popupCode", (Object) onlCgformField.getDictTable());
-                jSONObject.put("orgFields", (Object) onlCgformField.getDictField());
-                jSONObject.put("destFields", (Object) onlCgformField.getDictText());
-                String object = onlCgformField.getDictText();
-                if (object != null && !((String) object).equals("")) {
-                    String[] arrstring;
+            if (showType.equals(POPUP)) {
+                fieldProperty.put("popupCode", onlCgformField.getDictTable());
+                fieldProperty.put("orgFields", onlCgformField.getDictField());
+                fieldProperty.put("destFields", onlCgformField.getDictText());
+                String dictText = onlCgformField.getDictText();
+                if (!"".equals(dictText)) {
                     ArrayList<String> arrayList = new ArrayList<String>();
-                    for (String string3 : arrstring = ((String) object).split(COMMA)) {
-                        if (DataBaseUtils.a(string3, list)) continue;
-                        arrayList.add(string3);
+                    for (String dict : dictText.split(COMMA)) {
+                        if (DataBaseUtils.a(dict, onlCgformFields)) continue;
+                        arrayList.add(dict);
                         JSONObject jSONObject2 = new JSONObject();
-                        jSONObject2.put("title", (Object) string3);
-                        jSONObject2.put("key", (Object) string3);
-                        jSONObject2.put("type", (Object) "hidden");
-                        jSONArray.add((Object) jSONObject2);
+                        jSONObject2.put("title", dict);
+                        jSONObject2.put("key", dict);
+                        jSONObject2.put("type", "hidden");
+                        fieldJsProperty.add(jSONObject2);
                     }
                 }
             }
-            jSONObject.put("defaultValue", (Object) onlCgformField.getDbDefaultVal());
-            jSONObject.put("fieldDefaultValue", (Object) onlCgformField.getFieldDefaultValue());
-            jSONObject.put("placeholder", (Object) ("请输入" + onlCgformField.getDbFieldTxt()));
-            jSONObject.put("validateRules", (Object) DataBaseUtils.b(onlCgformField));
-            if (aj.equals(onlCgformField.getFieldShowType()) || "radio".equals(onlCgformField.getFieldShowType()) || "checkbox_meta".equals(onlCgformField.getFieldShowType()) || "list_multi".equals(onlCgformField.getFieldShowType()) || "sel_search".equals(onlCgformField.getFieldShowType())) {
-                jSONObject.put("view", (Object) onlCgformField.getFieldShowType());
-                jSONObject.put("dictTable", (Object) onlCgformField.getDictTable());
-                jSONObject.put("dictText", (Object) onlCgformField.getDictText());
-                jSONObject.put("dictCode", (Object) onlCgformField.getDictField());
+            fieldProperty.put("defaultValue", onlCgformField.getDbDefaultVal());
+            fieldProperty.put("fieldDefaultValue", onlCgformField.getFieldDefaultValue());
+            fieldProperty.put("placeholder", ("请输入" + onlCgformField.getDbFieldTxt()));
+            fieldProperty.put("validateRules", DataBaseUtils.getJsValidation(onlCgformField));
+            if (SHOW_TYPE_LIST.equals(onlCgformField.getFieldShowType()) || "radio".equals(onlCgformField.getFieldShowType()) || "checkbox_meta".equals(onlCgformField.getFieldShowType()) || "list_multi".equals(onlCgformField.getFieldShowType()) || "sel_search".equals(onlCgformField.getFieldShowType())) {
+                fieldProperty.put("view", onlCgformField.getFieldShowType());
+                fieldProperty.put("dictTable", onlCgformField.getDictTable());
+                fieldProperty.put("dictText", onlCgformField.getDictText());
+                fieldProperty.put("dictCode", onlCgformField.getDictField());
                 if ("list_multi".equals(onlCgformField.getFieldShowType())) {
-                    jSONObject.put("width", (Object) "230px");
+                    fieldProperty.put("width", "230px");
                 }
             }
-            jSONObject.put("fieldExtendJson", (Object) onlCgformField.getFieldExtendJson());
-            jSONArray.add((Object) jSONObject);
+            fieldProperty.put("fieldExtendJson", onlCgformField.getFieldExtendJson());
+            fieldJsProperty.add(fieldProperty);
         }
-        return jSONArray;
+        return fieldJsProperty;
     }
 
-    private static JSONArray b(OnlCgformField onlCgformField) {
+    private static JSONArray getJsValidation(OnlCgformField onlCgformField) {
         JSONObject jSONObject;
         JSONArray jSONArray = new JSONArray();
         if (onlCgformField.getDbIsNull() == 0 || "1".equals(onlCgformField.getFieldMustInput())) {
             jSONObject = new JSONObject();
-            jSONObject.put("required", (Object) true);
-            jSONObject.put("message", (Object) (onlCgformField.getDbFieldTxt() + "不能为空!"));
-            jSONArray.add((Object) jSONObject);
+            jSONObject.put("required", true);
+            jSONObject.put("message", (onlCgformField.getDbFieldTxt() + "不能为空!"));
+            jSONArray.add(jSONObject);
         }
-        if (oConvertUtils.isNotEmpty((Object) onlCgformField.getFieldValidType())) {
+        if (oConvertUtils.isNotEmpty(onlCgformField.getFieldValidType())) {
             jSONObject = new JSONObject();
             if ("only".equals(onlCgformField.getFieldValidType())) {
-                jSONObject.put("unique", (Object) true);
-                jSONObject.put("message", (Object) (onlCgformField.getDbFieldTxt() + "不能重复"));
+                jSONObject.put("unique", true);
+                jSONObject.put("message", onlCgformField.getDbFieldTxt() + "不能重复");
             } else {
-                jSONObject.put("pattern", (Object) onlCgformField.getFieldValidType());
-                jSONObject.put("message", (Object) (onlCgformField.getDbFieldTxt() + "格式不正确"));
+                jSONObject.put("pattern", onlCgformField.getFieldValidType());
+                jSONObject.put("message", onlCgformField.getDbFieldTxt() + "格式不正确");
             }
-            jSONArray.add((Object) jSONObject);
+            jSONArray.add(jSONObject);
         }
         return jSONArray;
     }
 
-    public static Map<String, Object> b(Map<String, Object> map) {
+    public static Map<String, Object> lobAndNull(Map<String, Object> map) {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         if (map == null || map.isEmpty()) {
             return hashMap;
@@ -1349,10 +1350,8 @@ public class DataBaseUtils {
                 object2 = new String((byte[]) object2);
             } else if (object2 instanceof Blob) {
                 try {
-                    if (object2 != null) {
-                        Blob object = (Blob) object2;
-                        object2 = new String(object.getBytes(1L, (int) object.length()), "UTF-8");
-                    }
+                    Blob object = (Blob) object2;
+                    object2 = new String(object.getBytes(1L, (int) object.length()), "UTF-8");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -1367,7 +1366,7 @@ public class DataBaseUtils {
     }
 
     public static JSONObject a(JSONObject jSONObject) {
-        if (DataBaseUtil.a()) {
+        if (DataBaseUtil.isOracle()) {
             JSONObject jSONObject2 = new JSONObject();
             if (jSONObject == null || jSONObject.isEmpty()) {
                 return jSONObject2;
@@ -1381,33 +1380,31 @@ public class DataBaseUtils {
         return jSONObject;
     }
 
-    public static List<Map<String, Object>> d(List<Map<String, Object>> list) {
-        ArrayList<Map<String, Object>> arrayList = new ArrayList<Map<String, Object>>();
-        for (Map<String, Object> map : list) {
-            HashMap<String, Object> hashMap = new HashMap<String, Object>();
-            Set<String> set = map.keySet();
-            for (String string : set) {
-                Object object2 = map.get(string);
-                if (object2 instanceof Clob) {
-                    object2 = DataBaseUtils.a((Clob) object2);
-                } else if (object2 instanceof byte[]) {
-                    object2 = new String((byte[]) object2);
-                } else if (object2 instanceof Blob) {
+    public static List<Map<String, Object>> lobAndNull(List<Map<String, Object>> rows) {
+        List<Map<String, Object>> records = new ArrayList<>();
+        for (Map<String, Object> map : rows) {
+
+            Map<String, Object> hashMap = new HashMap<>();
+
+            for (String string : map.keySet()) {
+                Object val = map.get(string);
+                if (val instanceof Clob) {
+                    val = DataBaseUtils.a((Clob) val);
+                } else if (val instanceof byte[]) {
+                    val = new String((byte[]) val);
+                } else if (val instanceof Blob) {
                     try {
-                        if (object2 != null) {
-                            Blob object = (Blob) object2;
-                            object2 = new String(object.getBytes(1L, (int) object.length()), "UTF-8");
-                        }
+                        Blob object = (Blob) val;
+                        val = new String(object.getBytes(1L, (int) object.length()), "UTF-8");
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
                 }
-                String object = string.toLowerCase();
-                hashMap.put((String) object, object2 == null ? "" : object2);
+                hashMap.put(string.toLowerCase(), val == null ? "" : val);
             }
-            arrayList.add(hashMap);
+            records.add(hashMap);
         }
-        return arrayList;
+        return records;
     }
 
     public static String a(Clob clob) {
@@ -1612,11 +1609,11 @@ public class DataBaseUtils {
         return arrayList;
     }
 
-    private static String c(OnlCgformField onlCgformField) {
+    private static String getFieldShowType(OnlCgformField onlCgformField) {
         if ("checkbox".equals(onlCgformField.getFieldShowType())) {
             return "checkbox";
         }
-        if (aj.equals(onlCgformField.getFieldShowType())) {
+        if (SHOW_TYPE_LIST.equals(onlCgformField.getFieldShowType())) {
             return "select";
         }
         if (SWITCH.equals(onlCgformField.getFieldShowType())) {
@@ -1771,7 +1768,7 @@ public class DataBaseUtils {
     private static boolean c(JSONObject jSONObject) {
         String string;
         Object object = jSONObject.get((Object) "view");
-        return object != null && (aj.equals(string = object.toString()) || "radio".equals(string) || "checkbox_meta".equals(string) || "list_multi".equals(string) || "sel_search".equals(string));
+        return object != null && (SHOW_TYPE_LIST.equals(string = object.toString()) || "radio".equals(string) || "checkbox_meta".equals(string) || "list_multi".equals(string) || "sel_search".equals(string));
     }
 }
 

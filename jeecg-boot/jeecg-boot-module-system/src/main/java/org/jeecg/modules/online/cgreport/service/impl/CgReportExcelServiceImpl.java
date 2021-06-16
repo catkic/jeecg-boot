@@ -1,6 +1,6 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  org.apache.poi.hssf.usermodel.HSSFCellStyle
  *  org.apache.poi.hssf.usermodel.HSSFRichTextString
@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -41,18 +43,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service(value="cgReportExcelService")
-public class CgReportExcelServiceImpl
-implements CgReportExcelServiceI {
-    private static final Logger a = LoggerFactory.getLogger(CgReportExcelServiceImpl.class);
+@Service
+@Slf4j
+public class CgReportExcelServiceImpl implements CgReportExcelServiceI {
 
     @Override
     public HSSFWorkbook exportExcel(String title, Collection<?> titleSet, Collection<?> dataSet) {
         HSSFWorkbook hSSFWorkbook = null;
         try {
-            Object object;
             if (titleSet == null || titleSet.size() == 0) {
-                throw new Exception("\u8bfb\u53d6\u8868\u5934\u5931\u8d25\uff01");
+                throw new Exception("读取表头失败！");
             }
             if (title == null) {
                 title = "";
@@ -62,16 +62,15 @@ implements CgReportExcelServiceI {
             int n2 = 0;
             int n3 = 0;
             Row row = hSSFSheet.createRow(n2);
-            row.setHeight((short)450);
+            row.setHeight((short) 450);
             HSSFCellStyle hSSFCellStyle = this.a(hSSFWorkbook);
-            List list = (List)titleSet;
+            List<Map<String, String>> list = (List<Map<String, String>>) titleSet;
             Iterator<?> iterator = dataSet.iterator();
             for (Map<String, String> map : list) {
-                String string = (String)map.get("field_txt");
+                String fieldTxt = map.get("field_txt");
                 Cell object2 = row.createCell(n3);
-                object = new HSSFRichTextString(string);
-                object2.setCellValue((RichTextString)object);
-                object2.setCellStyle((CellStyle)hSSFCellStyle);
+                object2.setCellValue(new HSSFRichTextString(fieldTxt));
+                object2.setCellStyle(hSSFCellStyle);
                 ++n3;
             }
             HSSFCellStyle hSSFCellStyle2 = this.c(hSSFWorkbook);
@@ -79,23 +78,22 @@ implements CgReportExcelServiceI {
                 Map map;
                 n3 = 0;
                 row = hSSFSheet.createRow(++n2);
-                map = (Map)iterator.next();
-                for (Object object2 : list) {
-                    object = (String)object2.get("field_name");
-                    String string = map.get(object) == null ? "" : map.get(object).toString();
+                map = (Map) iterator.next();
+                for (Map<String, String> t : list) {
+                    String fieldName = t.get("field_name");
+                    String string = map.get(fieldName) == null ? "" : map.get(fieldName).toString();
                     Cell cell = row.createCell(n3);
                     HSSFRichTextString hSSFRichTextString = new HSSFRichTextString(string);
-                    cell.setCellStyle((CellStyle)hSSFCellStyle2);
-                    cell.setCellValue((RichTextString)hSSFRichTextString);
+                    cell.setCellStyle(hSSFCellStyle2);
+                    cell.setCellValue(hSSFRichTextString);
                     ++n3;
                 }
             }
             for (int i2 = 0; i2 < list.size(); ++i2) {
                 hSSFSheet.autoSizeColumn(i2);
             }
-        }
-        catch (Exception exception) {
-            a.error(exception.getMessage(), (Throwable)exception);
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
         }
         return hSSFWorkbook;
     }
@@ -118,7 +116,7 @@ implements CgReportExcelServiceI {
         for (int i2 = 1; i2 <= n2; ++i2) {
             Row row = hSSFSheet.createRow(i2);
             for (int i3 = 0; i3 < n3; ++i3) {
-                row.createCell(i3).setCellStyle((CellStyle)hSSFCellStyle);
+                row.createCell(i3).setCellStyle(hSSFCellStyle);
             }
         }
     }

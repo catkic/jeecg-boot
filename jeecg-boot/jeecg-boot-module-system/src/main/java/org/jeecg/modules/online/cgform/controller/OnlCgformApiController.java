@@ -248,7 +248,7 @@ public class OnlCgformApiController {
     public Result<?> b(@PathVariable("code") String var1, @PathVariable("id") String var2) {
         try {
             Map var3 = this.onlCgformHeadService.queryManyFormData(var1, var2);
-            return Result.ok(DataBaseUtils.b(var3));
+            return Result.ok(DataBaseUtils.lobAndNull(var3));
         } catch (Exception var4) {
             log.error("Online表单查询异常：" + var4.getMessage(), var4);
             return Result.error("查询失败，" + var4.getMessage());
@@ -259,7 +259,7 @@ public class OnlCgformApiController {
     public Result<?> c(@PathVariable("table") String var1, @PathVariable("mainId") String var2) {
         try {
             Map var3 = this.onlCgformHeadService.querySubFormData(var1, var2);
-            return Result.ok(DataBaseUtils.b(var3));
+            return Result.ok(DataBaseUtils.lobAndNull(var3));
         } catch (Exception var4) {
             log.error("Online表单查询异常：" + var4.getMessage(), var4);
             return Result.error("查询失败，" + var4.getMessage());
@@ -926,7 +926,7 @@ public class OnlCgformApiController {
             log.info("-----------动态列表查询子表sql》》" + var12);
             List var13 = this.onlCgformHeadService.queryListData(var12);
             MapDictConverter.a(1, var13, var7);
-            ((Map) var3.get(var15)).put(var1, DataBaseUtils.d(var13));
+            ((Map) var3.get(var15)).put(var1, DataBaseUtils.lobAndNull(var13));
         }
 
     }

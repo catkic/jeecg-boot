@@ -43,7 +43,7 @@ implements IOnlCgreportItemService {
             HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put("label", onlCgreportItem.getFieldTxt());
             String string = onlCgreportItem.getDictCode();
-            if (oConvertUtils.isNotEmpty((Object)string)) {
+            if (oConvertUtils.isNotEmpty(string)) {
                 if (SqlUtil.c(string)) {
                     hashMap.put("view", "search");
                     hashMap.put("sql", string);
@@ -53,7 +53,7 @@ implements IOnlCgreportItemService {
             } else {
                 hashMap.put("view", onlCgreportItem.getFieldType().toLowerCase());
             }
-            hashMap.put("mode", oConvertUtils.isEmpty((Object)onlCgreportItem.getSearchMode()) ? "single" : onlCgreportItem.getSearchMode());
+            hashMap.put("mode", oConvertUtils.isEmpty(onlCgreportItem.getSearchMode()) ? "single" : onlCgreportItem.getSearchMode());
             hashMap.put("field", onlCgreportItem.getFieldName());
             if (++n2 > 2) {
                 hashMap.put("hidden", "1");

@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package org.jeecg.modules.online.cgreport.b;
+package org.jeecg.modules.online.cgreport.constant;
 
 public class a {
     public static final String a = "main";

@@ -6,10 +6,10 @@
 package org.jeecg.modules.online.config.util;
 
 import com.alibaba.druid.filter.config.ConfigTools;
-import freemarker.template.TemplateException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -31,6 +31,7 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.engine.jdbc.env.spi.SQLStateType;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 import org.jeecg.common.util.SpringContextUtils;
@@ -40,6 +41,7 @@ import org.jeecg.modules.online.config.db.TableConfig;
 import org.jeecg.modules.online.config.db.DataBaseConfig;
 import org.jeecg.modules.online.config.exception.DBException;
 import org.jeecg.modules.online.config.service.DbTableHandleI;
+import org.springframework.jdbc.support.SQLErrorCodes;
 
 @Slf4j
 public class TableUtil {
@@ -50,99 +52,94 @@ public class TableUtil {
         DB_TABLE_HANDLER = DataBaseUtil.getDbTableHandle();
     }
 
-    public static void createTable(TableConfig tableConfig) throws IOException, TemplateException, HibernateException, SQLException, DBException {
+    public static void createTable(TableConfig tableConfig) throws IOException, HibernateException, SQLException, DBException {
         String databaseType = DataBaseUtil.getDatabaseType();
         if ("ORACLE".equals(databaseType)) {
-            ArrayList var2 = new ArrayList();
-
-            OnlCgformField var4;
-            for (Iterator var3 = tableConfig.getColumns().iterator(); var3.hasNext(); var2.add(var4)) {
-                var4 = (OnlCgformField) var3.next();
-                if ("int".equals(var4.getDbType())) {
-                    var4.setDbType("double");
-                    var4.setDbPointLength(0);
+            // oracle 特殊处理什么？？？？
+            List<OnlCgformField> columns = new ArrayList<>();
+            for (OnlCgformField column : tableConfig.getColumns()) {
+                if ("int".equals(column.getDbType())) {
+                    column.setDbType("double");
+                    column.setDbPointLength(0);
                 }
+                columns.add(column);
             }
-
-            tableConfig.setColumns(var2);
+            tableConfig.setColumns(columns);
         }
 
         String createDtd = TemplateUtil.renderTemplate(TABLE_TEMPLATE_FTL, getTemplateDataModel(tableConfig, databaseType));
         log.info(createDtd);
-        HashMap var17 = new HashMap();
-        DataBaseConfig var18 = tableConfig.getDbConfig();
-        var17.put("hibernate.connection.driver_class", var18.getDriverClassName());
-        var17.put("hibernate.connection.url", var18.getUrl());
-        var17.put("hibernate.connection.username", var18.getUsername());
-        String var5 = var18.getPassword();
-        if (var5 != null) {
-            if (var18.getDruid() != null && oConvertUtils.isNotEmpty(var18.getDruid().getPublicKey())) {
-                log.info(" dbconfig.getDruid().getPublicKey() = " + var18.getDruid().getPublicKey());
+        Map<String, Object> hibernate = new HashMap<>();
+        DataBaseConfig dbConfig = tableConfig.getDbConfig();
+        hibernate.put("hibernate.connection.driver_class", dbConfig.getDriverClassName());
+        hibernate.put("hibernate.connection.url", dbConfig.getUrl());
+        hibernate.put("hibernate.connection.username", dbConfig.getUsername());
+        String password = dbConfig.getPassword();
+        if (password != null) {
+            if (dbConfig.getDruid() != null && oConvertUtils.isNotEmpty(dbConfig.getDruid().getPublicKey())) {
+                log.info(" dbconfig.getDruid().getPublicKey() = " + dbConfig.getDruid().getPublicKey());
 
                 try {
-                    String var6 = ConfigTools.decrypt(var18.getDruid().getPublicKey(), var5);
-                    log.info(" 解密密码 decryptPassword = " + var6);
-                    var17.put("hibernate.connection.password", var6);
-                } catch (Exception var15) {
-                    var15.printStackTrace();
+                    String decrypt = ConfigTools.decrypt(dbConfig.getDruid().getPublicKey(), password);
+                    log.info(" 解密密码 decryptPassword = " + decrypt);
+                    hibernate.put("hibernate.connection.password", decrypt);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             } else {
-                var17.put("hibernate.connection.password", var5);
+                hibernate.put("hibernate.connection.password", password);
             }
         }
 
-        var17.put("hibernate.show_sql", true);
-        var17.put("hibernate.format_sql", true);
-        var17.put("hibernate.temp.use_jdbc_metadata_defaults", false);
-        var17.put("hibernate.dialect", DataBaseUtil.b(databaseType));
-        var17.put("hibernate.hbm2ddl.auto", "create");
-        var17.put("hibernate.connection.autocommit", false);
-        var17.put("hibernate.current_session_context_class", "thread");
-        StandardServiceRegistry var19 = (new StandardServiceRegistryBuilder()).applySettings(var17).build();
-        MetadataSources var7 = new MetadataSources(var19);
-        ByteArrayInputStream var8 = new ByteArrayInputStream(createDtd.getBytes("utf-8"));
-        var7.addInputStream(var8);
-        Metadata var9 = var7.buildMetadata();
-        SchemaExport var10 = new SchemaExport();
-        var10.create(EnumSet.of(TargetType.DATABASE), var9);
-        var8.close();
-        List var11 = var10.getExceptions();
-        Iterator var12 = var11.iterator();
+        hibernate.put("hibernate.show_sql", true);
+        hibernate.put("hibernate.format_sql", true);
+        hibernate.put("hibernate.temp.use_jdbc_metadata_defaults", false);
+        hibernate.put("hibernate.dialect", DataBaseUtil.getDataBaseDialect(databaseType));
+        hibernate.put("hibernate.hbm2ddl.auto", "create");
+        hibernate.put("hibernate.connection.autocommit", false);
+        hibernate.put("hibernate.current_session_context_class", "thread");
+        StandardServiceRegistry build = new StandardServiceRegistryBuilder().applySettings(hibernate).build();
+        MetadataSources metadataSources = new MetadataSources(build);
+        ByteArrayInputStream bais = new ByteArrayInputStream(createDtd.getBytes(StandardCharsets.UTF_8));
+        metadataSources.addInputStream(bais);
+        Metadata metadata = metadataSources.buildMetadata();
+        SchemaExport schema = new SchemaExport();
+        schema.create(EnumSet.of(TargetType.DATABASE), metadata);
+        bais.close();
+        List exceptions = schema.getExceptions();
+        // 出错的情况
+        for (Object exception : exceptions) {
+            Exception ex = (Exception) exception;
+            if ("java.sql.SQLSyntaxErrorException".equals(ex.getCause().getClass().getName())) {
+                SQLSyntaxErrorException cause = (SQLSyntaxErrorException) ex.getCause();
+                if ("42000".equals(cause.getSQLState())) {
 
-        while (var12.hasNext()) {
-            Exception var13 = (Exception) var12.next();
-            if ("java.sql.SQLSyntaxErrorException".equals(var13.getCause().getClass().getName())) {
-                SQLSyntaxErrorException var14 = (SQLSyntaxErrorException) var13.getCause();
-                if ("42000".equals(var14.getSQLState())) {
-                    if (1064 != var14.getErrorCode() && 903 != var14.getErrorCode()) {
-                        continue;
+                    if (1064 == cause.getErrorCode() || 903 == cause.getErrorCode()) {
+                        throw new DBException("请确认表名是否为关键字。");
                     }
-
-                    throw new DBException("请确认表名是否为关键字。");
                 }
             } else {
-                if ("com.microsoft.sqlserver.jdbc.SQLServerException".equals(var13.getCause().getClass().getName())) {
-                    if (var13.getCause().toString().indexOf("Incorrect syntax near the keyword") != -1) {
-                        var13.printStackTrace();
-                        throw new DBException(var13.getCause().getMessage());
+                if ("com.microsoft.sqlserver.jdbc.SQLServerException".equals(ex.getCause().getClass().getName())) {
+                    if (ex.getCause().toString().contains("Incorrect syntax near the keyword")) {
+                        ex.printStackTrace();
+                        throw new DBException(ex.getCause().getMessage());
                     }
 
-                    log.error(var13.getMessage());
+                    log.error(ex.getMessage());
                     continue;
                 }
 
                 if ("DM".equals(databaseType)) {
-                    String var20 = var13.getMessage();
-                    if (var20 != null && var20.indexOf("Error executing DDL \"drop table") >= 0) {
+                    String var20 = ex.getMessage();
+                    if (var20 != null && var20.contains("Error executing DDL \"drop table")) {
                         log.error(var20);
                         continue;
                     }
                 }
             }
 
-            throw new DBException(var13.getMessage());
+            throw new DBException(ex.getMessage());
         }
-
     }
 
     public List<String> getDbUpdateSql(TableConfig tableConfig) throws DBException, SQLException {

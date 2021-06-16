@@ -60,57 +60,56 @@ public class OnlCgreportItemController {
     @GetMapping(value={"/listByHeadId"})
     public Result<?> a(@RequestParam(value="headId") String string) {
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq((Object)"cgrhead_id", (Object)string);
-        queryWrapper.orderByAsc((Object)"order_num");
-        List list = this.onlCgreportItemService.list((Wrapper)queryWrapper);
+        queryWrapper.eq("cgrhead_id", string);
+        queryWrapper.orderByAsc("order_num");
+        List list = this.onlCgreportItemService.list(queryWrapper);
         Result result = new Result();
         result.setSuccess(true);
-        result.setResult((Object)list);
+        result.setResult(list);
         return result;
     }
 
     @GetMapping(value={"/list"})
     public Result<IPage<OnlCgreportItem>> a(OnlCgreportItem onlCgreportItem, @RequestParam(name="pageNo", defaultValue="1") Integer n2, @RequestParam(name="pageSize", defaultValue="10") Integer n3, HttpServletRequest httpServletRequest) {
         Result result = new Result();
-        QueryWrapper queryWrapper = QueryGenerator.initQueryWrapper((Object)onlCgreportItem, (Map)httpServletRequest.getParameterMap());
-        Page page = new Page((long)n2.intValue(), (long)n3.intValue());
-        IPage iPage = this.onlCgreportItemService.page((IPage)page, (Wrapper)queryWrapper);
+        QueryWrapper queryWrapper = QueryGenerator.initQueryWrapper(onlCgreportItem, (Map)httpServletRequest.getParameterMap());
+        Page page = new Page(n2.intValue(), n3.intValue());
+        IPage iPage = this.onlCgreportItemService.page((IPage)page, queryWrapper);
         result.setSuccess(true);
-        result.setResult((Object)iPage);
+        result.setResult(iPage);
         return result;
     }
 
     @PostMapping(value={"/add"})
     public Result<?> a(@RequestBody OnlCgreportItem onlCgreportItem) {
         this.onlCgreportItemService.save(onlCgreportItem);
-        return Result.ok((String)"\u6dfb\u52a0\u6210\u529f!");
+        return Result.ok("添加成功!");
     }
 
     @PutMapping(value={"/edit"})
     public Result<?> b(@RequestBody OnlCgreportItem onlCgreportItem) {
         this.onlCgreportItemService.updateById(onlCgreportItem);
-        return Result.ok((String)"\u7f16\u8f91\u6210\u529f!");
+        return Result.ok("编辑成功!");
     }
 
     @DeleteMapping(value={"/delete"})
     public Result<?> b(@RequestParam(name="id", required=true) String string) {
-        this.onlCgreportItemService.removeById((Serializable)((Object)string));
-        return Result.ok((String)"\u5220\u9664\u6210\u529f!");
+        this.onlCgreportItemService.removeById(string);
+        return Result.ok("删除成功!");
     }
 
     @DeleteMapping(value={"/deleteBatch"})
     public Result<?> c(@RequestParam(name="ids", required=true) String string) {
         this.onlCgreportItemService.removeByIds(Arrays.asList(string.split(",")));
-        return Result.ok((String)"\u6279\u91cf\u5220\u9664\u6210\u529f!");
+        return Result.ok("批量删除成功!");
     }
 
     @GetMapping(value={"/queryById"})
     public Result<OnlCgreportItem> d(@RequestParam(name="id", required=true) String string) {
         Result result = new Result();
-        OnlCgreportItem onlCgreportItem = (OnlCgreportItem)this.onlCgreportItemService.getById((Serializable)((Object)string));
-        result.setResult((Object)onlCgreportItem);
+        OnlCgreportItem onlCgreportItem = this.onlCgreportItemService.getById(string);
+        result.setResult(onlCgreportItem);
         result.setSuccess(true);
         return result;
     }
 }
-

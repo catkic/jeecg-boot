@@ -20,7 +20,6 @@ package org.jeecg.modules.online.cgform.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import java.util.*;
@@ -279,7 +278,8 @@ public class OnlineServiceImpl implements IOnlineService {
             LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
             String string = loginUser.getId();
             List<String> list3 = this.onlAuthPageService.queryFormHideButton(string, headId);
-            list2 = list.stream().filter(onlCgformButton -> list3 == null || list3.indexOf(onlCgformButton.getButtonCode()) < 0).collect(Collectors.toList());
+            list2 = list.stream().filter(onlCgformButton -> list3 == null || !list3.contains(onlCgformButton.getButtonCode())).collect(Collectors.toList());
+
         }
         return list2;
     }
@@ -310,10 +310,10 @@ public class OnlineServiceImpl implements IOnlineService {
     }
 
     private List<OnlCgformField> a(String string) {
-        LambdaQueryWrapper<OnlCgformField> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgformField>();
-        lambdaQueryWrapper.eq(OnlCgformField::getCgformHeadId, (Object) string);
-        lambdaQueryWrapper.orderByAsc(OnlCgformField::getOrderNum);
-        return this.onlCgformFieldService.list((Wrapper) lambdaQueryWrapper);
+        LambdaQueryWrapper<OnlCgformField> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgformField>()
+                .eq(OnlCgformField::getCgformHeadId, string)
+                .orderByAsc(OnlCgformField::getOrderNum);
+        return this.onlCgformFieldService.list(lambdaQueryWrapper);
     }
 
     // 这个地方改得存疑
@@ -325,17 +325,17 @@ public class OnlineServiceImpl implements IOnlineService {
             JSONObject jSONObject2 = jSONObject.getJSONObject("schema");
             String subTableStr = onlCgformHead.getSubTableStr();
             if (oConvertUtils.isNotEmpty(subTableStr)) {
-                ArrayList<OnlCgformHead> arrayList = new ArrayList<OnlCgformHead>();
+                ArrayList<OnlCgformHead> onlCgformHeads = new ArrayList<>();
                 for (String string2 : subTableStr.split(",")) {
                     OnlCgformHead one = this.onlCgformHeadService.getOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, string2));
                     if (one != null) {
-                        arrayList.add(one);
+                        onlCgformHeads.add(one);
                     }
                 }
-                if (!arrayList.isEmpty()) {
+                if (!onlCgformHeads.isEmpty()) {
                     // 不知道这段行不行还没测试过
 //                    Collections.sort(arrayList, Comparator.nullsFirst(Comparator.comparing(OnlCgformHead::getTabOrderNum)));
-                    Collections.sort(arrayList, (onlCgformHead1, onlCgformHead2) -> {
+                    Collections.sort(onlCgformHeads, (onlCgformHead1, onlCgformHead2) -> {
                         Integer n2 = onlCgformHead2.getTabOrderNum();
                         Integer n3 = onlCgformHead1.getTabOrderNum();
                         if (n3 == null) {
@@ -346,20 +346,21 @@ public class OnlineServiceImpl implements IOnlineService {
                         }
                         return n3.compareTo(n2);
                     });
-                    for (OnlCgformHead onlCgformHead2 : arrayList) {
-                        List<OnlCgformField> list = this.onlCgformFieldService.queryAvailableFields(onlCgformHead2.getId(), onlCgformHead2.getTableName(), onlCgformHead.getTaskId(), false);
-                        EnhanceJsUtil.b(onlCgformEnhanceJs, onlCgformHead2.getTableName(), list);
-                        JSONObject jsonObjectString2 = new JSONObject();
-                        List<String> string;
+                    for (OnlCgformHead onlCgformHead2 : onlCgformHeads) {
+                        List<OnlCgformField> onlCgformFields = this.onlCgformFieldService.queryAvailableFields(onlCgformHead2.getId(), onlCgformHead2.getTableName(), onlCgformHead.getTaskId(), false);
+                        EnhanceJsUtil.b(onlCgformEnhanceJs, onlCgformHead2.getTableName(), onlCgformFields);
+                        JSONObject jsonObjectString2 ;
+                        List<String> disableFields;
                         if (oConvertUtils.isNotEmpty(onlCgformHead.getTaskId())) {
-                            string = this.onlCgformFieldService.queryDisabledFields(onlCgformHead2.getTableName(), onlCgformHead.getTaskId());
+                            disableFields = this.onlCgformFieldService.queryDisabledFields(onlCgformHead2.getTableName(), onlCgformHead.getTaskId());
                         } else {
-                            string = this.onlAuthPageService.queryFormDisabledCode(onlCgformHead2.getId());
+                            disableFields = this.onlAuthPageService.queryFormDisabledCode(onlCgformHead2.getId());
                         }
                         if (1 == onlCgformHead2.getRelationType()) {
-                            jsonObjectString2 = DataBaseUtils.a(list, string, null);
+                            jsonObjectString2 = DataBaseUtils.a(onlCgformFields, disableFields, null);
                         } else {
-                            jsonObjectString2.put("columns", DataBaseUtils.a(list, string));
+                            jsonObjectString2 = new JSONObject();
+                            jsonObjectString2.put("columns", DataBaseUtils.getJsFieldDisplayProperty(onlCgformFields, disableFields));
                             jsonObjectString2.put("hideButtons", this.onlAuthPageService.queryListHideButton(null, onlCgformHead2.getId()));
                         }
                         String object2 = this.onlCgformFieldService.queryForeignKey(onlCgformHead2.getId(), onlCgformHead.getTableName());

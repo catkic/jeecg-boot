@@ -63,33 +63,32 @@ public class OnlCgreportAPIServiceImpl implements IOnlCgreportAPIService {
         OnlCgreportHead onlCgreportHead = null;
         if (oConvertUtils.isNotEmpty(id)) {
             onlCgreportHead = this.onlCgreportHeadService.getById(id);
-        } else if (oConvertUtils.isNotEmpty((Object) code)) {
+        } else if (oConvertUtils.isNotEmpty(code)) {
             LambdaQueryWrapper<OnlCgreportHead> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgreportHead>().eq(OnlCgreportHead::getCode, code);
 
             onlCgreportHead = this.onlCgreportHeadService.getOne(lambdaQueryWrapper);
         }
         if (onlCgreportHead == null) {
-            throw new JeecgBootException("\u5b9e\u4f53\u4e0d\u5b58\u5728");
+            throw new JeecgBootException("实体不存在");
         }
         try {
             String trim = onlCgreportHead.getCgrSql().trim();
             String string = onlCgreportHead.getDbSource();
             return this.executeSelectSqlRoute(string, trim, params, onlCgreportHead.getId());
         } catch (Exception exception) {
-            log.error(exception.getMessage(), (Throwable) exception);
-            throw new JeecgBootException("SQL\u6267\u884c\u5931\u8d25\uff1a" + exception.getMessage());
+            log.error(exception.getMessage(), exception);
+            throw new JeecgBootException("SQL执行失败：" + exception.getMessage());
         }
     }
 
     @Override
     public Map<String, Object> executeSelectSqlRoute(String dbKey, String sql, Map<String, Object> params, String headId) throws Exception {
-        if (StringUtils.isNotBlank((String) dbKey)) {
-            log.debug("Online\u62a5\u8868: \u8d70\u4e86\u591a\u6570\u636e\u6e90\u903b\u8f91");
+        if (StringUtils.isNotBlank(dbKey)) {
+            log.debug("Online报表: 走了多数据源逻辑");
             return this.onlCgreportHeadService.executeSelectSqlDynamic(dbKey, sql, params, headId);
         }
-        log.debug("Online\u62a5\u8868: \u8d70\u4e86\u7a33\u5b9a\u903b\u8f91");
+        log.debug("Online报表: 走了稳定逻辑");
         return this.onlCgreportHeadService.executeSelectSql(sql, headId, params);
     }
 
 }
-

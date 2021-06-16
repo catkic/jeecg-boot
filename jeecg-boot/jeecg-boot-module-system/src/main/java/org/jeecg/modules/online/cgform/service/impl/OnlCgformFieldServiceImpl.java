@@ -115,7 +115,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             } else {
                 hashMap.put("total", object.size());
                 hashMap.put("fieldList", list2);
-                hashMap.put("records", DataBaseUtils.d(object));
+                hashMap.put("records", DataBaseUtils.lobAndNull(object));
             }
         } else {
             int object = params.get("pageNo") == null ? 1 : Integer.parseInt(params.get("pageNo").toString());
@@ -123,7 +123,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             log.debug("---Online查询sql:>>" + stringBuffer.toString());
             IPage<Map<String, Object>> iPage = this.onlCgformFieldMapper.selectPageBySql((Page<Map<String, Object>>) page, stringBuffer.toString());
             hashMap.put("total", iPage.getTotal());
-            hashMap.put("records", DataBaseUtils.d(iPage.getRecords()));
+            hashMap.put("records", DataBaseUtils.lobAndNull(iPage.getRecords()));
         }
         return hashMap;
     }
@@ -185,7 +185,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             } else {
                 hashMap.put("total", arrayList.size());
                 hashMap.put("fieldList", list2);
-                hashMap.put("records", DataBaseUtils.d(arrayList));
+                hashMap.put("records", DataBaseUtils.lobAndNull(arrayList));
             }
         } else {
             int arrayList = params.get("pageNo") == null ? 1 : Integer.parseInt(params.get("pageNo").toString());
@@ -193,7 +193,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             log.debug("---Online查询sql:>>" + stringBuffer.toString());
             IPage<Map<String, Object>> iPage = this.onlCgformFieldMapper.selectPageBySql((Page<Map<String, Object>>) page, stringBuffer.toString());
             hashMap.put("total", iPage.getTotal());
-            hashMap.put("records", DataBaseUtils.d(iPage.getRecords()));
+            hashMap.put("records", DataBaseUtils.lobAndNull(iPage.getRecords()));
         }
         return hashMap;
     }
@@ -285,7 +285,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         String string = DataBaseUtils.f(tbname);
         String string2 = "select * from " + string + " where id = '" + json.getString("id") + "'";
         Map<String, Object> map = ((OnlCgformFieldMapper) this.baseMapper).queryFormData(string2);
-        Map<String, Object> map2 = DataBaseUtils.b(map);
+        Map<String, Object> map2 = DataBaseUtils.lobAndNull(map);
         String string3 = map2.get(pidField).toString();
         LambdaQueryWrapper<OnlCgformField> lambdaQueryWrapper = new LambdaQueryWrapper<OnlCgformField>();
         lambdaQueryWrapper.eq(OnlCgformField::getCgformHeadId, (Object) code);
@@ -711,7 +711,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             String string4 = DataBaseUtils.f(string2);
             String string5 = "select * from " + string4 + " where id = '" + string3 + "'";
             Map<String, Object> map = ((OnlCgformFieldMapper) this.baseMapper).queryFormData(string5);
-            Map<String, Object> map2 = DataBaseUtils.b(map);
+            Map<String, Object> map2 = DataBaseUtils.lobAndNull(map);
             String string6 = map2.get(string).toString();
             String string7 = "select * from " + DataBaseUtils.f(string2) + " where " + string + "= '" + string6 + "' and id not in(" + ids + ")";
             List<Map<String, Object>> list = this.onlCgformFieldMapper.queryListBySql(string7);
@@ -739,7 +739,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
         List<Map<String, Object>> list = this.onlCgformFieldMapper.queryListBySql(string4);
         if (list != null && list.size() > 0) {
             for (Map<String, Object> map : list) {
-                Map<String, Object> map2 = DataBaseUtils.b(map);
+                Map<String, Object> map2 = DataBaseUtils.lobAndNull(map);
                 if (!stringBuffer.toString().contains(map2.get("id").toString())) {
                     stringBuffer.append(",").append(map2.get("id"));
                 }

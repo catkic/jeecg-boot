@@ -88,7 +88,7 @@ public class OnlCgreportHeadController {
     public Result<?> parseSql(@RequestParam(name="sql") String string, @RequestParam(name="dbKey", required=false) String dbSource) {
         DynamicDataSourceModel dynamicDataSourceModel = this.sysBaseAPI.getDynamicDbSourceByCode(dbSource);
         if (StringUtils.isNotBlank(dbSource) && dynamicDataSourceModel == null) {
-            return Result.error((String)"\u6570\u636e\u6e90\u4e0d\u5b58\u5728");
+            return Result.error("数据源不存在");
         }
 //        dynamicDataSourceModel = new HashMap();
         JSONObject hashMap = new JSONObject();
@@ -98,9 +98,9 @@ public class OnlCgreportHeadController {
         List<String> list2 = null;
         try {
             Serializable serializable;
-            log.info("Online\u62a5\u8868\uff0csql\u89e3\u6790\uff1a" + string);
-            this.baseCommonService.addLog("Online\u62a5\u8868\uff0csql\u89e3\u6790\uff1a" + string, Integer.valueOf(2), Integer.valueOf(2));
-            SqlInjectionUtil.specialFilterContentForOnlineReport((String)string);
+            log.info("Online报表，sql解析：" + string);
+            this.baseCommonService.addLog("Online报表，sql解析：" + string, Integer.valueOf(2), Integer.valueOf(2));
+            SqlInjectionUtil.specialFilterContentForOnlineReport(string);
             list = this.onlCgreportHeadService.getSqlFields(string, dbSource);
             list2 = this.onlCgreportHeadService.getSqlParams(string);
             int n2 = 1;
@@ -108,9 +108,9 @@ public class OnlCgreportHeadController {
                 OnlCgreportItem onlCgreportItem = new OnlCgreportItem();
                 onlCgreportItem.setFieldName(string3.toLowerCase());
                 onlCgreportItem.setFieldTxt(string3);
-                onlCgreportItem.setShow(true);
+                onlCgreportItem.setIsShow(true);
                 onlCgreportItem.setOrderNum(n2);
-                onlCgreportItem.setId(org.jeecg.modules.online.cgform.util.b.a());
+                onlCgreportItem.setId(org.jeecg.modules.online.cgform.util.DataBaseUtils.a());
                 onlCgreportItem.setFieldType("String");
                 arrayList.add(onlCgreportItem);
                 ++n2;
@@ -125,10 +125,10 @@ public class OnlCgreportHeadController {
             hashMap.put("params", arrayList2);
         }
         catch (Exception exception) {
-            log.error(exception.getMessage(), (Throwable)exception);
-            String string4 = "\u89e3\u6790\u5931\u8d25\uff0c";
+            log.error(exception.getMessage(), exception);
+            String string4 = "解析失败，";
             int n3 = exception.getMessage().indexOf("Connection refused: connect");
-            string4 = n3 != -1 ? string4 + "\u6570\u636e\u6e90\u8fde\u63a5\u5931\u8d25." : (exception.getMessage().indexOf("\u503c\u53ef\u80fd\u5b58\u5728SQL\u6ce8\u5165\u98ce\u9669") != -1 ? string4 + "SQL\u53ef\u80fd\u5b58\u5728SQL\u6ce8\u5165\u98ce\u9669." : (exception.getMessage().indexOf("\u8be5\u62a5\u8868sql\u6ca1\u6709\u6570\u636e") != -1 ? string4 + "\u62a5\u8868sql\u67e5\u8be2\u6570\u636e\u4e3a\u7a7a\uff0c\u65e0\u6cd5\u89e3\u6790\u5b57\u6bb5." : (exception.getMessage().indexOf("SqlServer\u4e0d\u652f\u6301SQL\u5185\u6392\u5e8f") != -1 ? string4 + "SqlServer\u4e0d\u652f\u6301SQL\u5185\u6392\u5e8f." : string4 + "SQL\u8bed\u6cd5\u9519\u8bef.")));
+            string4 = n3 != -1 ? string4 + "数据源连接失败." : (exception.getMessage().indexOf("值可能存在SQL注入风险") != -1 ? string4 + "SQL可能存在SQL注入风险." : (exception.getMessage().indexOf("该报表sql没有数据") != -1 ? string4 + "报表sql查询数据为空，无法解析字段." : (exception.getMessage().indexOf("SqlServer不支持SQL内排序") != -1 ? string4 + "SqlServer不支持SQL内排序." : string4 + "SQL语法错误.")));
             return Result.error(string4);
         }
         return Result.ok(dynamicDataSourceModel);
@@ -137,11 +137,11 @@ public class OnlCgreportHeadController {
     @GetMapping(value={"/list"})
     public Result<IPage<OnlCgreportHead>> list(OnlCgreportHead onlCgreportHead, @RequestParam(name="pageNo", defaultValue="1") Integer n2, @RequestParam(name="pageSize", defaultValue="10") Integer n3, HttpServletRequest httpServletRequest) {
         Result result = new Result();
-        QueryWrapper queryWrapper = QueryGenerator.initQueryWrapper((Object)onlCgreportHead, httpServletRequest.getParameterMap());
-        Page page = new Page((long)n2.intValue(), (long)n3.intValue());
-        IPage iPage = this.onlCgreportHeadService.page((IPage)page, (Wrapper)queryWrapper);
+        QueryWrapper<OnlCgreportHead> queryWrapper = QueryGenerator.initQueryWrapper(onlCgreportHead, httpServletRequest.getParameterMap());
+        Page<OnlCgreportHead> page = new Page<>(n2, n3);
+        IPage<OnlCgreportHead> iPage = this.onlCgreportHeadService.page(page, queryWrapper);
         result.setSuccess(true);
-        result.setResult((Object)iPage);
+        result.setResult(iPage);
         return result;
     }
 
@@ -149,7 +149,7 @@ public class OnlCgreportHeadController {
     public Result<?> add(@RequestBody OnlCgreportModel onlCgreportModel) {
         Result result = new Result();
         try {
-            String string = org.jeecg.modules.online.cgform.util.b.a();
+            String string = org.jeecg.modules.online.cgform.util.DataBaseUtils.a();
             OnlCgreportHead onlCgreportHead = onlCgreportModel.getHead();
             List<OnlCgreportParam> list = onlCgreportModel.getParams();
             List<OnlCgreportItem> list2 = onlCgreportModel.getItems();
@@ -166,11 +166,11 @@ public class OnlCgreportHeadController {
             this.onlCgreportHeadService.save(onlCgreportHead);
             this.onlCgreportParamService.saveBatch(list);
             this.onlCgreportItemService.saveBatch(list2);
-            result.success("\u6dfb\u52a0\u6210\u529f\uff01");
+            result.success("添加成功！");
         }
         catch (Exception exception) {
-            log.error(exception.getMessage(), (Throwable)exception);
-            result.error500("\u64cd\u4f5c\u5931\u8d25");
+            log.error(exception.getMessage(), exception);
+            result.error500("操作失败");
         }
         return result;
     }
@@ -182,27 +182,26 @@ public class OnlCgreportHeadController {
             return this.onlCgreportHeadService.editAll(onlCgreportModel);
         }
         catch (Exception exception) {
-            log.error(exception.getMessage(), (Throwable)exception);
-            return Result.error((String)"\u64cd\u4f5c\u5931\u8d25");
+            log.error(exception.getMessage(), exception);
+            return Result.error("操作失败");
         }
     }
 
     @DeleteMapping(value={"/delete"})
-    public Result<?> delete(@RequestParam(name="id", required=true) String string) {
+    public Result<?> delete(@RequestParam(name="id") String string) {
         return this.onlCgreportHeadService.delete(string);
     }
 
     @DeleteMapping(value={"/deleteBatch"})
-    public Result<?> deleteBatch(@RequestParam(name="ids", required=true) String string) {
+    public Result<?> deleteBatch(@RequestParam(name="ids") String string) {
         return this.onlCgreportHeadService.bathDelete(string.split(","));
     }
 
     @GetMapping(value={"/queryById"})
     public Result<OnlCgreportHead> queryById(@RequestParam(name="id", required=true) String string) {
         Result result = new Result();
-        OnlCgreportHead onlCgreportHead = (OnlCgreportHead)this.onlCgreportHeadService.getById((Serializable)((Object)string));
-        result.setResult((Object)onlCgreportHead);
+        OnlCgreportHead onlCgreportHead = this.onlCgreportHeadService.getById(string);
+        result.setResult(onlCgreportHead);
         return result;
     }
 }
-

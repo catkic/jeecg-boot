@@ -202,14 +202,15 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
             this.setTextAndBlobLengthZero(field);
             if (id.length() == 32) {
                 arrayList2.add(field);
-                continue;
+            } else {
+                String primaryKey = "_pk";
+                if (!primaryKey.equals(id)) {
+                    field.setId(null);
+                    field.setCgformHeadId(newFormHead.getId());
+                    arrayList.add(field);
+                }
             }
-            String primaryKey = "_pk";
-            if (!primaryKey.equals(id)) {
-                field.setId(null);
-                field.setCgformHeadId(newFormHead.getId());
-                arrayList.add(field);
-            }
+
         }
         if (arrayList.size() > 0) {
             needDbSync = "N";
@@ -277,7 +278,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                 OnlCgformField onlCgformField = this.fieldService.getById(string4);
                 if (onlCgformField == null) continue;
                 this.a(onlCgformField.getMainTable(), newFormHead.getTableName());
-                this.fieldService.removeById((Serializable) ((Object) string4));
+                this.fieldService.removeById(string4);
             }
         }
         newFormHead.setIsDbSynch(needDbSync);
@@ -620,9 +621,9 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                 arrayList.add(onlCgformField);
             }
         } catch (Exception exception) {
-            log.error(exception.getMessage(), (Throwable) exception);
+            log.error(exception.getMessage(), exception);
         }
-        if (oConvertUtils.isEmpty((Object) onlCgformHead.getFormCategory())) {
+        if (oConvertUtils.isEmpty(onlCgformHead.getFormCategory())) {
             onlCgformHead.setFormCategory("bdfl_include");
         }
         this.save(onlCgformHead);
@@ -630,44 +631,41 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
     }
 
     private void a(OnlCgformHead onlCgformHead, List<OnlCgformField> list) {
-        block14:
-        {
-            block15:
-            {
-                if (onlCgformHead.getTableType() != 3) break block15;
-                onlCgformHead = (OnlCgformHead) ((OnlCgformHeadMapper) this.baseMapper).selectById((Serializable) ((Object) onlCgformHead.getId()));
-                for (int i2 = 0; i2 < list.size(); ++i2) {
-                    OnlCgformHead onlCgformHead2;
-                    OnlCgformField onlCgformField = list.get(i2);
-                    String string = onlCgformField.getMainTable();
-                    if (oConvertUtils.isEmpty(string) || (onlCgformHead2 = (this.baseMapper).selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, string))) == null)
-                        continue;
-                    String string2 = onlCgformHead2.getSubTableStr();
-                    if (oConvertUtils.isEmpty((Object) string2)) {
-                        string2 = onlCgformHead.getTableName();
-                    } else if (!string2.contains(onlCgformHead.getTableName())) {
-                        ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(string2.split(",")));
-                        for (int i3 = 0; i3 < arrayList.size(); ++i3) {
-                            String string3 = (String) arrayList.get(i3);
-                            OnlCgformHead onlCgformHead3 = (this.baseMapper).selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, (Object) string3));
-                            if (onlCgformHead3 == null || onlCgformHead.getTabOrderNum() >= oConvertUtils.getInt((Object) onlCgformHead3.getTabOrderNum(), (int) 0))
-                                continue;
+        // 处理附表的？
+        if (onlCgformHead.getTableType() == 3) {
+            onlCgformHead = this.baseMapper.selectById(onlCgformHead.getId());
+            for (int i2 = 0; i2 < list.size(); ++i2) {
+                OnlCgformHead onlCgformHead2;
+                OnlCgformField onlCgformField = list.get(i2);
+                String string = onlCgformField.getMainTable();
+                if (oConvertUtils.isEmpty(string) || (onlCgformHead2 = (this.baseMapper).selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, string))) == null)
+                    continue;
+                String string2 = onlCgformHead2.getSubTableStr();
+                if (oConvertUtils.isEmpty(string2)) {
+                    string2 = onlCgformHead.getTableName();
+                } else if (!string2.contains(onlCgformHead.getTableName())) {
+                    ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(string2.split(",")));
+                    for (int i3 = 0; i3 < arrayList.size(); ++i3) {
+                        String string3 = arrayList.get(i3);
+                        OnlCgformHead onlCgformHead3 = (this.baseMapper).selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, (Object) string3));
+                        if (onlCgformHead3 != null && onlCgformHead.getTabOrderNum() < oConvertUtils.getInt(onlCgformHead3.getTabOrderNum(), 0)) {
                             arrayList.add(i3, onlCgformHead.getTableName());
                             break;
                         }
-                        if (arrayList.indexOf(onlCgformHead.getTableName()) < 0) {
-                            arrayList.add(onlCgformHead.getTableName());
-                        }
-                        string2 = String.join((CharSequence) ",", arrayList);
                     }
-                    onlCgformHead2.setSubTableStr(string2);
-                    ((OnlCgformHeadMapper) this.baseMapper).updateById(onlCgformHead2);
-                    break block14;
+                    if (!arrayList.contains(onlCgformHead.getTableName())) {
+                        arrayList.add(onlCgformHead.getTableName());
+                    }
+                    string2 = String.join(",", arrayList);
                 }
-                break block14;
+                onlCgformHead2.setSubTableStr(string2);
+                this.baseMapper.updateById(onlCgformHead2);
+                break ;
             }
-            List<OnlCgformHead> list2 = this.baseMapper.selectList(new LambdaQueryWrapper<OnlCgformHead>().like(OnlCgformHead::getSubTableStr, (Object) onlCgformHead.getTableName()));
-            if (list2 == null || list2.size() <= 0) break block14;
+        } else {
+            List<OnlCgformHead> list2 = this.baseMapper.selectList(new LambdaQueryWrapper<OnlCgformHead>()
+                    .like(OnlCgformHead::getSubTableStr, onlCgformHead.getTableName()));
+            if (list2 == null || list2.size() <= 0) return;
             for (OnlCgformHead onlCgformHead4 : list2) {
                 String string = onlCgformHead4.getSubTableStr();
                 if (onlCgformHead4.getSubTableStr().equals(onlCgformHead.getTableName())) {
@@ -680,9 +678,11 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                     string = string.replace("," + onlCgformHead.getTableName() + ",", ",");
                 }
                 onlCgformHead4.setSubTableStr(string);
-                ((OnlCgformHeadMapper) this.baseMapper).updateById(onlCgformHead4);
+                this.baseMapper.updateById(onlCgformHead4);
             }
         }
+
+
     }
 
     @Override
@@ -690,7 +690,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
     public String saveManyFormData(String code, JSONObject json, String xAccessToken) throws DBException, BusinessException {
         JSONObject jSONObject;
         String string;
-        OnlCgformHead onlCgformHead = (OnlCgformHead) this.getById((Serializable) ((Object) code));
+        OnlCgformHead onlCgformHead = this.getById(code);
         if (onlCgformHead == null) {
             throw new DBException("数据库主表ID[" + code + "]不存在");
         }
@@ -811,50 +811,50 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         }
         ArrayList<Map<String, Object>> arrayList2 = new ArrayList<Map<String, Object>>(list2.size());
         for (Map<String, Object> map2 : list2) {
-            arrayList2.add(DataBaseUtils.b(map2));
+            arrayList2.add(DataBaseUtils.lobAndNull(map2));
         }
         return arrayList2;
     }
 
     @Override
     public Map<String, Object> queryManyFormData(String code, String id) throws DBException {
-        String string;
-        OnlCgformHead onlCgformHead = (OnlCgformHead) this.getById((Serializable) ((Object) code));
+        OnlCgformHead onlCgformHead = this.getById(code);
         if (onlCgformHead == null) {
             throw new DBException("数据库主表ID[" + code + "]不存在");
         }
-        List<OnlCgformField> list = this.fieldService.queryFormFields(code, true);
-        if (list == null || list.size() == 0) {
+        List<OnlCgformField> fields = this.fieldService.queryFormFields(code, true);
+        if (fields == null || fields.size() == 0) {
             throw new DBException("找不到字段，请确认配置是否正确!");
         }
-        Map<String, Object> map = this.fieldService.queryFormData(list, onlCgformHead.getTableName(), id);
-        if (onlCgformHead.getTableType() == 2 && oConvertUtils.isNotEmpty((Object) (string = onlCgformHead.getSubTableStr()))) {
-            String[] arrstring;
-            for (String string2 : arrstring = string.split(",")) {
-                OnlCgformHead onlCgformHead2 = (OnlCgformHead) ((OnlCgformHeadMapper) this.baseMapper).selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, (Object) string2));
-                if (onlCgformHead2 == null) continue;
-                List<OnlCgformField> list2 = this.fieldService.queryFormFields(onlCgformHead2.getId(), false);
-                String string3 = "";
+        Map<String, Object> formData = this.fieldService.queryFormData(fields, onlCgformHead.getTableName(), id);
+
+        // 如果是主表，那就找子表单
+        if (onlCgformHead.getTableType() == 2 && oConvertUtils.isNotEmpty(onlCgformHead.getSubTableStr())) {
+            for (String subTable : onlCgformHead.getSubTableStr().split(",")) {
+                OnlCgformHead subTableHead = this.baseMapper.selectOne(new LambdaQueryWrapper<OnlCgformHead>().eq(OnlCgformHead::getTableName, subTable));
+                if (subTableHead == null) continue;
+                List<OnlCgformField> subTableFields = this.fieldService.queryFormFields(subTableHead.getId(), false);
+                String dbFieldName = "";
                 String string4 = null;
-                for (OnlCgformField onlCgformField : list2) {
-                    if (oConvertUtils.isEmpty((Object) onlCgformField.getMainField())) continue;
-                    string3 = onlCgformField.getDbFieldName();
-                    String string5 = onlCgformField.getMainField();
-                    if (null == map.get(string5)) {
-                        string4 = map.get(string5.toUpperCase()).toString();
-                        continue;
+                for (OnlCgformField field : subTableFields) {
+                    if (oConvertUtils.isEmpty(field.getMainField())) continue;
+                    dbFieldName = field.getDbFieldName();
+                    String mainField = field.getMainField();
+                    if (null == formData.get(mainField)) {
+                        string4 = formData.get(mainField.toUpperCase()).toString();
+                    } else {
+                        string4 = formData.get(mainField).toString();
                     }
-                    string4 = map.get(string5).toString();
                 }
-                List<Map<String, Object>> list3 = this.fieldService.querySubFormData(list2, string2, string3, string4);
-                if (list3 == null || list3.size() == 0) {
-                    map.put(string2, new String[0]);
-                    continue;
+                List<Map<String, Object>> subFormData = this.fieldService.querySubFormData(subTableFields, subTable, dbFieldName, string4);
+                if (subFormData == null || subFormData.isEmpty()) {
+                    formData.put(subTable, "");
+                } else {
+                    formData.put(subTable, DataBaseUtils.lobAndNull(subFormData));
                 }
-                map.put(string2, DataBaseUtils.d(list3));
             }
         }
-        return map;
+        return formData;
     }
 
     @Override
@@ -1027,7 +1027,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
         if (map == null) {
             throw new BusinessException("未找到数据信息");
         }
-        Map<String, Object> map2 = DataBaseUtils.b(map);
+        Map<String, Object> map2 = DataBaseUtils.lobAndNull(map);
         String string2 = "delete";
         JSONObject jSONObject = JSONObject.parseObject((String) JSON.toJSONString(map2));
         this.executeEnhanceJava(string2, "start", onlCgformHead, jSONObject);
@@ -1073,7 +1073,7 @@ public class OnlCgformHeadServiceImpl extends ServiceImpl<OnlCgformHeadMapper, O
                 if (1 == onlCgformHead.getRelationType()) {
                     jSONObject = DataBaseUtils.a(list2, list3, null);
                 } else {
-                    jSONObject.put("columns", (Object) DataBaseUtils.a(list2, list3));
+                    jSONObject.put("columns", (Object) DataBaseUtils.getJsFieldDisplayProperty(list2, list3));
                 }
                 jSONObject.put("relationType", (Object) onlCgformHead.getRelationType());
                 jSONObject.put("view", (Object) "tab");

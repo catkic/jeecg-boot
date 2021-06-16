@@ -146,7 +146,7 @@ public class DynamicDBUtil {
         return effectCount;
     }
 
-    public static Object findOne(final String dbKey, String sql, Object... param) {
+    public static Map<String, Object> findOne(final String dbKey, String sql, Object... param) {
         List<Map<String, Object>> list;
         list = findList(dbKey, sql, param);
         if (oConvertUtils.listIsEmpty(list)) {
@@ -166,9 +166,8 @@ public class DynamicDBUtil {
      * @param data  sql语法中需要判断的数据及sql拼接注入中需要的数据
      * @return
      */
-    public static Object findOneByHash(final String dbKey, String sql, HashMap<String, Object> data) {
-        List<Map<String, Object>> list;
-        list = findListByHash(dbKey, sql, data);
+    public static Map<String, Object> findOneByHash(final String dbKey, String sql, HashMap<String, Object> data) {
+        List<Map<String, Object>> list = findListByHash(dbKey, sql, data);
         if (oConvertUtils.listIsEmpty(list)) {
             log.error("Except one, but not find actually");
         }

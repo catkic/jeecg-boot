@@ -78,13 +78,11 @@ public class DataBaseUtil {
         return DataBaseUtil.getDataBaseType(dataSource);
     }
 
-    public static boolean a() {
+    public static boolean isOracle() {
         try {
             return "ORACLE".equals(DataBaseUtil.getDatabaseType());
-        } catch (SQLException sQLException) {
-            sQLException.printStackTrace();
-        } catch (DBException dBException) {
-            dBException.printStackTrace();
+        } catch (SQLException | DBException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -214,30 +212,29 @@ public class DataBaseUtil {
 
     public static String getDialect() throws SQLException, DBException {
         String string = DataBaseUtil.getDatabaseType();
-        return DataBaseUtil.b(string);
+        return DataBaseUtil.getDataBaseDialect(string);
     }
 
-    public static String b(String string) throws SQLException, DBException {
-        String string2 = "org.hibernate.dialect.MySQL5InnoDBDialect";
-        switch (string) {
-            case "SQLSERVER": {
-                string2 = "org.hibernate.dialect.SQLServerDialect";
+    public static String getDataBaseDialect(String databaseType) throws SQLException, DBException {
+        String dialect;
+        switch (databaseType) {
+            case "SQLSERVER":
+                dialect = "org.hibernate.dialect.SQLServerDialect";
                 break;
-            }
-            case "POSTGRESQL": {
-                string2 = "org.hibernate.dialect.PostgreSQLDialect";
+            case "POSTGRESQL":
+                dialect = "org.hibernate.dialect.PostgreSQLDialect";
                 break;
-            }
-            case "ORACLE": {
-                string2 = "org.hibernate.dialect.OracleDialect";
+            case "ORACLE":
+                dialect = "org.hibernate.dialect.OracleDialect";
                 break;
-            }
-            case "DM": {
-                string2 = "org.hibernate.dialect.DmDialect";
+            case "DM":
+                dialect = "org.hibernate.dialect.DmDialect";
                 break;
-            }
+            default:
+                dialect = "org.hibernate.dialect.MySQL5InnoDBDialect";
+                break;
         }
-        return string2;
+        return dialect;
     }
 
     public static String c(String string) {

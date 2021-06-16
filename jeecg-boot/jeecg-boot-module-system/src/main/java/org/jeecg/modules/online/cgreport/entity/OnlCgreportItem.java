@@ -39,11 +39,11 @@ public class OnlCgreportItem implements Serializable {
     private Integer fieldWidth;
     private String fieldType;
     private String searchMode;
-    private boolean order;
-    private boolean search;
+    private Boolean isOrder;
+    private Boolean isSearch;
     private String dictCode;
     private String fieldHref;
-    private boolean show;
+    private Boolean isShow;
     private Integer orderNum;
     private String replaceVal;
     private String isTotal;
