@@ -12,9 +12,8 @@ public class e {
 
     private static String a(String string, int n2) {
         String string2 = string;
-        Iterator<String> iterator = a.keySet().iterator();
-        while (iterator.hasNext()) {
-            String string3 = String.valueOf(iterator.next());
+        for (String s : a.keySet()) {
+            String string3 = String.valueOf(s);
             String string4 = String.valueOf(a.get(string3));
             if (n2 == 1) {
                 string2 = string.replaceAll(string3, string4);

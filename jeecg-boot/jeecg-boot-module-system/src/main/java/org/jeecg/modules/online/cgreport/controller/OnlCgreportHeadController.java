@@ -30,15 +30,12 @@
 package org.jeecg.modules.online.cgreport.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -56,8 +53,6 @@ import org.jeecg.modules.online.cgreport.model.OnlCgreportModel;
 import org.jeecg.modules.online.cgreport.service.IOnlCgreportHeadService;
 import org.jeecg.modules.online.cgreport.service.IOnlCgreportItemService;
 import org.jeecg.modules.online.cgreport.service.IOnlCgreportParamService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -110,7 +105,7 @@ public class OnlCgreportHeadController {
                 onlCgreportItem.setFieldTxt(string3);
                 onlCgreportItem.setIsShow(true);
                 onlCgreportItem.setOrderNum(n2);
-                onlCgreportItem.setId(org.jeecg.modules.online.cgform.util.DataBaseUtils.a());
+                onlCgreportItem.setId(org.jeecg.modules.online.cgform.util.DataBaseUtils.genernateIdByIdWorker());
                 onlCgreportItem.setFieldType("String");
                 arrayList.add(onlCgreportItem);
                 ++n2;
@@ -149,7 +144,7 @@ public class OnlCgreportHeadController {
     public Result<?> add(@RequestBody OnlCgreportModel onlCgreportModel) {
         Result result = new Result();
         try {
-            String string = org.jeecg.modules.online.cgform.util.DataBaseUtils.a();
+            String string = org.jeecg.modules.online.cgform.util.DataBaseUtils.genernateIdByIdWorker();
             OnlCgreportHead onlCgreportHead = onlCgreportModel.getHead();
             List<OnlCgreportParam> list = onlCgreportModel.getParams();
             List<OnlCgreportItem> list2 = onlCgreportModel.getItems();

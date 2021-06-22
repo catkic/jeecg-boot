@@ -49,7 +49,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -474,13 +473,11 @@ public class DataBaseUtils {
 
     public static Map<String, Object> a(HttpServletRequest httpServletRequest) {
         Map<String, String[]> map = httpServletRequest.getParameterMap();
-        HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        Iterator<Map.Entry<String, String[]>> iterator = map.entrySet().iterator();
+        HashMap<String, Object> hashMap = new HashMap<>();
         String string = "";
         String string2 = "";
         Object object = null;
-        while (iterator.hasNext()) {
-            Map.Entry entry = iterator.next();
+        for (Map.Entry entry : map.entrySet()) {
             string = (String) entry.getKey();
             object = entry.getValue();
             if ("_t".equals(string) || null == object) {
@@ -738,10 +735,10 @@ public class DataBaseUtils {
         }
         if (bl) {
             if (oConvertUtils.isEmpty(string3)) {
-                string3 = DataBaseUtils.a();
+                string3 = DataBaseUtils.genernateIdByIdWorker();
             }
         } else {
-            string3 = DataBaseUtils.a();
+            string3 = DataBaseUtils.genernateIdByIdWorker();
         }
         String string6 = "insert into " + DataBaseUtils.f(string) + "(" + "id" + stringBuffer.toString() + ") values(#{id,jdbcType=VARCHAR}" + stringBuffer2.toString() + ")";
         hashMap.put("execute_sql_string", string6);
@@ -1463,7 +1460,7 @@ public class DataBaseUtils {
             stringBuffer2.append(COMMA + string4);
         }
         if (!bl || oConvertUtils.isEmpty(string3)) {
-            string3 = DataBaseUtils.a();
+            string3 = DataBaseUtils.genernateIdByIdWorker();
         }
         String string6 = "insert into " + DataBaseUtils.f(string) + "(" + "id" + stringBuffer.toString() + ") values(" + z + string3 + z + stringBuffer2.toString() + ")";
         hashMap.put("execute_sql_string", string6);
@@ -1554,8 +1551,8 @@ public class DataBaseUtils {
         linkDownProperty.setOtherColumns(arrayList);
     }
 
-    public static String a(byte[] arrby, String string, String string2, String string3) {
-        return CommonUtils.uploadOnlineImage((byte[]) arrby, (String) string, (String) string2, (String) string3);
+    public static String uploadImage(byte[] data, String basePath, String bizPath, String type) {
+        return CommonUtils.uploadOnlineImage(data, (String) basePath, (String) bizPath, (String) type);
     }
 
     public static List<String> e(List<OnlCgformField> list) {
@@ -1576,7 +1573,7 @@ public class DataBaseUtils {
         return arrayList;
     }
 
-    public static String a() {
+    public static String genernateIdByIdWorker() {
         long l2 = IdWorker.getId();
         return String.valueOf(l2);
     }

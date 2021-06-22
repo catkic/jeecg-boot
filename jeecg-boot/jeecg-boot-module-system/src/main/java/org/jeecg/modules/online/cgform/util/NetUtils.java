@@ -30,14 +30,14 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-public class l {
+public class NetUtils {
     private static String c;
     private static String d;
     private static String e;
     public static String a;
     public static boolean b;
 
-    public l() {
+    public NetUtils() {
     }
 
     public static String getssss() {
@@ -162,7 +162,7 @@ public class l {
         String var0 = "A0001";
 
         try {
-            ResourceBundle var1 = org.jeecg.modules.online.cgform.util.c.a();
+            ResourceBundle var1 = StrUtils.a();
             if (var1 == null) {
                 var1 = ResourceBundle.getBundle("jeecglic");
             }
@@ -175,7 +175,7 @@ public class l {
     }
 
     private static String getMa() {
-        return org.jeecg.modules.online.cgform.util.e.a();
+        return IpUtils.a();
     }
 
     private static String getMaOld() {

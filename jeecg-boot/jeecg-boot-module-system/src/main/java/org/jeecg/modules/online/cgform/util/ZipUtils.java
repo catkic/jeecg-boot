@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class d {
+public class ZipUtils {
     public static File a(List<String> list, String string) throws RuntimeException {
         File file = FileUtil.touch((String)string);
         if (file == null) {

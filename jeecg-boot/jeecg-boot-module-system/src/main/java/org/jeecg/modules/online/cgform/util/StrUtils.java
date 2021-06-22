@@ -28,20 +28,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.CharSetUtils;
-import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.ObjectUtils;
+
+import org.apache.commons.lang.*;
 //import org.apache.commons.lang.QstrEncodeUtil;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
 //import org.apache.commons.net.SignatureUtil;
-import org.jeecg.modules.online.cgform.util.k;
-import org.jeecg.modules.online.cgform.util.l;
 
-public class c {
+
+public class StrUtils {
     public static final String a = "";
     public static final int b = -1;
     public static boolean c = Boolean.FALSE;
@@ -50,23 +44,24 @@ public class c {
     public static String e;
 //    static String[] f;
 
-    public static boolean a(String string) {
+    public static boolean isBlank(String string) {
         return string == null || string.length() == 0;
     }
 
-    public static boolean b(String string) {
-        return !StringUtils.isEmpty((String)string);
+    public static boolean isNotBlank(String string) {
+        return !org.apache.commons.lang.StringUtils.isEmpty(string);
     }
 
-    public static boolean a(Object object) {
+    public static boolean notNull(Object object) {
         return object != null;
     }
 
-    public static boolean a(String string, List<String> list) {
+    public static boolean contains(String string, List<String> list) {
         if (string != null && list != null) {
             for (String string2 : list) {
-                if (string2 == null || string.indexOf(string2) == -1) continue;
-                return true;
+                if (string2 != null && string.contains(string2)) {
+                    return true;
+                }
             }
             return false;
         }
@@ -74,19 +69,14 @@ public class c {
     }
 
     public static boolean c(String string) {
-        int n2;
-        if (string == null || (n2 = string.length()) == 0) {
+        if (string == null) {
             return true;
         }
-        for (int i2 = 0; i2 < n2; ++i2) {
-            if (Character.isWhitespace(string.charAt(i2))) continue;
-            return false;
-        }
-        return true;
+        return isBlank(string.trim());
     }
 
     public static boolean d(String string) {
-        return !StringUtils.isBlank((String)string);
+        return !org.apache.commons.lang.StringUtils.isBlank(string);
     }
 
     public static String e(String string) {
@@ -98,8 +88,8 @@ public class c {
     }
 
     public static String g(String string) {
-        String string2 = org.jeecg.modules.online.cgform.util.c.f(string);
-        return org.jeecg.modules.online.cgform.util.c.a(string2) ? null : string2;
+        String string2 = StrUtils.f(string);
+        return StrUtils.isBlank(string2) ? null : string2;
     }
 
     public static String h(String string) {
@@ -124,11 +114,11 @@ public class c {
     }
 
     public static String a(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return string;
         }
-        string = org.jeecg.modules.online.cgform.util.c.b(string, string2);
-        return org.jeecg.modules.online.cgform.util.c.c(string, string2);
+        string = StrUtils.b(string, string2);
+        return StrUtils.c(string, string2);
     }
 
     public static String b(String var0, String var1) {
@@ -176,7 +166,7 @@ public class c {
     }
 
     public static String[] a(String[] arrstring) {
-        return org.jeecg.modules.online.cgform.util.c.a(arrstring, null);
+        return StrUtils.a(arrstring, null);
     }
 
     public static String[] a(String[] arrstring, String string) {
@@ -186,7 +176,7 @@ public class c {
         }
         String[] arrstring2 = new String[n2];
         for (int i2 = 0; i2 < n2; ++i2) {
-            arrstring2[i2] = org.jeecg.modules.online.cgform.util.c.a(arrstring[i2], string);
+            arrstring2[i2] = StrUtils.a(arrstring[i2], string);
         }
         return arrstring2;
     }
@@ -200,14 +190,14 @@ public class c {
     }
 
     public static int a(String string, char c2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return -1;
         }
         return string.indexOf(c2);
     }
 
     public static int a(String string, char c2, int n2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return -1;
         }
         return string.indexOf(c2, n2);
@@ -221,7 +211,7 @@ public class c {
     }
 
     public static int a(String string, String string2, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, n2, false);
+        return StrUtils.a(string, string2, n2, false);
     }
 
     private static int a(String string, String string2, int n2, boolean bl) {
@@ -251,7 +241,7 @@ public class c {
     }
 
     public static int g(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, string2, 0);
+        return StrUtils.c(string, string2, 0);
     }
 
     public static int c(String string, String string2, int n2) {
@@ -276,14 +266,14 @@ public class c {
     }
 
     public static int b(String string, char c2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return -1;
         }
         return string.lastIndexOf(c2);
     }
 
     public static int b(String string, char c2, int n2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return -1;
         }
         return string.lastIndexOf(c2, n2);
@@ -297,7 +287,7 @@ public class c {
     }
 
     public static int d(String string, String string2, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, n2, true);
+        return StrUtils.a(string, string2, n2, true);
     }
 
     public static int e(String string, String string2, int n2) {
@@ -311,7 +301,7 @@ public class c {
         if (string == null || string2 == null) {
             return -1;
         }
-        return org.jeecg.modules.online.cgform.util.c.f(string, string2, string.length());
+        return StrUtils.f(string, string2, string.length());
     }
 
     public static int f(String string, String string2, int n2) {
@@ -335,7 +325,7 @@ public class c {
     }
 
     public static boolean c(String string, char c2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return false;
         }
         return string.indexOf(c2) >= 0;
@@ -362,7 +352,7 @@ public class c {
     }
 
     public static int a(String string, char[] arrc) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || ArrayUtils.isEmpty((char[])arrc)) {
+        if (StrUtils.isBlank(string) || ArrayUtils.isEmpty((char[])arrc)) {
             return -1;
         }
         int n2 = string.length();
@@ -384,14 +374,14 @@ public class c {
     }
 
     public static int l(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return -1;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2.toCharArray());
+        return StrUtils.a(string, string2.toCharArray());
     }
 
     public static boolean b(String string, char[] arrc) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || ArrayUtils.isEmpty((char[])arrc)) {
+        if (StrUtils.isBlank(string) || ArrayUtils.isEmpty((char[])arrc)) {
             return false;
         }
         int n2 = string.length();
@@ -416,11 +406,11 @@ public class c {
         if (string2 == null) {
             return false;
         }
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2.toCharArray());
+        return StrUtils.b(string, string2.toCharArray());
     }
 
     public static int c(String string, char[] arrc) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || ArrayUtils.isEmpty((char[])arrc)) {
+        if (StrUtils.isBlank(string) || ArrayUtils.isEmpty((char[])arrc)) {
             return -1;
         }
         int n2 = string.length();
@@ -438,7 +428,7 @@ public class c {
     }
 
     public static int n(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return -1;
         }
         int n2 = string.length();
@@ -467,14 +457,14 @@ public class c {
         if (arrc.length == 0) {
             return false;
         }
-        return org.jeecg.modules.online.cgform.util.c.c(string, arrc) == -1;
+        return StrUtils.c(string, arrc) == -1;
     }
 
     public static boolean o(String string, String string2) {
         if (string == null || string2 == null) {
             return false;
         }
-        return org.jeecg.modules.online.cgform.util.c.d(string, string2.toCharArray());
+        return StrUtils.d(string, string2.toCharArray());
     }
 
     public static boolean e(String string, char[] arrc) {
@@ -503,7 +493,7 @@ public class c {
         if (string == null || string2 == null) {
             return true;
         }
-        return org.jeecg.modules.online.cgform.util.c.e(string, string2.toCharArray());
+        return StrUtils.e(string, string2.toCharArray());
     }
 
     public static int a(String string, String[] arrstring) {
@@ -620,7 +610,7 @@ public class c {
     }
 
     public static String q(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || string2 == null) {
+        if (StrUtils.isBlank(string) || string2 == null) {
             return string;
         }
         if (string2.length() == 0) {
@@ -634,7 +624,7 @@ public class c {
     }
 
     public static String r(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return string;
         }
         if (string2 == null) {
@@ -648,7 +638,7 @@ public class c {
     }
 
     public static String s(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
         int n2 = string.lastIndexOf(string2);
@@ -659,10 +649,10 @@ public class c {
     }
 
     public static String t(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return string;
         }
-        if (org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string2)) {
             return a;
         }
         int n2 = string.lastIndexOf(string2);
@@ -673,7 +663,7 @@ public class c {
     }
 
     public static String u(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, string2);
+        return StrUtils.a(string, string2, string2);
     }
 
     public static String a(String string, String string2, String string3) {
@@ -691,7 +681,7 @@ public class c {
     public static String[] b(String string, String string2, String string3) {
         int n2;
         int n3;
-        if (string == null || org.jeecg.modules.online.cgform.util.c.a(string2) || org.jeecg.modules.online.cgform.util.c.a(string3)) {
+        if (string == null || StrUtils.isBlank(string2) || StrUtils.isBlank(string3)) {
             return null;
         }
         int n4 = string.length();
@@ -713,43 +703,43 @@ public class c {
     }
 
     public static String v(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, string2);
+        return StrUtils.a(string, string2, string2);
     }
 
     public static String c(String string, String string2, String string3) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, string3);
+        return StrUtils.a(string, string2, string3);
     }
 
     public static String[] l(String string) {
-        return org.jeecg.modules.online.cgform.util.c.g(string, null, -1);
+        return StrUtils.g(string, null, -1);
     }
 
     public static String[] d(String string, char c2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, c2, false);
+        return StrUtils.a(string, c2, false);
     }
 
     public static String[] w(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, string2, -1, false);
+        return StrUtils.c(string, string2, -1, false);
     }
 
     public static String[] g(String string, String string2, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, string2, n2, false);
+        return StrUtils.c(string, string2, n2, false);
     }
 
     public static String[] x(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2, -1, false);
+        return StrUtils.b(string, string2, -1, false);
     }
 
     public static String[] h(String string, String string2, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2, n2, false);
+        return StrUtils.b(string, string2, n2, false);
     }
 
     public static String[] y(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2, -1, true);
+        return StrUtils.b(string, string2, -1, true);
     }
 
     public static String[] i(String string, String string2, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2, n2, true);
+        return StrUtils.b(string, string2, n2, true);
     }
 
     private static String[] b(String string, String string2, int n2, boolean bl) {
@@ -761,7 +751,7 @@ public class c {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         if (string2 == null || a.equals(string2)) {
-            return org.jeecg.modules.online.cgform.util.c.c(string, null, n2, bl);
+            return StrUtils.c(string, null, n2, bl);
         }
         int n4 = string2.length();
         ArrayList<String> arrayList = new ArrayList<String>();
@@ -799,11 +789,11 @@ public class c {
     }
 
     public static String[] m(String string) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, null, -1, true);
+        return StrUtils.c(string, null, -1, true);
     }
 
     public static String[] e(String string, char c2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, c2, true);
+        return StrUtils.a(string, c2, true);
     }
 
     private static String[] a(String string, char c2, boolean bl) {
@@ -840,11 +830,11 @@ public class c {
     }
 
     public static String[] z(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, string2, -1, true);
+        return StrUtils.c(string, string2, -1, true);
     }
 
     public static String[] j(String string, String string2, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, string2, n2, true);
+        return StrUtils.c(string, string2, n2, true);
     }
 
     private static String[] c(String string, String string2, int n2, boolean bl) {
@@ -927,11 +917,11 @@ public class c {
     }
 
     public static String[] n(String string) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, false);
+        return StrUtils.a(string, false);
     }
 
     public static String[] o(String string) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, true);
+        return StrUtils.a(string, true);
     }
 
     private static String[] a(String string, boolean bl) {
@@ -965,18 +955,18 @@ public class c {
     }
 
     public static String a(Object[] arrobject) {
-        return org.jeecg.modules.online.cgform.util.c.a(arrobject, null);
+        return StrUtils.a(arrobject, null);
     }
 
     public static String b(Object[] arrobject) {
-        return org.jeecg.modules.online.cgform.util.c.a(arrobject, null);
+        return StrUtils.a(arrobject, null);
     }
 
     public static String a(Object[] arrobject, char c2) {
         if (arrobject == null) {
             return null;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(arrobject, c2, 0, arrobject.length);
+        return StrUtils.a(arrobject, c2, 0, arrobject.length);
     }
 
     public static String a(Object[] arrobject, char c2, int n2, int n3) {
@@ -1002,7 +992,7 @@ public class c {
         if (arrobject == null) {
             return null;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(arrobject, string, 0, arrobject.length);
+        return StrUtils.a(arrobject, string, 0, arrobject.length);
     }
 
     public static String a(Object[] arrobject, String string, int n2, int n3) {
@@ -1112,14 +1102,14 @@ public class c {
         if (collection == null) {
             return null;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(collection.iterator(), c2);
+        return StrUtils.a(collection.iterator(), c2);
     }
 
     public static String a(Collection collection, String string) {
         if (collection == null) {
             return null;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(collection.iterator(), string);
+        return StrUtils.a(collection.iterator(), string);
     }
 
     public static String p(String string) {
@@ -1130,7 +1120,7 @@ public class c {
     }
 
     public static String q(String string) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return string;
         }
         int n2 = string.length();
@@ -1147,7 +1137,7 @@ public class c {
     }
 
     public static String A(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
         if (string.startsWith(string2)) {
@@ -1157,17 +1147,17 @@ public class c {
     }
 
     public static String B(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
-        if (org.jeecg.modules.online.cgform.util.c.T(string, string2)) {
+        if (StrUtils.T(string, string2)) {
             return string.substring(string2.length());
         }
         return string;
     }
 
     public static String C(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
         if (string.endsWith(string2)) {
@@ -1177,24 +1167,24 @@ public class c {
     }
 
     public static String D(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
-        if (org.jeecg.modules.online.cgform.util.c.V(string, string2)) {
+        if (StrUtils.V(string, string2)) {
             return string.substring(0, string.length() - string2.length());
         }
         return string;
     }
 
     public static String E(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, a, -1);
+        return StrUtils.a(string, string2, a, -1);
     }
 
     public static String f(String string, char c2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || string.indexOf(c2) == -1) {
+        if (StrUtils.isBlank(string) || string.indexOf(c2) == -1) {
             return string;
         }
         char[] arrc = string.toCharArray();
@@ -1207,15 +1197,15 @@ public class c {
     }
 
     public static String d(String string, String string2, String string3) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, string3, 1);
+        return StrUtils.a(string, string2, string3, 1);
     }
 
     public static String e(String string, String string2, String string3) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, string3, -1);
+        return StrUtils.a(string, string2, string3, -1);
     }
 
     public static String a(String string, String string2, String string3, int n2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2) || string3 == null || n2 == 0) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2) || string3 == null || n2 == 0) {
             return string;
         }
         int n3 = 0;
@@ -1238,7 +1228,7 @@ public class c {
     }
 
     public static String a(String string, String[] arrstring, String[] arrstring2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, arrstring, arrstring2, false, 0);
+        return StrUtils.a(string, arrstring, arrstring2, false, 0);
     }
 
 //    private static void c() {
@@ -1274,7 +1264,7 @@ public class c {
 
     public static String b(String string, String[] arrstring, String[] arrstring2) {
         int n2 = arrstring == null ? 0 : arrstring.length;
-        return org.jeecg.modules.online.cgform.util.c.a(string, arrstring, arrstring2, true, n2);
+        return StrUtils.a(string, arrstring, arrstring2, true, n2);
     }
 
     private static String a(String string, String[] arrstring, String[] arrstring2, boolean bl, int n2) {
@@ -1346,7 +1336,7 @@ public class c {
         if (!bl) {
             return string2;
         }
-        return org.jeecg.modules.online.cgform.util.c.a(string2, arrstring, arrstring2, bl, n2 - 1);
+        return StrUtils.a(string2, arrstring, arrstring2, bl, n2 - 1);
     }
 
     public static String a(String string, char c2, char c3) {
@@ -1357,7 +1347,7 @@ public class c {
     }
 
     public static String f(String string, String string2, String string3) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
         if (string3 == null) {
@@ -1417,7 +1407,7 @@ public class c {
     }
 
     public static String r(String string) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (StrUtils.isBlank(string)) {
             return string;
         }
         if (string.length() == 1) {
@@ -1440,7 +1430,7 @@ public class c {
     }
 
     public static String F(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || string2 == null) {
+        if (StrUtils.isBlank(string) || string2 == null) {
             return string;
         }
         if (string.endsWith(string2)) {
@@ -1450,7 +1440,7 @@ public class c {
     }
 
     public static String s(String string) {
-        return org.jeecg.modules.online.cgform.util.c.G(string, "\n");
+        return StrUtils.G(string, "\n");
     }
 
     public static String G(String string, String string2) {
@@ -1540,7 +1530,7 @@ public class c {
             return string;
         }
         if (n3 == 1 && n2 <= 8192) {
-            return org.jeecg.modules.online.cgform.util.c.a(n2, string.charAt(0));
+            return StrUtils.a(n2, string.charAt(0));
         }
         int n4 = n3 * n2;
         switch (n3) {
@@ -1573,10 +1563,10 @@ public class c {
 
     public static String k(String string, String string2, int n2) {
         if (string == null || string2 == null) {
-            return org.jeecg.modules.online.cgform.util.c.d(string, n2);
+            return StrUtils.d(string, n2);
         }
-        String string3 = org.jeecg.modules.online.cgform.util.c.d(string + string2, n2);
-        return org.jeecg.modules.online.cgform.util.c.C(string3, string2);
+        String string3 = StrUtils.d(string + string2, n2);
+        return StrUtils.C(string3, string2);
     }
 
     private static String a(int n2, char c2) throws IndexOutOfBoundsException {
@@ -1591,7 +1581,7 @@ public class c {
     }
 
     public static String e(String string, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, n2, ' ');
+        return StrUtils.a(string, n2, ' ');
     }
 
     public static String a(String string, int n2, char c2) {
@@ -1603,16 +1593,16 @@ public class c {
             return string;
         }
         if (n3 > 8192) {
-            return org.jeecg.modules.online.cgform.util.c.a(string, n2, String.valueOf(c2));
+            return StrUtils.a(string, n2, String.valueOf(c2));
         }
-        return string.concat(org.jeecg.modules.online.cgform.util.c.a(n3, c2));
+        return string.concat(StrUtils.a(n3, c2));
     }
 
     public static String a(String string, int n2, String string2) {
         if (string == null) {
             return null;
         }
-        if (org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string2)) {
             string2 = " ";
         }
         int n3 = string2.length();
@@ -1622,7 +1612,7 @@ public class c {
             return string;
         }
         if (n3 == 1 && n5 <= 8192) {
-            return org.jeecg.modules.online.cgform.util.c.a(string, n2, string2.charAt(0));
+            return StrUtils.a(string, n2, string2.charAt(0));
         }
         if (n5 == n3) {
             return string.concat(string2);
@@ -1639,7 +1629,7 @@ public class c {
     }
 
     public static String f(String string, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, n2, ' ');
+        return StrUtils.b(string, n2, ' ');
     }
 
     public static String b(String string, int n2, char c2) {
@@ -1651,16 +1641,16 @@ public class c {
             return string;
         }
         if (n3 > 8192) {
-            return org.jeecg.modules.online.cgform.util.c.b(string, n2, String.valueOf(c2));
+            return StrUtils.b(string, n2, String.valueOf(c2));
         }
-        return org.jeecg.modules.online.cgform.util.c.a(n3, c2).concat(string);
+        return StrUtils.a(n3, c2).concat(string);
     }
 
     public static String b(String string, int n2, String string2) {
         if (string == null) {
             return null;
         }
-        if (org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string2)) {
             string2 = " ";
         }
         int n3 = string2.length();
@@ -1670,7 +1660,7 @@ public class c {
             return string;
         }
         if (n3 == 1 && n5 <= 8192) {
-            return org.jeecg.modules.online.cgform.util.c.b(string, n2, string2.charAt(0));
+            return StrUtils.b(string, n2, string2.charAt(0));
         }
         if (n5 == n3) {
             return string2.concat(string);
@@ -1691,7 +1681,7 @@ public class c {
     }
 
     public static String g(String string, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, n2, ' ');
+        return StrUtils.c(string, n2, ' ');
     }
 
     public static String c(String string, int n2, char c2) {
@@ -1703,8 +1693,8 @@ public class c {
         if (n4 <= 0) {
             return string;
         }
-        string = org.jeecg.modules.online.cgform.util.c.b(string, n3 + n4 / 2, c2);
-        string = org.jeecg.modules.online.cgform.util.c.a(string, n2, c2);
+        string = StrUtils.b(string, n3 + n4 / 2, c2);
+        string = StrUtils.a(string, n2, c2);
         return string;
     }
 
@@ -1714,14 +1704,14 @@ public class c {
         if (string == null || n2 <= 0) {
             return string;
         }
-        if (org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string2)) {
             string2 = " ";
         }
         if ((n4 = n2 - (n3 = string.length())) <= 0) {
             return string;
         }
-        string = org.jeecg.modules.online.cgform.util.c.b(string, n3 + n4 / 2, string2);
-        string = org.jeecg.modules.online.cgform.util.c.a(string, n2, string2);
+        string = StrUtils.b(string, n3 + n4 / 2, string2);
+        string = StrUtils.a(string, n2, string2);
         return string;
     }
 
@@ -1762,7 +1752,7 @@ public class c {
     }
 
     public static String A(String string) {
-        return org.jeecg.modules.online.cgform.util.c.z(string);
+        return StrUtils.z(string);
     }
 
     public static String B(String string) {
@@ -1774,7 +1764,7 @@ public class c {
     }
 
     public static String C(String string) {
-        return org.jeecg.modules.online.cgform.util.c.B(string);
+        return StrUtils.B(string);
     }
 
     public static String D(String string) {
@@ -1803,7 +1793,7 @@ public class c {
     }
 
     public static int K(String string, String string2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return 0;
         }
         int n2 = 0;
@@ -1912,7 +1902,7 @@ public class c {
     }
 
     public static boolean N(String string) {
-        if (string == null || org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (string == null || StrUtils.isBlank(string)) {
             return false;
         }
         int n2 = string.length();
@@ -1924,7 +1914,7 @@ public class c {
     }
 
     public static boolean O(String string) {
-        if (string == null || org.jeecg.modules.online.cgform.util.c.a(string)) {
+        if (string == null || StrUtils.isBlank(string)) {
             return false;
         }
         int n2 = string.length();
@@ -1960,11 +1950,11 @@ public class c {
     }
 
     public static String M(String string, String string2) {
-        return StringUtils.isBlank((String)string) ? string2 : string;
+        return org.apache.commons.lang.StringUtils.isBlank((String)string) ? string2 : string;
     }
 
     public static String N(String string, String string2) {
-        return StringUtils.isEmpty((String)string) ? string2 : string;
+        return org.apache.commons.lang.StringUtils.isEmpty((String)string) ? string2 : string;
     }
 
     public static String Q(String string) {
@@ -1978,25 +1968,25 @@ public class c {
         if (string == null) {
             return null;
         }
-        Object[] arrobject = org.jeecg.modules.online.cgform.util.c.d(string, c2);
+        Object[] arrobject = StrUtils.d(string, c2);
         ArrayUtils.reverse((Object[])arrobject);
-        return org.jeecg.modules.online.cgform.util.c.a(arrobject, c2);
+        return StrUtils.a(arrobject, c2);
     }
 
     public static String O(String string, String string2) {
         if (string == null) {
             return null;
         }
-        Object[] arrobject = org.jeecg.modules.online.cgform.util.c.w(string, string2);
+        Object[] arrobject = StrUtils.w(string, string2);
         ArrayUtils.reverse((Object[])arrobject);
         if (string2 == null) {
-            return org.jeecg.modules.online.cgform.util.c.a(arrobject, ' ');
+            return StrUtils.a(arrobject, ' ');
         }
-        return org.jeecg.modules.online.cgform.util.c.a(arrobject, string2);
+        return StrUtils.a(arrobject, string2);
     }
 
     public static String h(String string, int n2) {
-        return org.jeecg.modules.online.cgform.util.c.c(string, 0, n2);
+        return StrUtils.c(string, 0, n2);
     }
 
     public static String c(String string, int n2, int n3) {
@@ -2022,13 +2012,13 @@ public class c {
             throw new IllegalArgumentException("Minimum abbreviation width with offset is 7");
         }
         if (n2 + (n3 - 3) < string.length()) {
-            return "..." + org.jeecg.modules.online.cgform.util.c.h(string.substring(n2), n3 - 3);
+            return "..." + StrUtils.h(string.substring(n2), n3 - 3);
         }
         return "..." + string.substring(string.length() - (n3 - 3));
     }
 
     public static String l(String string, String string2, int n2) {
-        if (org.jeecg.modules.online.cgform.util.c.a(string) || org.jeecg.modules.online.cgform.util.c.a(string2)) {
+        if (StrUtils.isBlank(string) || StrUtils.isBlank(string2)) {
             return string;
         }
         if (n2 >= string.length() || n2 < string2.length() + 2) {
@@ -2051,7 +2041,7 @@ public class c {
         if (string2 == null) {
             return string;
         }
-        int n2 = org.jeecg.modules.online.cgform.util.c.Q(string, string2);
+        int n2 = StrUtils.Q(string, string2);
         if (n2 == -1) {
             return a;
         }
@@ -2125,7 +2115,7 @@ public class c {
         if (arrstring == null || arrstring.length == 0) {
             return a;
         }
-        int n2 = org.jeecg.modules.online.cgform.util.c.b(arrstring);
+        int n2 = StrUtils.b(arrstring);
         if (n2 == -1) {
             if (arrstring[0] == null) {
                 return a;
@@ -2178,11 +2168,11 @@ public class c {
     }
 
     public static boolean S(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, false);
+        return StrUtils.a(string, string2, false);
     }
 
     public static boolean T(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.a(string, string2, true);
+        return StrUtils.a(string, string2, true);
     }
 
     private static boolean a(String string, String string2, boolean bl) {
@@ -2196,11 +2186,11 @@ public class c {
     }
 
     public static boolean U(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2, false);
+        return StrUtils.b(string, string2, false);
     }
 
     public static boolean V(String string, String string2) {
-        return org.jeecg.modules.online.cgform.util.c.b(string, string2, true);
+        return StrUtils.b(string, string2, true);
     }
 
     private static boolean b(String string, String string2, boolean bl) {
@@ -2215,7 +2205,7 @@ public class c {
     }
 
     public static String R(String string) {
-        if ((string = org.jeecg.modules.online.cgform.util.c.i(string)) == null || string.length() <= 2) {
+        if ((string = StrUtils.i(string)) == null || string.length() <= 2) {
             return string;
         }
         StrBuilder strBuilder = new StrBuilder(string.length());

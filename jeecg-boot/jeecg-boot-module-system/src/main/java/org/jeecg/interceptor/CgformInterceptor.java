@@ -25,6 +25,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.dto.OnlineAuthDTO;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.OnlineAuth;
@@ -33,51 +35,49 @@ import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.service.IOnlineBaseAPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public class a
+@Slf4j
+public class CgformInterceptor
 implements HandlerInterceptor {
-    private static final Logger a = LoggerFactory.getLogger(a.class);
-    private IOnlineBaseAPI b;
-    private ISysBaseAPI c;
-    private static final String d = "/online/cgform";
-    private static final String[] e = new String[]{"/online/cgformInnerTableList", "/online/cgformErpList", "/online/cgformList", "/online/cgformTreeList", "/online/cgformTabList"};
+    private IOnlineBaseAPI onlineBaseAPI;
+    private ISysBaseAPI sysBaseAPI;
+    private static final String BASE_PATH = "/online/cgform";
+    private static final String[] CHECK_PATH = new String[]{"/online/cgformInnerTableList", "/online/cgformErpList", "/online/cgformList", "/online/cgformTreeList", "/online/cgformTabList"};
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         OnlineAuth onlineAuth;
         boolean bl = handler.getClass().isAssignableFrom(HandlerMethod.class);
-        if (bl && (onlineAuth = (OnlineAuth)((HandlerMethod)handler).getMethodAnnotation(OnlineAuth.class)) != null) {
+        if (bl && (onlineAuth = ((HandlerMethod)handler).getMethodAnnotation(OnlineAuth.class)) != null) {
             OnlineAuthDTO onlineAuthDTO;
             int n2;
-            a.debug("===== online 菜单访问拦截器 =====");
+            log.debug("===== online 菜单访问拦截器 =====");
             String string = request.getRequestURI().substring(request.getContextPath().length());
             string = this.a(string);
             String string2 = onlineAuth.value();
             String string3 = string.substring(string.lastIndexOf(string2) + string2.length());
-            a.debug("拦截请求(" + request.getMethod() + ")：" + string + ",");
+            log.debug("拦截请求(" + request.getMethod() + ")：" + string + ",");
             if ("form".equals(string2) && "DELETE".equals(request.getMethod())) {
                 string3 = string3.substring(0, string3.lastIndexOf("/"));
             }
-            String string4 = request.getParameter("tabletype");
-            if (this.b == null) {
-                this.b = (IOnlineBaseAPI)SpringContextUtils.getBean(IOnlineBaseAPI.class);
+            String tabletype = request.getParameter("tabletype");
+            if (this.onlineBaseAPI == null) {
+                this.onlineBaseAPI = SpringContextUtils.getBean(IOnlineBaseAPI.class);
             }
-            string3 = this.b.getOnlineErpCode(string3, string4);
-            ArrayList<String> arrayList = new ArrayList<String>();
-            String[] object = e;
-            int n3 = ((String[])object).length;
-            for (n2 = 0; n2 < n3; ++n2) {
-                String string5 = object[n2];
+            string3 = this.onlineBaseAPI.getOnlineErpCode(string3, tabletype);
+            ArrayList<String> arrayList = new ArrayList<>();
+            String[] object = CHECK_PATH;
+            int n3 = object.length;
+            for (int i = 0; i < n3; ++i) {
+                String string5 = object[i];
                 arrayList.add(string5 + string3);
             }
-            if (this.c == null) {
-                this.c = (ISysBaseAPI)SpringContextUtils.getBean(ISysBaseAPI.class);
+            if (this.sysBaseAPI == null) {
+                this.sysBaseAPI = SpringContextUtils.getBean(ISysBaseAPI.class);
             }
-            if ((n2 = (int)(this.c.hasOnlineAuth(onlineAuthDTO = new OnlineAuthDTO(JwtUtil.getUserNameByToken(request), arrayList, d)) ? 1 : 0)) == 0) {
-                a.info("请求无权限(" + request.getMethod() + ")：" + string);
+            if (this.sysBaseAPI.hasOnlineAuth(new OnlineAuthDTO(JwtUtil.getUserNameByToken(request), arrayList, BASE_PATH))) {
+                log.info("请求无权限(" + request.getMethod() + ")：" + string);
                 this.a(response, string2);
                 return false;
             }
@@ -87,9 +87,9 @@ implements HandlerInterceptor {
 
     private String a(String string) {
         String string2 = "";
-        if (oConvertUtils.isNotEmpty((Object)string)) {
+        if (oConvertUtils.isNotEmpty(string)) {
             string2 = string.replace("\\", "/");
-            if ((string2 = string2.replace("//", "/")).indexOf("//") >= 0) {
+            if ((string2 = string2.replace("//", "/")).contains("//")) {
                 string2 = this.a(string2);
             }
         }
@@ -109,12 +109,12 @@ implements HandlerInterceptor {
             if ("exportXls".equals(string)) {
                 printWriter.print("");
             } else {
-                Result result = Result.error((String)"无权限访问(操作)");
-                printWriter.print(JSON.toJSON((Object)result));
+                Result result = Result.error("无权限访问(操作)");
+                printWriter.print(JSON.toJSON(result));
             }
         }
         catch (IOException iOException) {
-            a.error(iOException.getMessage());
+            log.error(iOException.getMessage());
         }
         finally {
             if (printWriter != null) {

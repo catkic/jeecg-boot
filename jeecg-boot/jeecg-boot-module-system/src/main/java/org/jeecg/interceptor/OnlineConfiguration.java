@@ -10,7 +10,6 @@
  */
 package org.jeecg.interceptor;
 
-import org.jeecg.interceptor.a;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,8 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class OnlineConfiguration
 implements WebMvcConfigurer {
     @Bean
-    public a onlineInterceptor() {
-        return new a();
+    public CgformInterceptor onlineInterceptor() {
+        return new CgformInterceptor();
     }
 
     public void addInterceptors(InterceptorRegistry registry) {

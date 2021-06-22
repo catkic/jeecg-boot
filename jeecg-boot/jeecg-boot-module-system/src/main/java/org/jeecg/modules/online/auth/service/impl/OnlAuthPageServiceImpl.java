@@ -13,7 +13,7 @@
  *  org.springframework.stereotype.Service
  *  org.springframework.transaction.annotation.Transactional
  */
-package org.jeecg.modules.online.auth.service.a;
+package org.jeecg.modules.online.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;

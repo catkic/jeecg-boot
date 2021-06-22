@@ -7,7 +7,7 @@
  *  com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
  *  org.springframework.stereotype.Service
  */
-package org.jeecg.modules.online.auth.service.a;
+package org.jeecg.modules.online.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -27,11 +27,11 @@ public class OnlAuthRelationServiceImpl extends ServiceImpl<OnlAuthRelationMappe
     @Override
     public void saveRoleAuth(String roleId, String cgformId, int type, String authMode, List<String> authIds) {
         LambdaQueryWrapper<OnlAuthRelation> lambdaQueryWrapper = new LambdaQueryWrapper<OnlAuthRelation>()
-                .eq(OnlAuthRelation::getCgformId, (Object) cgformId)
-                .eq(OnlAuthRelation::getType, (Object) type)
-                .eq(OnlAuthRelation::getAuthMode, (Object) authMode)
-                .eq(OnlAuthRelation::getRoleId, (Object) roleId);
-        ((OnlAuthRelationMapper) this.baseMapper).delete((Wrapper) lambdaQueryWrapper);
+                .eq(OnlAuthRelation::getCgformId, cgformId)
+                .eq(OnlAuthRelation::getType, type)
+                .eq(OnlAuthRelation::getAuthMode, authMode)
+                .eq(OnlAuthRelation::getRoleId, roleId);
+        this.baseMapper.delete(lambdaQueryWrapper);
         ArrayList<OnlAuthRelation> arrayList = new ArrayList<OnlAuthRelation>();
         for (String string : authIds) {
             OnlAuthRelation onlAuthRelation = new OnlAuthRelation();

@@ -76,7 +76,7 @@ public class OnlCgformSqlServiceImpl implements IOnlCgformSqlService {
 
     @Override
     public void saveOrUpdateSubData(String subDataJsonStr, OnlCgformHead head, List<OnlCgformField> subFiledList) throws BusinessException {
-        OnlCgformFieldMapper onlCgformFieldMapper = (OnlCgformFieldMapper) SpringContextUtils.getBean(OnlCgformFieldMapper.class);
+        OnlCgformFieldMapper onlCgformFieldMapper = SpringContextUtils.getBean(OnlCgformFieldMapper.class);
         this.a(subDataJsonStr, head, subFiledList, onlCgformFieldMapper);
     }
 
@@ -84,7 +84,7 @@ public class OnlCgformSqlServiceImpl implements IOnlCgformSqlService {
     public Map<String, String> saveOnlineImportDataWithValidate(OnlCgformHead head, List<OnlCgformField> fieldList, List<Map<String, Object>> dataList) {
         StringBuffer stringBuffer = new StringBuffer();
         j j2 = new j(fieldList);
-        OnlCgformFieldMapper onlCgformFieldMapper = (OnlCgformFieldMapper) SpringContextUtils.getBean(OnlCgformFieldMapper.class);
+        OnlCgformFieldMapper onlCgformFieldMapper = SpringContextUtils.getBean(OnlCgformFieldMapper.class);
         int n2 = 0;
         int n3 = 0;
         int n4 = dataList.size();

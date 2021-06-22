@@ -9,7 +9,7 @@
  *  org.springframework.beans.factory.annotation.Autowired
  *  org.springframework.stereotype.Service
  */
-package org.jeecg.modules.online.auth.service.a;
+package org.jeecg.modules.online.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;

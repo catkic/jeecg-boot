@@ -18,24 +18,24 @@ import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 import org.jeecgframework.poi.handler.impl.ExcelDataHandlerDefaultImpl;
 import org.jeecgframework.poi.util.PoiPublicUtil;
 
-public class a
+public class ExcelDataHandler
 extends ExcelDataHandlerDefaultImpl {
-    Map<String, OnlCgformField> a;
-    ISysBaseAPI b;
-    String c;
-    String d;
-    String e;
+    Map<String, OnlCgformField> data;
+    ISysBaseAPI sysBaseAPI;
+    String basePath;
+    String bizPath;
+    String uploadType;
 
-    public a(List<OnlCgformField> list, String string, String string2) {
-        this.a = this.a(list);
-        this.c = string;
-        this.d = "online";
-        this.e = string2;
-        this.b = (ISysBaseAPI)SpringContextUtils.getBean(ISysBaseAPI.class);
+    public ExcelDataHandler(List<OnlCgformField> list, String basePath, String uploadType) {
+        this.data = this.a(list);
+        this.basePath = basePath;
+        this.bizPath = "online";
+        this.uploadType = uploadType;
+        this.sysBaseAPI = SpringContextUtils.getBean(ISysBaseAPI.class);
     }
 
     private Map<String, OnlCgformField> a(List<OnlCgformField> list) {
-        HashMap<String, OnlCgformField> hashMap = new HashMap<String, OnlCgformField>();
+        HashMap<String, OnlCgformField> hashMap = new HashMap<>();
         for (OnlCgformField onlCgformField : list) {
             hashMap.put(onlCgformField.getDbFieldTxt(), onlCgformField);
         }
@@ -45,12 +45,12 @@ extends ExcelDataHandlerDefaultImpl {
     public void setMapValue(Map<String, Object> map, String originKey, Object value) {
         String string = this.a(originKey);
         if (value instanceof Double) {
-            map.put(string, PoiPublicUtil.doubleToString((Double)((Double)value)));
+            map.put(string, PoiPublicUtil.doubleToString((Double)value));
         } else if (value instanceof byte[]) {
             byte[] arrby = (byte[])value;
-            String string2 = DataBaseUtils.a(arrby, this.c, this.d, this.e);
-            if (string2 != null) {
-                map.put(string, string2);
+            String path = DataBaseUtils.uploadImage(arrby, this.basePath, this.bizPath, this.uploadType);
+            if (path != null) {
+                map.put(string, path);
             }
         } else {
             map.put(string, value == null ? "" : value.toString());
@@ -58,8 +58,8 @@ extends ExcelDataHandlerDefaultImpl {
     }
 
     private String a(String string) {
-        if (this.a.containsKey(string)) {
-            return "$mainTable$" + this.a.get(string).getDbFieldName();
+        if (this.data.containsKey(string)) {
+            return "$mainTable$" + this.data.get(string).getDbFieldName();
         }
         return "$subTable$" + string;
     }

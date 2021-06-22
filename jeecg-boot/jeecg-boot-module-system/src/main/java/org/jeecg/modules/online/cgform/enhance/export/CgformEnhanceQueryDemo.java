@@ -13,43 +13,42 @@ import org.jeecg.modules.online.cgform.enhance.CgformEnhanceJavaListInter;
 import org.jeecg.modules.online.config.exception.BusinessException;
 import org.springframework.stereotype.Component;
 
-@Component(value="cgformEnhanceQueryDemo")
-public class e
-implements CgformEnhanceJavaListInter {
+@Component
+public class CgformEnhanceQueryDemo implements CgformEnhanceJavaListInter {
     @Override
     public void execute(String tableName, List<Map<String, Object>> data) throws BusinessException {
-        List<a> list = this.a();
+        List<Area> list = this.init();
         for (Map<String, Object> map : data) {
             Object object = map.get("province");
             if (object == null) continue;
-            String string = list.stream().filter(a2 -> object.toString().equals(a2.a())).map(a::b).findAny().orElse("");
+            String string = list.stream().filter(area2 -> object.toString().equals(area2.code())).map(Area::name).findAny().orElse("");
             map.put("province", string);
         }
     }
 
-    private List<a> a() {
-        ArrayList<a> arrayList = new ArrayList<a>();
-        arrayList.add(new a("bj", "北京"));
-        arrayList.add(new a("sd", "山东"));
-        arrayList.add(new a("ah", "安徽"));
+    private List<Area> init() {
+        ArrayList<Area> arrayList = new ArrayList<Area>();
+        arrayList.add(new Area("bj", "北京"));
+        arrayList.add(new Area("sd", "山东"));
+        arrayList.add(new Area("ah", "安徽"));
         return arrayList;
     }
 
-    class a {
-        String a;
-        String b;
+    class Area {
+        String code;
+        String name;
 
-        public a(String string, String string2) {
-            this.a = string;
-            this.b = string2;
+        public Area(String string, String string2) {
+            this.code = string;
+            this.name = string2;
         }
 
-        public String a() {
-            return this.a;
+        public String code() {
+            return this.code;
         }
 
-        public String b() {
-            return this.b;
+        public String name() {
+            return this.name;
         }
     }
 }

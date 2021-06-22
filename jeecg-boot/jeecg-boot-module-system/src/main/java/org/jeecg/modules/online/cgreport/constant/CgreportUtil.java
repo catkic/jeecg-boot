@@ -3,7 +3,7 @@
  */
 package org.jeecg.modules.online.cgreport.constant;
 
-public class a {
+public class CgreportUtil {
     public static final String a = "main";
     public static final String b = "items";
     public static final String c = "params";

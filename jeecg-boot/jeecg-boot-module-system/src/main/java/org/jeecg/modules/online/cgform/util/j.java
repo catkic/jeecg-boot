@@ -43,7 +43,7 @@ public class j {
 
     public String a(String string, int n2) {
         StringBuffer stringBuffer = new StringBuffer();
-        JSONObject jSONObject = JSON.parseObject((String)string);
+        JSONObject jSONObject = JSON.parseObject(string);
         for (String string2 : this.d.keySet()) {
             String string3 = jSONObject.getString(string2);
             OnlCgformField onlCgformField = this.d.get(string2);

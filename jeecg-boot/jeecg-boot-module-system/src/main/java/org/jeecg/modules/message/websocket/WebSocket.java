@@ -43,8 +43,8 @@ public class WebSocket {
     /**
      * 缓存 webSocket连接到单机服务class中（整体方案支持集群）
      */
-    private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
-    private static Map<String, Session> sessionPool = new HashMap<String, Session>();
+    private static final CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
+    private static final Map<String, Session> sessionPool = new HashMap<String, Session>();
 
 
     @OnOpen

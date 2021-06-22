@@ -710,7 +710,7 @@ public class OnlCgformFieldServiceImpl extends ServiceImpl<OnlCgformFieldMapper,
             if (string3 == null) continue;
             String string4 = DataBaseUtils.f(string2);
             String string5 = "select * from " + string4 + " where id = '" + string3 + "'";
-            Map<String, Object> map = ((OnlCgformFieldMapper) this.baseMapper).queryFormData(string5);
+            Map<String, Object> map = this.baseMapper.queryFormData(string5);
             Map<String, Object> map2 = DataBaseUtils.lobAndNull(map);
             String string6 = map2.get(string).toString();
             String string7 = "select * from " + DataBaseUtils.f(string2) + " where " + string + "= '" + string6 + "' and id not in(" + ids + ")";

@@ -5,6 +5,7 @@ package org.jeecg.modules.online.cgform.model;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 import org.jeecg.modules.online.cgform.entity.OnlCgformHead;

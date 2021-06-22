@@ -7,8 +7,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
-class e {
-    e() {
+class IpUtils {
+    IpUtils() {
     }
 
     private static String b() {
@@ -53,7 +53,7 @@ class e {
                 if (arrby == null) continue;
                 StringBuilder stringBuilder = new StringBuilder();
                 for (byte by : arrby) {
-                    stringBuilder.append(e.a(by));
+                    stringBuilder.append(IpUtils.a(by));
                     stringBuilder.append("-");
                 }
                 stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -76,9 +76,9 @@ class e {
     }
 
     public static String a() {
-        String string = e.d();
+        String string = IpUtils.d();
         String string2 = null;
-        string2 = string.startsWith("windows") ? e.b() : e.c();
+        string2 = string.startsWith("windows") ? IpUtils.b() : IpUtils.c();
         return string2;
     }
 }

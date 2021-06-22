@@ -83,7 +83,7 @@ public class FieldUtil {
             if ("String".equalsIgnoreCase(string)) {
                 object = string2;
             } else if ("Date".equalsIgnoreCase(string)) {
-                if (string2.length() != 19 && string2.length() == 10) {
+                if (string2.length() == 10) {
                     string2 = bl ? string2 + " 00:00:00" : string2 + " 23:59:59";
                 }
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
