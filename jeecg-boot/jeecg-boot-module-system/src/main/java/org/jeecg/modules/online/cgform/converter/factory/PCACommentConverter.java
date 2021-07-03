@@ -14,29 +14,29 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.converter.field.DictModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class g
+public class PCACommentConverter
 extends DictModelConverter {
-    ProvinceCityArea c;
+    ProvinceCityArea pca;
 
-    public g(OnlCgformField onlCgformField) {
+    public PCACommentConverter(OnlCgformField onlCgformField) {
         this.filed = onlCgformField.getDbFieldName();
-        this.c = (ProvinceCityArea)SpringContextUtils.getBean(ProvinceCityArea.class);
+        this.pca = SpringContextUtils.getBean(ProvinceCityArea.class);
     }
 
     @Override
     public String converterToVal(String txt) {
-        if (oConvertUtils.isEmpty((Object)txt)) {
+        if (oConvertUtils.isEmpty(txt)) {
             return null;
         }
-        return this.c.getCode(txt);
+        return this.pca.getCode(txt);
     }
 
     @Override
     public String converterToTxt(String val) {
-        if (oConvertUtils.isEmpty((Object)val)) {
+        if (oConvertUtils.isEmpty(val)) {
             return null;
         }
-        return this.c.getText(val);
+        return this.pca.getText(val);
     }
 }
 

@@ -6,9 +6,9 @@ package org.jeecg.modules.online.cgform.converter.factory;
 import org.jeecg.modules.online.cgform.converter.field.StringModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class d
+public class SelSearchCommentConverter
 extends StringModelConverter {
-    public d(OnlCgformField onlCgformField) {
+    public SelSearchCommentConverter(OnlCgformField onlCgformField) {
         super(onlCgformField.getDictTable(), onlCgformField.getDictField(), onlCgformField.getDictText());
     }
 }

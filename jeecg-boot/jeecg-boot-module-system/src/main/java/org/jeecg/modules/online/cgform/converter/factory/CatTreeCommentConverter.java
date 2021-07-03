@@ -13,7 +13,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.converter.field.StringModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class a extends StringModelConverter {
+public class CatTreeCommentConverter extends StringModelConverter {
     private String f;
 
     public String getTreeText() {
@@ -24,7 +24,7 @@ public class a extends StringModelConverter {
         this.f = treeText;
     }
 
-    public a(OnlCgformField onlCgformField) {
+    public CatTreeCommentConverter(OnlCgformField onlCgformField) {
         super("SYS_CATEGORY", "ID", "NAME");
         this.f = onlCgformField.getDictText();
         this.field = onlCgformField.getDbFieldName();

@@ -16,9 +16,9 @@ import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 import java.util.ArrayList;
 import java.util.List;
 
-public class h
+public class SwitchCommentConverter
         extends DictModelConverter {
-    public h(OnlCgformField onlCgformField) {
+    public SwitchCommentConverter(OnlCgformField onlCgformField) {
         JSONArray jSONArray;
         String string = onlCgformField.getFieldExtendJson();
         String string2 = "Y";

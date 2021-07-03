@@ -13,7 +13,7 @@ import org.jeecg.modules.online.cgform.link.LinkDown;
 import org.jeecg.modules.online.cgform.converter.field.StringModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class e
+public class LinkDownCommentConverter
 extends StringModelConverter {
     private String f;
 
@@ -25,7 +25,7 @@ extends StringModelConverter {
         this.f = linkField;
     }
 
-    public e(OnlCgformField onlCgformField) {
+    public LinkDownCommentConverter(OnlCgformField onlCgformField) {
         String string = onlCgformField.getDictTable();
         LinkDown a2 = (LinkDown)JSONObject.parseObject((String)string, LinkDown.class);
         this.setTable(a2.getTable());

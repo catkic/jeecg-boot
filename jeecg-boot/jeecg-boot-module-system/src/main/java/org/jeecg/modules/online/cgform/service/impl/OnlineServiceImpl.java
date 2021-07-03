@@ -32,6 +32,7 @@ import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.auth.service.IOnlAuthPageService;
+import org.jeecg.modules.online.cgform.converter.FieldCommentConverterFactory;
 import org.jeecg.modules.online.cgform.link.LinkDown;
 import org.jeecg.modules.online.cgform.entity.OnlCgformButton;
 import org.jeecg.modules.online.cgform.entity.OnlCgformEnhanceJs;
@@ -48,6 +49,7 @@ import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
 import org.jeecg.modules.online.cgform.service.IOnlineService;
 import org.jeecg.modules.online.cgform.util.DataBaseUtils;
 import org.jeecg.modules.online.cgform.util.EnhanceJsUtil;
+import org.jeecg.modules.online.cgform.util.ScopedSlotUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -68,11 +70,11 @@ public class OnlineServiceImpl implements IOnlineService {
         String string = head.getId();
         List<OnlCgformField> list = this.a(string);
         List<String> list2 = this.onlAuthPageService.queryHideCode(string, true);
-        ArrayList<OnlColumn> arrayList = new ArrayList<OnlColumn>();
-        HashMap<String, List<DictModel>> hashMap = new HashMap<String, List<DictModel>>();
-        ArrayList<HrefSlots> hrefSlots = new ArrayList<HrefSlots>();
+        ArrayList<OnlColumn> arrayList = new ArrayList<>();
+        HashMap<String, List<DictModel>> hashMap = new HashMap<>();
+        ArrayList<HrefSlots> hrefSlots = new ArrayList<>();
         ArrayList<TableModel> tableModels = new ArrayList<>();
-        ArrayList<String> arrayList4 = new ArrayList<String>();
+        ArrayList<String> arrayList4 = new ArrayList<>();
         for (OnlCgformField onlCgformField : list) {
             List list3;
             Object object4;
@@ -136,18 +138,18 @@ public class OnlineServiceImpl implements IOnlineService {
                 onlColumn.setCustomRender(dbFieldName);
             }
             if (fieldShowType.contains("file")) {
-                onlColumn.setScopedSlots(new ScopedSlots("fileSlot"));
+                onlColumn.setScopedSlots(new ScopedSlots(ScopedSlotUtil.FILE_SLOT));
             } else if (fieldShowType.contains("image")) {
-                onlColumn.setScopedSlots(new ScopedSlots("imgSlot"));
+                onlColumn.setScopedSlots(new ScopedSlots(ScopedSlotUtil.IMG_SLOT));
             } else if (fieldShowType.contains("editor")) {
-                onlColumn.setScopedSlots(new ScopedSlots("htmlSlot"));
+                onlColumn.setScopedSlots(new ScopedSlots(ScopedSlotUtil.HTML_SLOT));
             } else if (fieldShowType.equals("date")) {
-                onlColumn.setScopedSlots(new ScopedSlots("dateSlot"));
+                onlColumn.setScopedSlots(new ScopedSlots(ScopedSlotUtil.DATE_SLOT));
             } else if (fieldShowType.equals("pca")) {
-                onlColumn.setScopedSlots(new ScopedSlots("pcaSlot"));
+                onlColumn.setScopedSlots(new ScopedSlots(ScopedSlotUtil.PCA_SLOT));
             }
             if (StringUtils.isNotBlank(onlCgformField.getFieldHref())) {
-                String href = "fieldHref_" + dbFieldName;
+                String href = ScopedSlotUtil.FIELD_HREF + dbFieldName;
                 onlColumn.setHrefSlotName(href);
                 hrefSlots.add(new HrefSlots(href, onlCgformField.getFieldHref()));
             }

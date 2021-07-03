@@ -134,14 +134,14 @@ public class DataBaseUtils {
     public static final String F = "1";
     public static final String SYNC_METHOD_FORCE = "force";
     public static final String SYNC_METHOD_NORMAL = "normal";
-    public static final String SWITCH = "switch";
-    public static final String POPUP = "popup";
-    public static final String SEL_SEARCH = "sel_search";
-    public static final String IMAGE = "image";
-    public static final String FILE = "file";
-    public static final String SEL_TREE = "sel_tree";
-    public static final String CAT_TREE = "cat_tree";
-    public static final String LINK_DOWN = "link_down";
+    public static final String FIELD_SHOW_TYPE_SWITCH = "switch";
+    public static final String FIELD_SHOW_TYPE_POPUP = "popup";
+    public static final String FIELD_SHOW_TYPE_SEL_SEARCH = "sel_search";
+    public static final String FIELD_SHOW_TYPE_IMAGE = "image";
+    public static final String FIELD_SHOW_TYPE_FILE = "file";
+    public static final String FIELD_SHOW_TYPE_SEL_TREE = "sel_tree";
+    public static final String FIELD_SHOW_TYPE_CAT_TREE = "cat_tree";
+    public static final String FIELD_SHOW_TYPE_LINK_DOWN = "link_down";
     public static final String SYS_USER = "SYS_USER";
     public static final String REALNAME = "REALNAME";
     public static final String USERNAME = "USERNAME";
@@ -193,7 +193,7 @@ public class DataBaseUtils {
                 if ("id".equals(onlCgformField.getDbFieldName())) {
                     bl = true;
                 }
-                if (CAT_TREE.equals(onlCgformField.getFieldShowType()) && oConvertUtils.isNotEmpty((Object) onlCgformField.getDictText())) {
+                if (FIELD_SHOW_TYPE_CAT_TREE.equals(onlCgformField.getFieldShowType()) && oConvertUtils.isNotEmpty((Object) onlCgformField.getDictText())) {
                     stringBuffer.append(onlCgformField.getDictText() + COMMA);
                 }
                 if (i2 == n2 - 1) {
@@ -279,7 +279,7 @@ public class DataBaseUtils {
                     }
                     stringBuffer.append(" AND (" + string4 + ")");
                 }
-                if (POPUP.equals(onlCgformField.getFieldShowType())) {
+                if (FIELD_SHOW_TYPE_POPUP.equals(onlCgformField.getFieldShowType())) {
                     stringBuffer.append(" AND (" + DataBaseUtils.b(string2, object2.toString()) + ")");
                     continue;
                 }
@@ -288,7 +288,7 @@ public class DataBaseUtils {
                     continue;
                 }
                 boolean bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
-                string4 = QueryGenerator.getSingleQueryConditionSql(string2, "", object2, bl);
+                string4 = QueryGenerator.getSingleQueryConditionSql((String) string2, (String) "", (Object) object2, (boolean) bl);
                 stringBuffer.append(AND + string4);
                 continue;
             }
@@ -386,14 +386,14 @@ public class DataBaseUtils {
             String string7 = jSONObject2.getString("mainTable");
             String string8 = jSONObject2.getString("mainField");
             stringBuilder.append("(").append(string8).append(" IN (SELECT ").append(string6).append(FROM).append(string5).append(" WHERE ");
-            if (POPUP.equals(string2)) {
+            if (FIELD_SHOW_TYPE_POPUP.equals(string2)) {
                 stringBuilder.append(DataBaseUtils.b(string, string3));
             } else {
                 stringBuilder.append(string);
                 DataBaseUtils.a(stringBuilder, queryRuleEnum, string3, string4, string2);
             }
             stringBuilder.append("))");
-        } else if (POPUP.equals(string2)) {
+        } else if (FIELD_SHOW_TYPE_POPUP.equals(string2)) {
             stringBuilder.append(DataBaseUtils.b(string, string3));
         } else {
             stringBuilder.append(string);
@@ -525,7 +525,7 @@ public class DataBaseUtils {
             if ("1".equals(onlCgformField.getFieldMustInput())) {
                 arrayList.add(dbFieldName);
             }
-            if (SWITCH.equals(fieldShowType)) {
+            if (FIELD_SHOW_TYPE_SWITCH.equals(fieldShowType)) {
                 property = new SwitchProperty(dbFieldName, dbFieldTxt, onlCgformField.getFieldExtendJson());
             } else if (DataBaseUtils.c(fieldShowType)) {
                 property = new DictProperty(dbFieldName, fieldShowType, dbFieldTxt, onlCgformField.getDictTable(), onlCgformField.getDictField(), onlCgformField.getDictText());
@@ -540,7 +540,7 @@ public class DataBaseUtils {
                     numberProperty.setPattern(CgformValidPatternEnum.INTEGER.getPattern());
                 }
                 property = numberProperty;
-            } else if (POPUP.equals(fieldShowType)) {
+            } else if (FIELD_SHOW_TYPE_POPUP.equals(fieldShowType)) {
                 PopupProperty popupProperty = new PopupProperty(dbFieldName, dbFieldTxt, onlCgformField.getDictTable(), dictText, onlCgformField.getDictField());
                 if (dictText != null && !dictText.equals("")) {
                     String[] object2 = dictText.split(COMMA);
@@ -561,11 +561,11 @@ public class DataBaseUtils {
                     }
                 }
                 property = popupProperty;
-            } else if (LINK_DOWN.equals(fieldShowType)) {
+            } else if (FIELD_SHOW_TYPE_LINK_DOWN.equals(fieldShowType)) {
                 LinkDownProperty object5 = new LinkDownProperty(dbFieldName, dbFieldTxt, onlCgformField.getDictTable());
                 DataBaseUtils.a(object5, list, arrayList3);
                 property = object5;
-            } else if (SEL_TREE.equals(fieldShowType)) {
+            } else if (FIELD_SHOW_TYPE_SEL_TREE.equals(fieldShowType)) {
                 String[] dictTexts = dictText.split(COMMA);
                 String dict = onlCgformField.getDictTable() + COMMA + dictTexts[2] + COMMA + dictTexts[0];
                 TreeSelectProperty treeSelectProperty = new TreeSelectProperty(dbFieldName, dbFieldTxt, dict, dictTexts[1], onlCgformField.getDictField());
@@ -573,7 +573,7 @@ public class DataBaseUtils {
                     treeSelectProperty.setHasChildField(dictTexts[3]);
                 }
                 property = treeSelectProperty;
-            } else if (CAT_TREE.equals(fieldShowType)) {
+            } else if (FIELD_SHOW_TYPE_CAT_TREE.equals(fieldShowType)) {
                 String category = "0";
                 if (oConvertUtils.isNotEmpty(dictField) && !"0".equals(dictField)) {
                     category = onlCgformHeadMapper.queryCategoryIdByCode(dictField);
@@ -663,10 +663,10 @@ public class DataBaseUtils {
         String string;
         HashSet<String> hashSet = new HashSet<String>();
         for (OnlCgformField onlCgformField : list) {
-            if (POPUP.equals(onlCgformField.getFieldShowType()) && (string = onlCgformField.getDictText()) != null && !string.equals("")) {
+            if (FIELD_SHOW_TYPE_POPUP.equals(onlCgformField.getFieldShowType()) && (string = onlCgformField.getDictText()) != null && !string.equals("")) {
                 hashSet.addAll(Arrays.stream(string.split(COMMA)).collect(Collectors.toSet()));
             }
-            if (!CAT_TREE.equals(onlCgformField.getFieldShowType()) || !oConvertUtils.isNotEmpty((Object) (string = onlCgformField.getDictText())))
+            if (!FIELD_SHOW_TYPE_CAT_TREE.equals(onlCgformField.getFieldShowType()) || !oConvertUtils.isNotEmpty((Object) (string = onlCgformField.getDictText())))
                 continue;
             hashSet.add(string);
         }
@@ -735,10 +735,10 @@ public class DataBaseUtils {
         }
         if (bl) {
             if (oConvertUtils.isEmpty(string3)) {
-                string3 = DataBaseUtils.genernateIdByIdWorker();
+                string3 = DataBaseUtils.generateIdByIdWorker();
             }
         } else {
-            string3 = DataBaseUtils.genernateIdByIdWorker();
+            string3 = DataBaseUtils.generateIdByIdWorker();
         }
         String string6 = "insert into " + DataBaseUtils.f(string) + "(" + "id" + stringBuffer.toString() + ") values(#{id,jdbcType=VARCHAR}" + stringBuffer2.toString() + ")";
         hashMap.put("execute_sql_string", string6);
@@ -832,16 +832,16 @@ public class DataBaseUtils {
             if (!bl) break;
             switch (string2) {
                 case "CREATE_BY": {
-                    jSONObject.put(string, (Object) loginUser.getUsername());
+                    jSONObject.put(string, loginUser.getUsername());
                     break;
                 }
                 case "CREATE_TIME": {
                     onlCgformField.setFieldShowType("datetime");
-                    jSONObject.put(string, (Object) DateUtils.formatDateTime());
+                    jSONObject.put(string, DateUtils.formatDateTime());
                     break;
                 }
                 case "UPDATE_BY": {
-                    jSONObject.put(string, (Object) loginUser.getUsername());
+                    jSONObject.put(string, loginUser.getUsername());
                     break;
                 }
                 case "UPDATE_TIME": {
@@ -1257,11 +1257,11 @@ public class DataBaseUtils {
             } else {
                 fieldProperty.put("width", (onlCgformField.getFieldLength() + "px"));
             }
-            if (showType.equals(FILE) || showType.equals(IMAGE)) {
+            if (showType.equals(FIELD_SHOW_TYPE_FILE) || showType.equals(FIELD_SHOW_TYPE_IMAGE)) {
                 fieldProperty.put("responseName", "message");
                 fieldProperty.put("token", true);
             }
-            if (showType.equals(SWITCH)) {
+            if (showType.equals(FIELD_SHOW_TYPE_SWITCH)) {
                 fieldProperty.put("type", "checkbox");
                 JSONArray object = new JSONArray();
                 if (oConvertUtils.isEmpty(onlCgformField.getFieldExtendJson())) {
@@ -1272,7 +1272,7 @@ public class DataBaseUtils {
                 }
                 fieldProperty.put("customValue", object);
             }
-            if (showType.equals(POPUP)) {
+            if (showType.equals(FIELD_SHOW_TYPE_POPUP)) {
                 fieldProperty.put("popupCode", onlCgformField.getDictTable());
                 fieldProperty.put("orgFields", onlCgformField.getDictField());
                 fieldProperty.put("destFields", onlCgformField.getDictText());
@@ -1460,7 +1460,7 @@ public class DataBaseUtils {
             stringBuffer2.append(COMMA + string4);
         }
         if (!bl || oConvertUtils.isEmpty(string3)) {
-            string3 = DataBaseUtils.genernateIdByIdWorker();
+            string3 = DataBaseUtils.generateIdByIdWorker();
         }
         String string6 = "insert into " + DataBaseUtils.f(string) + "(" + "id" + stringBuffer.toString() + ") values(" + z + string3 + z + stringBuffer2.toString() + ")";
         hashMap.put("execute_sql_string", string6);
@@ -1558,7 +1558,7 @@ public class DataBaseUtils {
     public static List<String> e(List<OnlCgformField> list) {
         ArrayList<String> arrayList = new ArrayList<String>();
         for (OnlCgformField onlCgformField : list) {
-            if (!IMAGE.equals(onlCgformField.getFieldShowType())) continue;
+            if (!FIELD_SHOW_TYPE_IMAGE.equals(onlCgformField.getFieldShowType())) continue;
             arrayList.add(onlCgformField.getDbFieldTxt());
         }
         return arrayList;
@@ -1567,13 +1567,13 @@ public class DataBaseUtils {
     public static List<String> b(List<OnlCgformField> list, String string) {
         ArrayList<String> arrayList = new ArrayList<String>();
         for (OnlCgformField onlCgformField : list) {
-            if (!IMAGE.equals(onlCgformField.getFieldShowType())) continue;
+            if (!FIELD_SHOW_TYPE_IMAGE.equals(onlCgformField.getFieldShowType())) continue;
             arrayList.add(string + "_" + onlCgformField.getDbFieldTxt());
         }
         return arrayList;
     }
 
-    public static String genernateIdByIdWorker() {
+    public static String generateIdByIdWorker() {
         long l2 = IdWorker.getId();
         return String.valueOf(l2);
     }
@@ -1613,8 +1613,8 @@ public class DataBaseUtils {
         if (SHOW_TYPE_LIST.equals(onlCgformField.getFieldShowType())) {
             return "select";
         }
-        if (SWITCH.equals(onlCgformField.getFieldShowType())) {
-            return SWITCH;
+        if (FIELD_SHOW_TYPE_SWITCH.equals(onlCgformField.getFieldShowType())) {
+            return FIELD_SHOW_TYPE_SWITCH;
         }
         if ("sel_user".equals(onlCgformField.getFieldShowType())) {
             return "sel_user";
@@ -1622,7 +1622,7 @@ public class DataBaseUtils {
         if ("sel_depart".equals(onlCgformField.getFieldShowType())) {
             return "sel_depart";
         }
-        if (IMAGE.equals(onlCgformField.getFieldShowType()) || FILE.equals(onlCgformField.getFieldShowType()) || "radio".equals(onlCgformField.getFieldShowType()) || POPUP.equals(onlCgformField.getFieldShowType()) || "list_multi".equals(onlCgformField.getFieldShowType()) || "sel_search".equals(onlCgformField.getFieldShowType())) {
+        if (FIELD_SHOW_TYPE_IMAGE.equals(onlCgformField.getFieldShowType()) || FIELD_SHOW_TYPE_FILE.equals(onlCgformField.getFieldShowType()) || "radio".equals(onlCgformField.getFieldShowType()) || FIELD_SHOW_TYPE_POPUP.equals(onlCgformField.getFieldShowType()) || "list_multi".equals(onlCgformField.getFieldShowType()) || "sel_search".equals(onlCgformField.getFieldShowType())) {
             return onlCgformField.getFieldShowType();
         }
         if ("datetime".equals(onlCgformField.getFieldShowType())) {

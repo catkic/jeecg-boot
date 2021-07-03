@@ -18,77 +18,77 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.util.MyClassLoader;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.online.cgform.converter.factory.b;
-import org.jeecg.modules.online.cgform.converter.factory.a;
-import org.jeecg.modules.online.cgform.converter.factory.c;
-import org.jeecg.modules.online.cgform.converter.factory.d;
-import org.jeecg.modules.online.cgform.converter.factory.e;
-import org.jeecg.modules.online.cgform.converter.factory.f;
-import org.jeecg.modules.online.cgform.converter.factory.g;
-import org.jeecg.modules.online.cgform.converter.factory.h;
-import org.jeecg.modules.online.cgform.converter.factory.i;
-import org.jeecg.modules.online.cgform.converter.factory.j;
+import org.jeecg.modules.online.cgform.converter.factory.DepartCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.CatTreeCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.SingleSelCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.SelSearchCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.LinkDownCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.MultiSelCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.PCACommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.SwitchCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.SelTreeCommentConverter;
+import org.jeecg.modules.online.cgform.converter.factory.UserCommentConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
 @Slf4j
 public class FieldCommentConverterFactory {
-    private static final String b = "list";
-    private static final String c = "radio";
-    private static final String d = "checkbox";
-    private static final String e = "list_multi";
-    private static final String f = "sel_search";
-    private static final String g = "sel_tree";
-    private static final String h = "cat_tree";
-    private static final String i = "link_down";
-    private static final String j = "sel_depart";
-    private static final String k = "sel_user";
-    private static final String l = "pca";
-    private static final String m = "switch";
+    private static final String FIELD_SHOW_TYPE_LIST = "list";
+    private static final String FIELD_SHOW_TYPE_RADIO = "radio";
+    private static final String FIELD_SHOW_TYPE_CHECKBOX = "checkbox";
+    private static final String FIELD_SHOW_TYPE_LIST_MULTI = "list_multi";
+    private static final String FIELD_SHOW_TYPE_SEL_SEARCH = "sel_search";
+    private static final String FIELD_SHOW_TYPE_SEL_TREE = "sel_tree";
+    private static final String FIELD_SHOW_TYPE_CAT_TREE = "cat_tree";
+    private static final String FIELD_SHOW_TYPE_LINK_DOWN = "link_down";
+    private static final String FIELD_SHOW_TYPE_SEL_DEPART = "sel_depart";
+    private static final String FIELD_SHOW_TYPE_SEL_USER = "sel_user";
+    private static final String FIELD_SHOW_TYPE_PCA = "pca";
+    private static final String FIELD_SHOW_TYPE_SWITCH = "switch";
 
     public static FieldCommentConverter FieldCommentConverterFactory(OnlCgformField onlCgformField) {
         String string = onlCgformField.getFieldShowType();
-        FieldCommentConverter fieldCommentConverter = null;
+        FieldCommentConverter fieldCommentConverter;
         switch (string) {
-            case "list":
-            case "radio": {
-                fieldCommentConverter = new c(onlCgformField);
+            case FIELD_SHOW_TYPE_LIST:
+            case FIELD_SHOW_TYPE_RADIO: {
+                fieldCommentConverter = new SingleSelCommentConverter(onlCgformField);
                 break;
             }
-            case "list_multi":
-            case "checkbox": {
-                fieldCommentConverter = new f(onlCgformField);
+            case FIELD_SHOW_TYPE_LIST_MULTI:
+            case FIELD_SHOW_TYPE_CHECKBOX: {
+                fieldCommentConverter = new MultiSelCommentConverter(onlCgformField);
                 break;
             }
-            case "sel_search": {
-                fieldCommentConverter = new d(onlCgformField);
+            case FIELD_SHOW_TYPE_SEL_SEARCH: {
+                fieldCommentConverter = new SelSearchCommentConverter(onlCgformField);
                 break;
             }
-            case "sel_tree": {
-                fieldCommentConverter = new i(onlCgformField);
+            case FIELD_SHOW_TYPE_SEL_TREE: {
+                fieldCommentConverter = new SelTreeCommentConverter(onlCgformField);
                 break;
             }
-            case "cat_tree": {
-                fieldCommentConverter = new a(onlCgformField);
+            case FIELD_SHOW_TYPE_CAT_TREE: {
+                fieldCommentConverter = new CatTreeCommentConverter(onlCgformField);
                 break;
             }
-            case "link_down": {
-                fieldCommentConverter = new e(onlCgformField);
+            case FIELD_SHOW_TYPE_LINK_DOWN: {
+                fieldCommentConverter = new LinkDownCommentConverter(onlCgformField);
                 break;
             }
-            case "sel_depart": {
-                fieldCommentConverter = new b(onlCgformField);
+            case FIELD_SHOW_TYPE_SEL_DEPART: {
+                fieldCommentConverter = new DepartCommentConverter(onlCgformField);
                 break;
             }
-            case "sel_user": {
-                fieldCommentConverter = new j(onlCgformField);
+            case FIELD_SHOW_TYPE_SEL_USER: {
+                fieldCommentConverter = new UserCommentConverter(onlCgformField);
                 break;
             }
-            case "pca": {
-                fieldCommentConverter = new g(onlCgformField);
+            case FIELD_SHOW_TYPE_PCA: {
+                fieldCommentConverter = new PCACommentConverter(onlCgformField);
                 break;
             }
-            case "switch": {
-                fieldCommentConverter = new h(onlCgformField);
+            case FIELD_SHOW_TYPE_SWITCH: {
+                fieldCommentConverter = new SwitchCommentConverter(onlCgformField);
                 break;
             }
             default: {
@@ -99,12 +99,12 @@ public class FieldCommentConverterFactory {
     }
 
     public static Map<String, FieldCommentConverter> FieldCommentConverterFactory(List<OnlCgformField> list) {
-        HashMap<String, FieldCommentConverter> hashMap = new HashMap<String, FieldCommentConverter>();
+        Map<String, FieldCommentConverter> hashMap = new HashMap<>();
         for (OnlCgformField onlCgformField : list) {
-            FieldCommentConverter fieldCommentConverter = null;
-            fieldCommentConverter = oConvertUtils.isNotEmpty(onlCgformField.getConverter()) ? FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField.getConverter().trim()) : FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField);
-            if (fieldCommentConverter == null) continue;
-            hashMap.put(onlCgformField.getDbFieldName().toLowerCase(), fieldCommentConverter);
+            FieldCommentConverter fieldCommentConverter = oConvertUtils.isNotEmpty(onlCgformField.getConverter()) ? FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField.getConverter().trim()) : FieldCommentConverterFactory.FieldCommentConverterFactory(onlCgformField);
+            if (fieldCommentConverter != null) {
+                hashMap.put(onlCgformField.getDbFieldName().toLowerCase(), fieldCommentConverter);
+            }
         }
         return hashMap;
     }

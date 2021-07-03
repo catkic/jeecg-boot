@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 import org.jeecg.modules.online.cgform.enums.CgformValidPatternEnum;
 
-public class j {
+public class FieldValidateUtils {
     private Map<String, OnlCgformField> d;
     private static final String e = ",";
     private static final String f = "第%s行校验信息:";
@@ -26,10 +26,10 @@ public class j {
     public static final String b = "tip";
     public static final String c = "filePath";
 
-    public j() {
+    public FieldValidateUtils() {
     }
 
-    public j(List<OnlCgformField> list) {
+    public FieldValidateUtils(List<OnlCgformField> list) {
         this.d = new HashMap<String, OnlCgformField>();
         for (OnlCgformField onlCgformField : list) {
             String string = onlCgformField.getFieldValidType();
@@ -75,7 +75,7 @@ public class j {
             stringBuffer.append(onlCgformField.getDbFieldTxt() + string6 + e);
         }
         if (stringBuffer.length() > 0) {
-            return j.b(stringBuffer.toString(), n2);
+            return FieldValidateUtils.b(stringBuffer.toString(), n2);
         }
         return null;
     }

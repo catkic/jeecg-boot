@@ -20,13 +20,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class OnlineConfiguration
 implements WebMvcConfigurer {
     @Bean
-    public CgformInterceptor onlineInterceptor() {
-        return new CgformInterceptor();
+    public OnlineInterceptor onlineInterceptor() {
+        return new OnlineInterceptor();
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
         String[] arrstring = new String[]{"/*.html", "/html/**", "/js/**", "/css/**", "/images/**"};
-        registry.addInterceptor((HandlerInterceptor)this.onlineInterceptor()).excludePathPatterns(arrstring).addPathPatterns(new String[]{"/online/cgform/api/**"});
+        registry.addInterceptor(this.onlineInterceptor()).excludePathPatterns(arrstring).addPathPatterns("/online/cgform/api/**");
     }
 }
 

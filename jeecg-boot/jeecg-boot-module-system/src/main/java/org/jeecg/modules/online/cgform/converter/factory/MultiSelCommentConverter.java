@@ -16,9 +16,9 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.converter.field.DictModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class c
+public class MultiSelCommentConverter
 extends DictModelConverter {
-    public c(OnlCgformField onlCgformField) {
+    public MultiSelCommentConverter(OnlCgformField onlCgformField) {
         ISysBaseAPI iSysBaseAPI = (ISysBaseAPI)SpringContextUtils.getBean(ISysBaseAPI.class);
         String string = onlCgformField.getDictTable();
         String string2 = onlCgformField.getDictText();
@@ -31,6 +31,34 @@ extends DictModelConverter {
         }
         this.dictList = list;
         this.filed = onlCgformField.getDbFieldName();
+    }
+
+    @Override
+    public String converterToVal(String txt) {
+        if (oConvertUtils.isEmpty((Object)txt)) {
+            return null;
+        }
+        ArrayList<String> arrayList = new ArrayList<String>();
+        for (String string : txt.split(",")) {
+            String string2 = super.converterToVal(string);
+            if (string2 == null) continue;
+            arrayList.add(string2);
+        }
+        return String.join((CharSequence)",", arrayList);
+    }
+
+    @Override
+    public String converterToTxt(String val) {
+        if (oConvertUtils.isEmpty((Object)val)) {
+            return null;
+        }
+        ArrayList<String> arrayList = new ArrayList<String>();
+        for (String string : val.split(",")) {
+            String string2 = super.converterToTxt(string);
+            if (string2 == null) continue;
+            arrayList.add(string2);
+        }
+        return String.join((CharSequence)",", arrayList);
     }
 }
 

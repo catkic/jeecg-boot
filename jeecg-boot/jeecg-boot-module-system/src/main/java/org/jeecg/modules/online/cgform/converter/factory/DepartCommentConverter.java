@@ -17,43 +17,44 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.converter.field.DictModelConverter;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class j extends DictModelConverter {
-    public j(OnlCgformField onlCgformField) {
-        List list;
+public class DepartCommentConverter extends DictModelConverter {
+    public DepartCommentConverter(OnlCgformField onlCgformField) {
         ISysBaseAPI iSysBaseAPI = (ISysBaseAPI) SpringContextUtils.getBean(ISysBaseAPI.class);
-        String string = "SYS_USER";
-        String string2 = "REALNAME";
-        String string3 = "USERNAME";
-        this.dictList = list = iSysBaseAPI.queryTableDictItemsByCode(string, string2, string3);
+        String string = "SYS_DEPART";
+        String string2 = "DEPART_NAME";
+        String string3 = "ID";
+        this.dictList = iSysBaseAPI.queryTableDictItemsByCode(string, string2, string3);
         this.filed = onlCgformField.getDbFieldName();
     }
 
     @Override
     public String converterToVal(String txt) {
-        if (oConvertUtils.isEmpty((Object) txt)) {
+        if (oConvertUtils.isEmpty(txt)) {
             return null;
         }
-        ArrayList<String> arrayList = new ArrayList<String>();
+        List<String> arrayList = new ArrayList<>();
         for (String string : txt.split(",")) {
             String string2 = super.converterToVal(string);
-            if (string2 == null) continue;
-            arrayList.add(string2);
+            if (string2 != null) {
+                arrayList.add(string2);
+            }
         }
-        return String.join((CharSequence) ",", arrayList);
+        return String.join(",", arrayList);
     }
 
     @Override
     public String converterToTxt(String val) {
-        if (oConvertUtils.isEmpty((Object) val)) {
+        if (oConvertUtils.isEmpty(val)) {
             return null;
         }
-        ArrayList<String> arrayList = new ArrayList<String>();
+        List<String> arrayList = new ArrayList<String>();
         for (String string : val.split(",")) {
             String string2 = super.converterToTxt(string);
-            if (string2 == null) continue;
-            arrayList.add(string2);
+            if (string2 != null) {
+                arrayList.add(string2);
+            }
         }
-        return String.join((CharSequence) ",", arrayList);
+        return String.join(",", arrayList);
     }
 }
 

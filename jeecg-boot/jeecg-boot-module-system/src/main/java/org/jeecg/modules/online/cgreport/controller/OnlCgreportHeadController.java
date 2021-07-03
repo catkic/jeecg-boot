@@ -105,7 +105,7 @@ public class OnlCgreportHeadController {
                 onlCgreportItem.setFieldTxt(string3);
                 onlCgreportItem.setIsShow(true);
                 onlCgreportItem.setOrderNum(n2);
-                onlCgreportItem.setId(org.jeecg.modules.online.cgform.util.DataBaseUtils.genernateIdByIdWorker());
+                onlCgreportItem.setId(org.jeecg.modules.online.cgform.util.DataBaseUtils.generateIdByIdWorker());
                 onlCgreportItem.setFieldType("String");
                 arrayList.add(onlCgreportItem);
                 ++n2;
@@ -144,7 +144,7 @@ public class OnlCgreportHeadController {
     public Result<?> add(@RequestBody OnlCgreportModel onlCgreportModel) {
         Result result = new Result();
         try {
-            String string = org.jeecg.modules.online.cgform.util.DataBaseUtils.genernateIdByIdWorker();
+            String string = org.jeecg.modules.online.cgform.util.DataBaseUtils.generateIdByIdWorker();
             OnlCgreportHead onlCgreportHead = onlCgreportModel.getHead();
             List<OnlCgreportParam> list = onlCgreportModel.getParams();
             List<OnlCgreportItem> list2 = onlCgreportModel.getItems();

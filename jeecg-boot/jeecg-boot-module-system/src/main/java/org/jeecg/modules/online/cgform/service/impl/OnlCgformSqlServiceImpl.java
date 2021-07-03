@@ -33,7 +33,7 @@ import org.jeecg.modules.online.cgform.mapper.OnlCgformFieldMapper;
 import org.jeecg.modules.online.cgform.service.IOnlCgformHeadService;
 import org.jeecg.modules.online.cgform.service.IOnlCgformSqlService;
 import org.jeecg.modules.online.cgform.util.DataBaseUtils;
-import org.jeecg.modules.online.cgform.util.j;
+import org.jeecg.modules.online.cgform.util.FieldValidateUtils;
 import org.jeecg.modules.online.config.exception.BusinessException;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,15 +76,15 @@ public class OnlCgformSqlServiceImpl implements IOnlCgformSqlService {
 
     @Override
     public void saveOrUpdateSubData(String subDataJsonStr, OnlCgformHead head, List<OnlCgformField> subFiledList) throws BusinessException {
-        OnlCgformFieldMapper onlCgformFieldMapper = SpringContextUtils.getBean(OnlCgformFieldMapper.class);
+        OnlCgformFieldMapper onlCgformFieldMapper = (OnlCgformFieldMapper) SpringContextUtils.getBean(OnlCgformFieldMapper.class);
         this.a(subDataJsonStr, head, subFiledList, onlCgformFieldMapper);
     }
 
     @Override
     public Map<String, String> saveOnlineImportDataWithValidate(OnlCgformHead head, List<OnlCgformField> fieldList, List<Map<String, Object>> dataList) {
         StringBuffer stringBuffer = new StringBuffer();
-        j j2 = new j(fieldList);
-        OnlCgformFieldMapper onlCgformFieldMapper = SpringContextUtils.getBean(OnlCgformFieldMapper.class);
+        FieldValidateUtils j2 = new FieldValidateUtils(fieldList);
+        OnlCgformFieldMapper onlCgformFieldMapper = (OnlCgformFieldMapper) SpringContextUtils.getBean(OnlCgformFieldMapper.class);
         int n2 = 0;
         int n3 = 0;
         int n4 = dataList.size();
@@ -97,7 +97,7 @@ public class OnlCgformSqlServiceImpl implements IOnlCgformSqlService {
                 } catch (Exception exception) {
                     ++n3;
                     String string3 = this.a(exception.getCause().getMessage());
-                    String string4 = j.b(string3, n2);
+                    String string4 = FieldValidateUtils.b(string3, n2);
                     stringBuffer.append(string4);
                 }
                 continue;
@@ -107,7 +107,7 @@ public class OnlCgformSqlServiceImpl implements IOnlCgformSqlService {
         }
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("error", stringBuffer.toString());
-        hashMap.put("tip", j.a(n4, n3));
+        hashMap.put("tip", FieldValidateUtils.a(n4, n3));
         return hashMap;
     }
 
