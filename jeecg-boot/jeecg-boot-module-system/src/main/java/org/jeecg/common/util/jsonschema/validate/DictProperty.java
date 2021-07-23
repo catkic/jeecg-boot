@@ -13,56 +13,55 @@ import org.jeecg.common.util.jsonschema.CommonProperty;
 
 public class DictProperty
 extends CommonProperty {
-    private static final long l = 3786503639885610767L;
-    private String m;
-    private String n;
-    private String o;
+    private String dictCode;
+    private String dictTable;
+    private String dictText;
 
     public String getDictCode() {
-        return this.m;
+        return this.dictCode;
     }
 
     public void setDictCode(String dictCode) {
-        this.m = dictCode;
+        this.dictCode = dictCode;
     }
 
     public String getDictTable() {
-        return this.n;
+        return this.dictTable;
     }
 
     public void setDictTable(String dictTable) {
-        this.n = dictTable;
+        this.dictTable = dictTable;
     }
 
     public String getDictText() {
-        return this.o;
+        return this.dictText;
     }
 
     public void setDictText(String dictText) {
-        this.o = dictText;
+        this.dictText = dictText;
     }
 
     public DictProperty() {
     }
 
     public DictProperty(String key, String title, String dictTable, String dictCode, String dictText) {
-        this.b = "string";
-        this.e = "sel_search";
-        this.a = key;
-        this.f = title;
-        this.m = dictCode;
-        this.n = dictTable;
-        this.o = dictText;
+        this.type = "string";
+        this.view = "sel_search";
+        this.key = key;
+        this.title = title;
+        this.dictCode = dictCode;
+        this.dictTable = dictTable;
+        this.dictText = dictText;
     }
 
     public DictProperty(String key, String view, String title, String dictTable, String dictCode, String dictText) {
-        this.b = "string";
-        this.e = view;
-        this.a = key;
-        this.f = title;
-        this.m = dictCode;
-        this.n = dictTable;
-        this.o = dictText;
+        this.type = "string";
+        this.view = view;
+        this.key = key;
+        this.title = title;
+        this.dictCode = dictCode;
+        this.dictTable = dictTable;
+        this.dictText = dictText;
     }
 
     @Override
@@ -70,14 +69,14 @@ extends CommonProperty {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("key", this.getKey());
         JSONObject jSONObject = this.getCommonJson();
-        if (this.m != null) {
-            jSONObject.put("dictCode", (Object)this.m);
+        if (this.dictCode != null) {
+            jSONObject.put("dictCode", (Object)this.dictCode);
         }
-        if (this.n != null) {
-            jSONObject.put("dictTable", (Object)this.n);
+        if (this.dictTable != null) {
+            jSONObject.put("dictTable", (Object)this.dictTable);
         }
-        if (this.o != null) {
-            jSONObject.put("dictText", (Object)this.o);
+        if (this.dictText != null) {
+            jSONObject.put("dictText", (Object)this.dictText);
         }
         hashMap.put("prop", (Object)jSONObject);
         return hashMap;

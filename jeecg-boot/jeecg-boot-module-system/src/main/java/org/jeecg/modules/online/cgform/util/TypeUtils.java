@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import org.jeecg.modules.online.cgform.entity.OnlCgformField;
 
-public class i {
+public class TypeUtils {
     public static final String a = "int";
     public static final String b = "Integer";
     public static final String c = "double";
@@ -21,7 +21,7 @@ public class i {
     public static final String g = "datetime";
     public static final String h = "Timestamp";
 
-    public static boolean a(String string) {
+    public static boolean isDigit(String string) {
         return a.equals(string) || c.equals(string) || d.equals(string) || b.equals(string);
     }
 

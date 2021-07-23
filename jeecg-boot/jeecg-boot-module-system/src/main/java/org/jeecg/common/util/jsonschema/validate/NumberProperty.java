@@ -17,78 +17,77 @@ import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.util.jsonschema.CommonProperty;
 
 public class NumberProperty extends CommonProperty {
-    private static final long l = -558615331436437200L;
-    private Integer m;
-    private Integer n;
-    private Integer o;
-    private Integer p;
-    private Integer q;
-    private String r;
+    private Integer multipleOf;
+    private Integer maximum;
+    private Integer exclusiveMaximum;
+    private Integer minimum;
+    private Integer exclusiveMinimum;
+    private String pattern;
 
     public Integer getMultipleOf() {
-        return this.m;
+        return this.multipleOf;
     }
 
     public void setMultipleOf(Integer multipleOf) {
-        this.m = multipleOf;
+        this.multipleOf = multipleOf;
     }
 
-    public Integer getMaxinum() {
-        return this.n;
+    public Integer getMaximum() {
+        return this.maximum;
     }
 
-    public void setMaxinum(Integer maxinum) {
-        this.n = maxinum;
+    public void setMaximum(Integer maximum) {
+        this.maximum = maximum;
     }
 
     public Integer getExclusiveMaximum() {
-        return this.o;
+        return this.exclusiveMaximum;
     }
 
     public void setExclusiveMaximum(Integer exclusiveMaximum) {
-        this.o = exclusiveMaximum;
+        this.exclusiveMaximum = exclusiveMaximum;
     }
 
     public Integer getMinimum() {
-        return this.p;
+        return this.minimum;
     }
 
     public void setMinimum(Integer minimum) {
-        this.p = minimum;
+        this.minimum = minimum;
     }
 
     public Integer getExclusiveMinimum() {
-        return this.q;
+        return this.exclusiveMinimum;
     }
 
     public void setExclusiveMinimum(Integer exclusiveMinimum) {
-        this.q = exclusiveMinimum;
+        this.exclusiveMinimum = exclusiveMinimum;
     }
 
     public String getPattern() {
-        return this.r;
+        return this.pattern;
     }
 
     public void setPattern(String pattern) {
-        this.r = pattern;
+        this.pattern = pattern;
     }
 
     public NumberProperty() {
     }
 
     public NumberProperty(String key, String title, String type) {
-        this.a = key;
-        this.b = type;
-        this.f = title;
-        this.e = "number";
+        this.key = key;
+        this.type = type;
+        this.title = title;
+        this.view = "number";
     }
 
     public NumberProperty(String key, String title, String view, List<DictModel> include) {
-        this.b = "integer";
-        this.a = key;
-        this.e = view;
-        this.f = title;
-        this.c = include;
+        this.type = "integer";
+        this.key = key;
+        this.view = view;
+        this.title = title;
+        this.include = include;
     }
 
     @Override
@@ -96,23 +95,23 @@ public class NumberProperty extends CommonProperty {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("key", this.getKey());
         JSONObject jSONObject = this.getCommonJson();
-        if (this.m != null) {
-            jSONObject.put("multipleOf", (Object) this.m);
+        if (this.multipleOf != null) {
+            jSONObject.put("multipleOf", (Object) this.multipleOf);
         }
-        if (this.n != null) {
-            jSONObject.put("maxinum", (Object) this.n);
+        if (this.maximum != null) {
+            jSONObject.put("maxinum", (Object) this.maximum);
         }
-        if (this.o != null) {
-            jSONObject.put("exclusiveMaximum", (Object) this.o);
+        if (this.exclusiveMaximum != null) {
+            jSONObject.put("exclusiveMaximum", (Object) this.exclusiveMaximum);
         }
-        if (this.p != null) {
-            jSONObject.put("minimum", (Object) this.p);
+        if (this.minimum != null) {
+            jSONObject.put("minimum", (Object) this.minimum);
         }
-        if (this.q != null) {
-            jSONObject.put("exclusiveMinimum", (Object) this.q);
+        if (this.exclusiveMinimum != null) {
+            jSONObject.put("exclusiveMinimum", (Object) this.exclusiveMinimum);
         }
-        if (this.r != null) {
-            jSONObject.put("pattern", (Object) this.r);
+        if (this.pattern != null) {
+            jSONObject.put("pattern", (Object) this.pattern);
         }
         hashMap.put("prop", (Object) jSONObject);
         return hashMap;

@@ -75,6 +75,7 @@ import org.jeecg.common.util.UUIDGenerator;
 import org.jeecg.common.util.jsonschema.CommonProperty;
 import org.jeecg.common.util.jsonschema.JsonSchemaDescrip;
 import org.jeecg.common.util.jsonschema.BaseColumn;
+import org.jeecg.common.util.jsonschema.JsonSchemaConverter;
 import org.jeecg.common.util.jsonschema.validate.DictProperty;
 import org.jeecg.common.util.jsonschema.validate.HiddenProperty;
 import org.jeecg.common.util.jsonschema.validate.LinkDownProperty;
@@ -217,7 +218,7 @@ public class DataBaseUtils {
         return " to_date('" + string + "','yyyy-MM-dd')";
     }
 
-    public static boolean c(String string) {
+    public static boolean isMultipleType(String string) {
         if (SHOW_TYPE_LIST.equals(string)) {
             return true;
         }
@@ -287,7 +288,7 @@ public class DataBaseUtils {
                     stringBuffer.append(AND + string2 + EQUAL + DataBaseUtils.dateTimeFormat(object2.toString()));
                     continue;
                 }
-                boolean bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
+                boolean bl = !TypeUtils.isDigit(string3);
                 string4 = QueryGenerator.getSingleQueryConditionSql((String) string2, (String) "", (Object) object2, (boolean) bl);
                 stringBuffer.append(AND + string4);
                 continue;
@@ -295,7 +296,7 @@ public class DataBaseUtils {
             object2 = map.get(string2 + "_begin");
             if (object2 != null) {
                 stringBuffer.append(AND + string2 + m);
-                if (org.jeecg.modules.online.cgform.util.i.a(string3)) {
+                if (TypeUtils.isDigit(string3)) {
                     stringBuffer.append(object2.toString());
                 } else if ("ORACLE".equals(string) && string3.toLowerCase().indexOf("date") >= 0) {
                     stringBuffer.append(DataBaseUtils.dateTimeFormat(object2.toString()));
@@ -306,7 +307,7 @@ public class DataBaseUtils {
             Object object = map.get(string2 + "_end");
             if (object == null) continue;
             stringBuffer.append(AND + string2 + o);
-            if (org.jeecg.modules.online.cgform.util.i.a(string3)) {
+            if (TypeUtils.isDigit(string3)) {
                 stringBuffer.append(object.toString());
                 continue;
             }
@@ -527,14 +528,14 @@ public class DataBaseUtils {
             }
             if (FIELD_SHOW_TYPE_SWITCH.equals(fieldShowType)) {
                 property = new SwitchProperty(dbFieldName, dbFieldTxt, onlCgformField.getFieldExtendJson());
-            } else if (DataBaseUtils.c(fieldShowType)) {
+            } else if (DataBaseUtils.isMultipleType(fieldShowType)) {
                 property = new DictProperty(dbFieldName, fieldShowType, dbFieldTxt, onlCgformField.getDictTable(), onlCgformField.getDictField(), onlCgformField.getDictText());
-                if (org.jeecg.modules.online.cgform.util.i.a(onlCgformField.getDbType())) {
+                if (TypeUtils.isDigit(onlCgformField.getDbType())) {
                     property.setType("number");
                 }
             } else if ("sel_search".equals(fieldShowType)) {
                 property = new DictProperty(dbFieldName, dbFieldTxt, onlCgformField.getDictTable(), onlCgformField.getDictField(), onlCgformField.getDictText());
-            } else if (org.jeecg.modules.online.cgform.util.i.a(onlCgformField.getDbType())) {
+            } else if (TypeUtils.isDigit(onlCgformField.getDbType())) {
                 NumberProperty numberProperty = new NumberProperty(dbFieldName, dbFieldTxt, "number");
                 if (CgformValidPatternEnum.INTEGER.getType().equals(onlCgformField.getFieldValidType())) {
                     numberProperty.setPattern(CgformValidPatternEnum.INTEGER.getPattern());
@@ -625,37 +626,39 @@ public class DataBaseUtils {
         } else {
             jsonSchemaDescrip = new JsonSchemaDescrip();
         }
-        jsonObject = org.jeecg.common.util.jsonschema.b.a(jsonSchemaDescrip, arrayList2);
+        jsonObject = JsonSchemaConverter.schemeToList(jsonSchemaDescrip, arrayList2);
         return jsonObject;
     }
 
-    public static JSONObject b(String string, List<OnlCgformField> list) {
-        JSONObject jSONObject = new JSONObject();
-        ArrayList<String> arrayList = new ArrayList<String>();
-        ArrayList<CommonProperty> arrayList2 = new ArrayList<CommonProperty>();
+    public static JSONObject b(String title, List<OnlCgformField> list) {
+        List<String> required = new ArrayList<>();
+        List<CommonProperty> arrayList2 = new ArrayList<>();
         ISysBaseAPI iSysBaseAPI = (ISysBaseAPI) SpringContextUtils.getBean(ISysBaseAPI.class);
         for (OnlCgformField onlCgformField : list) {
-            String string2 = onlCgformField.getDbFieldName();
-            if ("id".equals(string2)) continue;
-            String string3 = onlCgformField.getDbFieldTxt();
+            String dbFieldName = onlCgformField.getDbFieldName();
+            if ("id".equals(dbFieldName)) continue;
+            String dbFieldTxt = onlCgformField.getDbFieldTxt();
+            String fieldShowType = onlCgformField.getFieldShowType();
+            String dictField = onlCgformField.getDictField();
+
+
             if ("1".equals(onlCgformField.getFieldMustInput())) {
-                arrayList.add(string2);
+                required.add(dbFieldName);
             }
-            String string4 = onlCgformField.getFieldShowType();
-            String string5 = onlCgformField.getDictField();
-            CommonProperty commonProperty = null;
-            if (org.jeecg.modules.online.cgform.util.i.a(onlCgformField.getDbType())) {
-                commonProperty = new NumberProperty(string2, string3, "number");
-            } else if (DataBaseUtils.c(string4)) {
-                List list2 = iSysBaseAPI.queryDictItemsByCode(string5);
-                commonProperty = new StringProperty(string2, string3, string4, onlCgformField.getDbLength(), list2);
+
+            CommonProperty commonProperty;
+            if (TypeUtils.isDigit(onlCgformField.getDbType())) {
+                commonProperty = new NumberProperty(dbFieldName, dbFieldTxt, "number");
+            } else if (DataBaseUtils.isMultipleType(fieldShowType)) {
+                List<DictModel> dictModels = iSysBaseAPI.queryDictItemsByCode(dictField);
+                commonProperty = new StringProperty(dbFieldName, dbFieldTxt, fieldShowType, onlCgformField.getDbLength(), dictModels);
             } else {
-                commonProperty = new StringProperty(string2, string3, string4, onlCgformField.getDbLength());
+                commonProperty = new StringProperty(dbFieldName, dbFieldTxt, fieldShowType, onlCgformField.getDbLength());
             }
             commonProperty.setOrder(onlCgformField.getOrderNum());
             arrayList2.add(commonProperty);
         }
-        jSONObject = org.jeecg.common.util.jsonschema.b.a(string, arrayList, arrayList2);
+        JSONObject jSONObject = JsonSchemaConverter.listToList(title, required, arrayList2);
         return jSONObject;
     }
 
@@ -666,7 +669,7 @@ public class DataBaseUtils {
             if (FIELD_SHOW_TYPE_POPUP.equals(onlCgformField.getFieldShowType()) && (string = onlCgformField.getDictText()) != null && !string.equals("")) {
                 hashSet.addAll(Arrays.stream(string.split(COMMA)).collect(Collectors.toSet()));
             }
-            if (!FIELD_SHOW_TYPE_CAT_TREE.equals(onlCgformField.getFieldShowType()) || !oConvertUtils.isNotEmpty((Object) (string = onlCgformField.getDictText())))
+            if (!FIELD_SHOW_TYPE_CAT_TREE.equals(onlCgformField.getFieldShowType()) || !oConvertUtils.isNotEmpty(string = onlCgformField.getDictText()))
                 continue;
             hashSet.add(string);
         }
@@ -699,38 +702,38 @@ public class DataBaseUtils {
         Set<String> set = DataBaseUtils.a(list);
         for (OnlCgformField onlCgformField : list) {
             String string4;
-            String string5 = onlCgformField.getDbFieldName();
-            if (null == string5) {
+            String fieldName = onlCgformField.getDbFieldName();
+            if (null == fieldName) {
                 log.info("--------online保存表单数据遇见空名称的字段------->>" + onlCgformField.getId());
                 continue;
             }
-            if ("id".equals(string5.toLowerCase())) {
+            if ("id".equals(fieldName.toLowerCase())) {
                 bl = true;
-                string3 = jSONObject.getString(string5);
+                string3 = jSONObject.getString(fieldName);
                 continue;
             }
             DataBaseUtils.a(onlCgformField, loginUser, jSONObject, u, t, x);
-            if (E.equals(string5.toLowerCase())) {
-                stringBuffer.append(COMMA + string5);
+            if (E.equals(fieldName.toLowerCase())) {
+                stringBuffer.append(COMMA + fieldName);
                 stringBuffer2.append(",'1'");
                 continue;
             }
-            if (set.contains(string5)) {
-                stringBuffer.append(COMMA + string5);
-                string4 = org.jeecg.modules.online.cgform.util.i.a(string2, onlCgformField, jSONObject, hashMap);
+            if (set.contains(fieldName)) {
+                stringBuffer.append(COMMA + fieldName);
+                string4 = TypeUtils.a(string2, onlCgformField, jSONObject, hashMap);
                 stringBuffer2.append(COMMA + string4);
                 continue;
             }
-            if (onlCgformField.getIsShowForm() != 1 && oConvertUtils.isEmpty((Object) onlCgformField.getMainField()) && oConvertUtils.isEmpty((Object) onlCgformField.getDbDefaultVal()))
+            if (onlCgformField.getIsShowForm() != 1 && oConvertUtils.isEmpty(onlCgformField.getMainField()) && oConvertUtils.isEmpty(onlCgformField.getDbDefaultVal()))
                 continue;
-            if (jSONObject.get((Object) string5) == null) {
-                if (oConvertUtils.isEmpty((Object) onlCgformField.getDbDefaultVal())) continue;
-                jSONObject.put(string5, (Object) onlCgformField.getDbDefaultVal());
+            if (jSONObject.get(fieldName) == null) {
+                if (oConvertUtils.isEmpty(onlCgformField.getDbDefaultVal())) continue;
+                jSONObject.put(fieldName, onlCgformField.getDbDefaultVal());
             }
-            if ("".equals(jSONObject.get((Object) string5)) && (org.jeecg.modules.online.cgform.util.i.a(string4 = onlCgformField.getDbType()) || org.jeecg.modules.online.cgform.util.i.b(string4)))
+            if ("".equals(jSONObject.get(fieldName)) && (TypeUtils.isDigit(string4 = onlCgformField.getDbType()) || TypeUtils.b(string4)))
                 continue;
-            stringBuffer.append(COMMA + string5);
-            string4 = org.jeecg.modules.online.cgform.util.i.a(string2, onlCgformField, jSONObject, hashMap);
+            stringBuffer.append(COMMA + fieldName);
+            string4 = TypeUtils.a(string2, onlCgformField, jSONObject, hashMap);
             stringBuffer2.append(COMMA + string4);
         }
         if (bl) {
@@ -772,13 +775,13 @@ public class DataBaseUtils {
             }
             DataBaseUtils.a(object2, loginUser, jSONObject, w, v);
             if (set.contains(string4) && jSONObject.get((Object) string4) != null && !"".equals(jSONObject.getString(string4))) {
-                string3 = org.jeecg.modules.online.cgform.util.i.a(string2, object2, jSONObject, hashMap);
+                string3 = TypeUtils.a(string2, object2, jSONObject, hashMap);
                 stringBuffer.append(string4 + EQUAL + string3 + COMMA);
                 continue;
             }
-            if (object2.getIsShowForm() != 1 || "id".equals(string4) || "".equals(jSONObject.get((Object) string4)) && (org.jeecg.modules.online.cgform.util.i.a(string3 = object2.getDbType()) || org.jeecg.modules.online.cgform.util.i.b(string3)) || oConvertUtils.isNotEmpty((Object) object2.getMainTable()) && oConvertUtils.isNotEmpty((Object) object2.getMainField()))
+            if (object2.getIsShowForm() != 1 || "id".equals(string4) || "".equals(jSONObject.get((Object) string4)) && (TypeUtils.isDigit(string3 = object2.getDbType()) || TypeUtils.b(string3)) || oConvertUtils.isNotEmpty((Object) object2.getMainTable()) && oConvertUtils.isNotEmpty((Object) object2.getMainField()))
                 continue;
-            string3 = org.jeecg.modules.online.cgform.util.i.a(string2, object2, jSONObject, hashMap);
+            string3 = TypeUtils.a(string2, object2, jSONObject, hashMap);
             stringBuffer.append(string4 + EQUAL + string3 + COMMA);
         }
         Object object3 = stringBuffer.toString();
@@ -889,7 +892,7 @@ public class DataBaseUtils {
                 stringBuffer2.append(COMMA + string2);
             }
             if (oConvertUtils.isNotEmpty((Object) onlCgformField.getMainField())) {
-                bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
+                bl = !TypeUtils.isDigit(string3);
                 object = QueryGenerator.getSingleQueryConditionSql((String) string2, (String) "", (Object) map.get(string2), (boolean) bl);
                 if (!"".equals(object)) {
                     stringBuffer.append(AND + (String) object);
@@ -898,7 +901,7 @@ public class DataBaseUtils {
             if (onlCgformField.getIsQuery() != 1) continue;
             if (QUERY_MODE_SINGLE.equals(onlCgformField.getQueryMode())) {
                 if (map.get(string2) == null) continue;
-                bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
+                bl = !TypeUtils.isDigit(string3);
                 object = QueryGenerator.getSingleQueryConditionSql((String) string2, (String) "", (Object) map.get(string2), (boolean) bl);
                 if ("".equals(object)) continue;
                 stringBuffer.append(AND + (String) object);
@@ -907,7 +910,7 @@ public class DataBaseUtils {
             Object object2 = map.get(string2 + "_begin");
             if (object2 != null) {
                 stringBuffer.append(AND + string2 + m);
-                if (org.jeecg.modules.online.cgform.util.i.a(string3)) {
+                if (TypeUtils.isDigit(string3)) {
                     stringBuffer.append(object2.toString());
                 } else {
                     stringBuffer.append(z + object2.toString() + z);
@@ -915,7 +918,7 @@ public class DataBaseUtils {
             }
             if ((object = map.get(string2 + "_end")) == null) continue;
             stringBuffer.append(AND + string2 + o);
-            if (org.jeecg.modules.online.cgform.util.i.a(string3)) {
+            if (TypeUtils.isDigit(string3)) {
                 stringBuffer.append(object.toString());
                 continue;
             }
@@ -1042,7 +1045,7 @@ public class DataBaseUtils {
 
     private static void a(String string, SysPermissionDataRuleModel sysPermissionDataRuleModel, String string2, String string3, StringBuffer stringBuffer) {
         QueryRuleEnum queryRuleEnum = QueryRuleEnum.getByValue((String) sysPermissionDataRuleModel.getRuleConditions());
-        boolean bl = !org.jeecg.modules.online.cgform.util.i.a(string3);
+        boolean bl = !TypeUtils.isDigit(string3);
         String string4 = DataBaseUtils.a(sysPermissionDataRuleModel.getRuleValue(), bl, queryRuleEnum);
         if (string4 == null || queryRuleEnum == null) {
             return;
@@ -1448,7 +1451,7 @@ public class DataBaseUtils {
             if (jSONObject.get((Object) string5) == null && !u.equalsIgnoreCase(string5) && !t.equalsIgnoreCase(string5) && !x.equalsIgnoreCase(string5))
                 continue;
             DataBaseUtils.a(onlCgformField, loginUser, jSONObject, u, t, x);
-            if ("".equals(jSONObject.get((Object) string5)) && (org.jeecg.modules.online.cgform.util.i.a(string4 = onlCgformField.getDbType()) || org.jeecg.modules.online.cgform.util.i.b(string4)))
+            if ("".equals(jSONObject.get((Object) string5)) && (TypeUtils.isDigit(string4 = onlCgformField.getDbType()) || TypeUtils.b(string4)))
                 continue;
             if ("id".equals(string5.toLowerCase())) {
                 bl = true;
@@ -1456,7 +1459,7 @@ public class DataBaseUtils {
                 continue;
             }
             stringBuffer.append(COMMA + string5);
-            string4 = org.jeecg.modules.online.cgform.util.i.a(string2, onlCgformField, jSONObject, hashMap);
+            string4 = TypeUtils.a(string2, onlCgformField, jSONObject, hashMap);
             stringBuffer2.append(COMMA + string4);
         }
         if (!bl || oConvertUtils.isEmpty(string3)) {
@@ -1493,9 +1496,9 @@ public class DataBaseUtils {
             if ("id".equals(string4) || jSONObject.get((Object) string4) == null && !w.equalsIgnoreCase(string4) && !v.equalsIgnoreCase(string4) && !x.equalsIgnoreCase(string4))
                 continue;
             DataBaseUtils.a(object2, loginUser, jSONObject, w, v, x);
-            if ("".equals(jSONObject.get((Object) string4)) && (org.jeecg.modules.online.cgform.util.i.a(string3 = object2.getDbType()) || org.jeecg.modules.online.cgform.util.i.b(string3)))
+            if ("".equals(jSONObject.get((Object) string4)) && (TypeUtils.isDigit(string3 = object2.getDbType()) || TypeUtils.b(string3)))
                 continue;
-            string3 = org.jeecg.modules.online.cgform.util.i.a(string2, object2, jSONObject, hashMap);
+            string3 = TypeUtils.a(string2, object2, jSONObject, hashMap);
             stringBuffer.append(string4 + EQUAL + string3 + COMMA);
         }
         Object object3 = stringBuffer.toString();
@@ -1716,7 +1719,7 @@ public class DataBaseUtils {
             JSONObject var5 = var1.getJSONObject(key);
             String var6 = var5.getString("view");
             String var7;
-            if (c(var6)) {
+            if (isMultipleType(var6)) {
                 var7 = var5.getString("dictCode");
                 String var16 = var5.getString("dictText");
                 String var17 = var5.getString("dictTable");

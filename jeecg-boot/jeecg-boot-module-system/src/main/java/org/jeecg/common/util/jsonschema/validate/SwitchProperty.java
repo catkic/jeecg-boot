@@ -15,17 +15,17 @@ import org.jeecg.common.util.jsonschema.CommonProperty;
 
 public class SwitchProperty
 extends CommonProperty {
-    private String l;
+    private String extendStr;
 
     public SwitchProperty() {
     }
 
     public SwitchProperty(String key, String title, String extendStr) {
-        this.b = "string";
-        this.e = "switch";
-        this.a = key;
-        this.f = title;
-        this.l = extendStr;
+        this.type = "string";
+        this.view = "switch";
+        this.key = key;
+        this.title = title;
+        this.extendStr = extendStr;
     }
 
     @Override
@@ -34,11 +34,11 @@ extends CommonProperty {
         hashMap.put("key", this.getKey());
         JSONObject jSONObject = this.getCommonJson();
         JSONArray jSONArray = new JSONArray();
-        if (this.l != null) {
-            jSONArray = JSONArray.parseArray((String)this.l);
-            jSONObject.put("extendOption", (Object)jSONArray);
+        if (this.extendStr != null) {
+            jSONArray = JSONArray.parseArray(this.extendStr);
+            jSONObject.put("extendOption", jSONArray);
         }
-        hashMap.put("prop", (Object)jSONObject);
+        hashMap.put("prop", jSONObject);
         return hashMap;
     }
 }

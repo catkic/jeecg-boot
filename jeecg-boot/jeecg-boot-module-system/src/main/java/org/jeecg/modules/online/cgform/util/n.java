@@ -5,12 +5,13 @@ package org.jeecg.modules.online.cgform.util;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 class n {
     private static final String a = "FECO#$N*CX";
-    private static final Charset b = Charset.forName("UTF-8");
+    private static final Charset b = StandardCharsets.UTF_8;
     private static byte[] c = "FECO#$N*CX".getBytes(b);
 
     n() {

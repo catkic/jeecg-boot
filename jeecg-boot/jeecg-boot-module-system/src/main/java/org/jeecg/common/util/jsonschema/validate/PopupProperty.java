@@ -1,68 +1,69 @@
 /*
  * Decompiled with CFR 0.150.
- * 
+ *
  * Could not load the following classes:
  *  com.alibaba.fastjson.JSONObject
  */
 package org.jeecg.common.util.jsonschema.validate;
 
 import com.alibaba.fastjson.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jeecg.common.util.jsonschema.CommonProperty;
 
 public class PopupProperty
-extends CommonProperty {
-    private static final long l = -3200493311633999539L;
-    private String m;
-    private String n;
-    private String o;
-    private Boolean p;
+        extends CommonProperty {
+    private String code;
+    private String destFields;
+    private String orgFields;
+    private Boolean popupMulti;
 
     public String getCode() {
-        return this.m;
+        return this.code;
     }
 
     public void setCode(String code) {
-        this.m = code;
+        this.code = code;
     }
 
     public String getDestFields() {
-        return this.n;
+        return this.destFields;
     }
 
     public void setDestFields(String destFields) {
-        this.n = destFields;
+        this.destFields = destFields;
     }
 
     public String getOrgFields() {
-        return this.o;
+        return this.orgFields;
     }
 
     public void setOrgFields(String orgFields) {
-        this.o = orgFields;
+        this.orgFields = orgFields;
     }
 
     public Boolean getPopupMulti() {
-        return this.p;
+        return this.popupMulti;
     }
 
     public void setPopupMulti(Boolean popupMulti) {
-        this.p = popupMulti;
+        this.popupMulti = popupMulti;
     }
 
     public PopupProperty() {
     }
 
     public PopupProperty(String key, String title, String code, String destFields, String orgFields) {
-        this.e = "popup";
-        this.b = "string";
-        this.a = key;
-        this.f = title;
-        this.m = code;
-        this.n = destFields;
-        this.o = orgFields;
-        this.p = true;
+        this.view = "popup";
+        this.type = "string";
+        this.key = key;
+        this.title = title;
+        this.code = code;
+        this.destFields = destFields;
+        this.orgFields = orgFields;
+        this.popupMulti = true;
     }
 
     @Override
@@ -70,17 +71,17 @@ extends CommonProperty {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("key", this.getKey());
         JSONObject jSONObject = this.getCommonJson();
-        if (this.m != null) {
-            jSONObject.put("code", (Object)this.m);
+        if (this.code != null) {
+            jSONObject.put("code", (Object) this.code);
         }
-        if (this.n != null) {
-            jSONObject.put("destFields", (Object)this.n);
+        if (this.destFields != null) {
+            jSONObject.put("destFields", (Object) this.destFields);
         }
-        if (this.o != null) {
-            jSONObject.put("orgFields", (Object)this.o);
+        if (this.orgFields != null) {
+            jSONObject.put("orgFields", (Object) this.orgFields);
         }
-        jSONObject.put("popupMulti", (Object)this.p);
-        hashMap.put("prop", (Object)jSONObject);
+        jSONObject.put("popupMulti", (Object) this.popupMulti);
+        hashMap.put("prop", (Object) jSONObject);
         return hashMap;
     }
 }

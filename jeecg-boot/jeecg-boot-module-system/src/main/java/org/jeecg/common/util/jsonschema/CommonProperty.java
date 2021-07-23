@@ -11,146 +11,59 @@ import com.alibaba.fastjson.JSONObject;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Data;
 import org.jeecg.common.system.vo.DictModel;
 
-public abstract class CommonProperty
-implements Serializable {
-    private static final long l = -426159949502493187L;
-    protected String a;
-    protected String b;
-    protected List<DictModel> c;
-    protected Object d;
-    protected String e;
-    protected String f;
-    protected Integer g;
-    protected boolean h;
-    protected String i;
-    protected String j;
-    protected Integer k;
-
-    public String getDefVal() {
-        return this.i;
-    }
-
-    public void setDefVal(String defVal) {
-        this.i = defVal;
-    }
-
-    public boolean a() {
-        return this.h;
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.h = disabled;
-    }
-
-    public String getView() {
-        return this.e;
-    }
-
-    public void setView(String view) {
-        this.e = view;
-    }
-
-    public String getKey() {
-        return this.a;
-    }
-
-    public void setKey(String key) {
-        this.a = key;
-    }
-
-    public String getType() {
-        return this.b;
-    }
-
-    public void setType(String type) {
-        this.b = type;
-    }
-
-    public List<DictModel> getInclude() {
-        return this.c;
-    }
-
-    public void setInclude(List<DictModel> include) {
-        this.c = include;
-    }
-
-    public Object getConstant() {
-        return this.d;
-    }
-
-    public void setConstant(Object constant) {
-        this.d = constant;
-    }
-
-    public String getTitle() {
-        return this.f;
-    }
-
-    public void setTitle(String title) {
-        this.f = title;
-    }
-
-    public Integer getOrder() {
-        return this.g;
-    }
-
-    public void setOrder(Integer order) {
-        this.g = order;
-    }
-
-    public String getFieldExtendJson() {
-        return this.j;
-    }
-
-    public void setFieldExtendJson(String fieldExtendJson) {
-        this.j = fieldExtendJson;
-    }
-
-    public Integer getDbPointLength() {
-        return this.k;
-    }
-
-    public void setDbPointLength(Integer dbPointLength) {
-        this.k = dbPointLength;
-    }
+@Data
+public abstract class CommonProperty implements Serializable {
+    protected String key;
+    protected String type;
+    protected List<DictModel> include;
+    protected Object constant;
+    protected String view;
+    protected String title;
+    protected Integer order;
+    protected boolean disabled;
+    protected String defVal;
+    protected String fieldExtendJson;
+    protected Integer dbPointLength;
 
     public abstract Map<String, Object> getPropertyJson();
 
     public JSONObject getCommonJson() {
         JSONObject jSONObject = new JSONObject();
-        jSONObject.put("type", (Object)this.b);
-        if (this.c != null && this.c.size() > 0) {
-            jSONObject.put("enum", this.c);
+        jSONObject.put("type", (Object)this.type);
+        if (this.include != null && this.include.size() > 0) {
+            jSONObject.put("enum", this.include);
         }
-        if (this.d != null) {
-            jSONObject.put("const", this.d);
+        if (this.constant != null) {
+            jSONObject.put("const", this.constant);
         }
-        if (this.f != null) {
-            jSONObject.put("title", (Object)this.f);
+        if (this.title != null) {
+            jSONObject.put("title", this.title);
         }
-        if (this.g != null) {
-            jSONObject.put("order", (Object)this.g);
+        if (this.order != null) {
+            jSONObject.put("order", this.order);
         }
-        if (this.e == null) {
-            jSONObject.put("view", (Object)"input");
+        if (this.view == null) {
+            jSONObject.put("view", "input");
         } else {
-            jSONObject.put("view", (Object)this.e);
+            jSONObject.put("view", this.view);
         }
-        if (this.h) {
+        if (this.disabled) {
             String string = "{\"widgetattrs\":{\"disabled\":true}}";
-            JSONObject jSONObject2 = JSONObject.parseObject((String)string);
-            jSONObject.put("ui", (Object)jSONObject2);
+            JSONObject jSONObject2 = JSONObject.parseObject(string);
+            jSONObject.put("ui", jSONObject2);
         }
-        if (this.i != null && this.i.length() > 0) {
-            jSONObject.put("defVal", (Object)this.i);
+        if (this.defVal != null && this.defVal.length() > 0) {
+            jSONObject.put("defVal", this.defVal);
         }
-        if (this.j != null) {
-            jSONObject.put("fieldExtendJson", (Object)this.j);
+        if (this.fieldExtendJson != null) {
+            jSONObject.put("fieldExtendJson", this.fieldExtendJson);
         }
-        if (this.k != null) {
-            jSONObject.put("dbPointLength", (Object)this.k);
+        if (this.dbPointLength != null) {
+            jSONObject.put("dbPointLength", this.dbPointLength);
         }
         return jSONObject;
     }

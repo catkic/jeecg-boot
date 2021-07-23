@@ -16,62 +16,61 @@ import org.jeecg.common.util.jsonschema.CommonProperty;
 
 public class StringProperty
 extends CommonProperty {
-    private static final long l = -3200493311633999539L;
-    private Integer m;
-    private Integer n;
-    private String o;
-    private String p;
+    private Integer maxLength;
+    private Integer minLength;
+    private String pattern;
+    private String errorInfo;
 
     public Integer getMaxLength() {
-        return this.m;
+        return this.maxLength;
     }
 
     public void setMaxLength(Integer maxLength) {
-        this.m = maxLength;
+        this.maxLength = maxLength;
     }
 
     public Integer getMinLength() {
-        return this.n;
+        return this.minLength;
     }
 
     public void setMinLength(Integer minLength) {
-        this.n = minLength;
+        this.minLength = minLength;
     }
 
     public String getPattern() {
-        return this.o;
+        return this.pattern;
     }
 
     public void setPattern(String pattern) {
-        this.o = pattern;
+        this.pattern = pattern;
     }
 
     public String getErrorInfo() {
-        return this.p;
+        return this.errorInfo;
     }
 
     public void setErrorInfo(String errorInfo) {
-        this.p = errorInfo;
+        this.errorInfo = errorInfo;
     }
 
     public StringProperty() {
     }
 
     public StringProperty(String key, String title, String view, Integer maxLength) {
-        this.m = maxLength;
-        this.a = key;
-        this.e = view;
-        this.f = title;
-        this.b = "string";
+        this.maxLength = maxLength;
+        this.key = key;
+        this.view = view;
+        this.title = title;
+        this.type = "string";
     }
 
     public StringProperty(String key, String title, String view, Integer maxLength, List<DictModel> include) {
-        this.m = maxLength;
-        this.a = key;
-        this.e = view;
-        this.f = title;
-        this.b = "string";
-        this.c = include;
+        this.maxLength = maxLength;
+        this.key = key;
+        this.view = view;
+        this.title = title;
+        this.type = "string";
+        this.include = include;
     }
 
     @Override
@@ -79,17 +78,17 @@ extends CommonProperty {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("key", this.getKey());
         JSONObject jSONObject = this.getCommonJson();
-        if (this.m != null) {
-            jSONObject.put("maxLength", (Object)this.m);
+        if (this.maxLength != null) {
+            jSONObject.put("maxLength", (Object)this.maxLength);
         }
-        if (this.n != null) {
-            jSONObject.put("minLength", (Object)this.n);
+        if (this.minLength != null) {
+            jSONObject.put("minLength", (Object)this.minLength);
         }
-        if (this.o != null) {
-            jSONObject.put("pattern", (Object)this.o);
+        if (this.pattern != null) {
+            jSONObject.put("pattern", (Object)this.pattern);
         }
-        if (this.p != null) {
-            jSONObject.put("errorInfo", (Object)this.p);
+        if (this.errorInfo != null) {
+            jSONObject.put("errorInfo", (Object)this.errorInfo);
         }
         hashMap.put("prop", (Object)jSONObject);
         return hashMap;

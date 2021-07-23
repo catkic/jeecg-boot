@@ -13,16 +13,15 @@ import org.jeecg.common.util.jsonschema.CommonProperty;
 
 public class HiddenProperty
 extends CommonProperty {
-    private static final long l = -8939298551502162479L;
 
     public HiddenProperty() {
     }
 
     public HiddenProperty(String key, String title) {
-        this.b = "string";
-        this.e = "hidden";
-        this.a = key;
-        this.f = title;
+        this.type = "string";
+        this.view = "hidden";
+        this.key = key;
+        this.title = title;
     }
 
     @Override

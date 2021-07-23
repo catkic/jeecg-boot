@@ -8,61 +8,60 @@ import java.util.List;
 
 public class JsonSchemaDescrip
 implements Serializable {
-    private static final long a = 7682073117441544718L;
-    private String b = "http://json-schema.org/draft-07/schema#";
-    private String c;
-    private String d;
-    private String e;
-    private List<String> f;
+    private String schema = "http://json-schema.org/draft-07/schema#";
+    private String title;
+    private String description;
+    private String type;
+    private List<String> required;
 
     public List<String> getRequired() {
-        return this.f;
+        return this.required;
     }
 
     public void setRequired(List<String> required) {
-        this.f = required;
+        this.required = required;
     }
 
-    public String get$schema() {
-        return this.b;
+    public String getSchema() {
+        return this.schema;
     }
 
-    public void set$schema(String $schema) {
-        this.b = $schema;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     public String getTitle() {
-        return this.c;
+        return this.title;
     }
 
     public void setTitle(String title) {
-        this.c = title;
+        this.title = title;
     }
 
     public String getDescription() {
-        return this.d;
+        return this.description;
     }
 
     public void setDescription(String description) {
-        this.d = description;
+        this.description = description;
     }
 
     public String getType() {
-        return this.e;
+        return this.type;
     }
 
     public void setType(String type) {
-        this.e = type;
+        this.type = type;
     }
 
     public JsonSchemaDescrip() {
     }
 
     public JsonSchemaDescrip(List<String> required) {
-        this.d = "我是一个jsonschema description";
-        this.c = "我是一个jsonschema title";
-        this.e = "object";
-        this.f = required;
+        this.description = "我是一个jsonschema description";
+        this.title = "我是一个jsonschema title";
+        this.type = "object";
+        this.required = required;
     }
 }
 
