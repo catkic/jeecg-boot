@@ -35,8 +35,6 @@ import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.online.cgform.service.IOnlineBaseAPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -45,56 +43,50 @@ public class OnlineInterceptor implements HandlerInterceptor {
     private IOnlineBaseAPI onlineBaseAPI;
     private ISysBaseAPI iSysBaseAPI;
     private static final String d = "/online/cgform";
-    private static final String[] e = new String[]{"/online/cgformInnerTableList", "/online/cgformErpList", "/online/cgformList", "/online/cgformTreeList", "/online/cgformTabList"};
+    private static final String[] FILTER_URLS = new String[]{"/online/cgformInnerTableList", "/online/cgformErpList", "/online/cgformList", "/online/cgformTreeList", "/online/cgformTabList"};
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         OnlineAuth onlineAuth;
         boolean bl = handler.getClass().isAssignableFrom(HandlerMethod.class);
         if (bl && (onlineAuth = ((HandlerMethod)handler).getMethodAnnotation(OnlineAuth.class)) != null) {
             OnlineAuthDTO onlineAuthDTO;
-            int n2;
             log.debug("===== online 菜单访问拦截器 =====");
-            String string = request.getRequestURI().substring(request.getContextPath().length());
-            string = this.a(string);
-            String string2 = onlineAuth.value();
-            String string3 = string.substring(string.lastIndexOf(string2) + string2.length());
-            log.debug("拦截请求(" + request.getMethod() + ")：" + string + ",");
-            if ("form".equals(string2) && "DELETE".equals(request.getMethod())) {
-                string3 = string3.substring(0, string3.lastIndexOf("/"));
+            String contextPath = this.convertUrl(request.getRequestURI().substring(request.getContextPath().length()));
+            String auth = onlineAuth.value();
+            String authString = contextPath.substring(contextPath.lastIndexOf(auth) + auth.length());
+            log.debug("拦截请求(" + request.getMethod() + ")：" + contextPath + ",");
+            if ("form".equals(auth) && "DELETE".equals(request.getMethod())) {
+                authString = authString.substring(0, authString.lastIndexOf("/"));
             }
-            String string4 = request.getParameter("tabletype");
+            String tabletype = request.getParameter("tabletype");
             if (this.onlineBaseAPI == null) {
                 this.onlineBaseAPI = SpringContextUtils.getBean(IOnlineBaseAPI.class);
             }
-            string3 = this.onlineBaseAPI.getOnlineErpCode(string3, string4);
+            authString = this.onlineBaseAPI.getOnlineErpCode(authString, tabletype);
             ArrayList<String> arrayList = new ArrayList<String>();
-            String[] object = e;
-            int n3 = object.length;
-            for (n2 = 0; n2 < n3; ++n2) {
-                String string5 = object[n2];
-                arrayList.add(string5 + string3);
+            for (String url : FILTER_URLS) {
+                arrayList.add(url + authString);
             }
             if (this.iSysBaseAPI == null) {
                 this.iSysBaseAPI = SpringContextUtils.getBean(ISysBaseAPI.class);
             }
             if (!this.iSysBaseAPI.hasOnlineAuth(new OnlineAuthDTO(JwtUtil.getUserNameByToken(request), arrayList, d))) {
-                log.info("请求无权限(" + request.getMethod() + ")：" + string);
-                this.a(response, string2);
+                log.info("请求无权限(" + request.getMethod() + ")：" + contextPath);
+                this.a(response, auth);
                 return false;
             }
         }
         return true;
     }
 
-    private String a(String string) {
-        String string2 = "";
-        if (oConvertUtils.isNotEmpty((Object)string)) {
-            string2 = string.replace("\\", "/");
-            if ((string2 = string2.replace("//", "/")).indexOf("//") >= 0) {
-                string2 = this.a(string2);
+    private String convertUrl(String url) {
+        if (oConvertUtils.isNotEmpty(url)) {
+            String string2 = url.replace("\\", "/").replace("//", "/");
+            if (string2.contains("//")) {
+                return this.convertUrl(string2);
             }
         }
-        return string2;
+        return "";
     }
 
     /*
